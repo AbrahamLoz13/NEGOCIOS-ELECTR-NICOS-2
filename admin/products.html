@@ -2,224 +2,328 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gestión de Productos - Panel de Administración</title>
-  <link rel="stylesheet" href="../css/bootstrap.min.css" />
-  <link rel="stylesheet" href="../css/font-awesome.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inventario | Pet Palace Admin</title>
+    
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <style>
+        /* CONFIGURACIÓN DEFINITIVA */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            background-color: #f4f7f6;
+        }
+
+        /* SIDEBAR FIJA (EL ORIGEN) */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 20px 0 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            background-color: #15161D !important;
+        }
+
+        .nav-stacked li a {
+            color: #8D99AE;
+            font-weight: 500;
+            padding: 12px 20px;
+            transition: 0.3s;
+        }
+
+        .nav-stacked li a:hover, .nav-stacked li.active a {
+            color: #4ea3f1 !important;
+            background-color: #1e1f29 !important;
+            border-left: 3px solid #4ea3f1;
+        }
+
+        /* AJUSTE DE CONTENIDO PARA SIDEBAR FIJA */
+        main {
+            margin-left: 16.666667%; /* Compensa el ancho col-md-2 */
+            padding: 20px;
+        }
+
+        /* BARRA DE FILTROS DEFINITIVA */
+        .filter-bar {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .table thead th {
+            background-color: #1e1f29;
+            color: #fff;
+            border: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .btn-success { background-color: #28a745; border: none; }
+        .btn-primary { background-color: #4ea3f1; border: none; }
+
+        /* Scroll suave */
+        html { scroll-behavior: smooth; }
+    </style>
 </head>
 
 <body>
-  <div class="container-fluid">
+
+<div class="container-fluid">
     <div class="row">
-      <!-- Sidebar -->
-      <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
-        <div class="position-sticky">
-          <div class="text-center py-4">
-            <img src="../img/logo6.png" alt="Logo Pet Palace" class="mb-3" style="width: 80px;" />
-            <h4 class="text-white">Administrador</h4>
-          </div>
-          <ul class="nav flex-column">
-            <li class="nav-item">
-              <a class="nav-link text-white" href="admin-panel.html">
-                <i class="fa fa-tachometer"></i> Dashboard
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="clients.html">
-                <i class="fa fa-users"></i> Usuarios
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white active" href="products.html">
-                <i class="fa fa-paw"></i> Inventario
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="orders.html">
-                <i class="fa fa-shopping-cart"></i> Pedidos
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="statistics.html">
-                <i class="fa fa-bar-chart"></i> Reportes
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="logs.html">
-                <i class="fa fa-cog"></i> Bitácoras de Movimientos
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="login.html">
-                <i class="fa fa-sign-out"></i> Cerrar Sesión
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block">
+            <div class="text-center py-4">
+                <img src="../img/logo6.png" alt="Logo" class="mb-3" style="width: 70px;" />
+                <h5 class="text-white">Admin Panel</h5>
+                <p class="text-muted small">Pet Palace v2.0</p>
+            </div>
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="admin-panel.html"><i class="fa fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="clients.html"><i class="fa fa-users"></i> Usuarios</a></li>
+                <li class="active"><a href="products.html"><i class="fa fa-boxes"></i> Inventario</a></li>
+                <li><a href="orders.html"><i class="fa fa-shopping-cart"></i> Pedidos</a></li>
+                <hr style="border-color: #2c2e3e; margin: 10px 20px;">
+                <li><a href="../index.html"><i class="fa fa-eye"></i> Ver Tienda</a></li>
+                <li><a href="../login.html" class="text-danger"><i class="fa fa-sign-out-alt"></i> Salir</a></li>
+            </ul>
+        </nav>
 
-      <!-- Main Content -->
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <div class="container mt-5">
-          <h2>Gestión de Productos</h2>
+        <main class="col-md-9 col-lg-10">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Gestión de Inventario</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <button class="btn btn-success mr-2" onclick="openAddModal()">
+                        <i class="fa fa-plus"></i> Nuevo Producto
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="loadProducts()">
+                        <i class="fa fa-sync"></i>
+                    </button>
+                </div>
+            </div>
 
-          <div class="mb-3">
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductModal">
-              <i class="fa fa-plus"></i> Añadir Producto
-            </button>
-          </div>
+            <div class="filter-bar row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        <input type="text" id="filterSearch" class="form-control" placeholder="Buscar por nombre o ID..." onkeyup="filterTable()">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <select id="filterCategory" class="form-control" onchange="filterTable()">
+                        <option value="">Todas las Categorías</option>
+                        <option value="Perros">Perros</option>
+                        <option value="Gatos">Gatos</option>
+                        <option value="Peces">Peces</option>
+                        <option value="Aves">Aves</option>
+                        <option value="Accesorios">Accesorios</option>
+                        <option value="Alimento">Alimento</option>
+                    </select>
+                </div>
+            </div>
 
-          <table class="table table-bordered align-middle">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Precio ($)</th>
-                <th>Categoría</th>
-                <th>Descripción</th>
-                <th>Stock</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="productsTableBody">
-              <tr>
-                <td>1</td>
-                <td>Collar para perro</td>
-                <td>150.00</td>
-                <td>A</td>
-                <td>Collar resistente y cómodo para perros.</td>
-                <td>10</td>
-                <td>
-                  <button class="btn btn-warning btn-sm btn-edit"><i class="fa fa-edit"></i> Editar</button>
-                  <button class="btn btn-danger btn-sm btn-delete"><i class="fa fa-trash"></i> Eliminar</button>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Comida para gato</td>
-                <td>80.00</td>
-                <td>B</td>
-                <td>Alimento balanceado para gatos adultos.</td>
-                <td>20</td>
-                <td>
-                  <button class="btn btn-warning btn-sm btn-edit"><i class="fa fa-edit"></i> Editar</button>
-                  <button class="btn btn-danger btn-sm btn-delete"><i class="fa fa-trash"></i> Eliminar</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </main>
+            <div class="card shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Vista</th>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Categoría</th>
+                                <th>Stock</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
     </div>
-  </div>
+</div>
 
-  <!-- Modal Añadir Producto -->
-  <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+<div class="modal fade" id="productModal" role="dialog">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <form id="formAddProduct">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addProductModalLabel">Añadir Producto</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="productName" class="form-label">Nombre</label>
-              <input type="text" class="form-control" id="productName" required placeholder="Ejemplo: Juguete para perro" />
-            </div>
-            <div class="mb-3">
-              <label for="productPrice" class="form-label">Precio</label>
-              <input type="number" step="0.01" class="form-control" id="productPrice" required placeholder="Ejemplo: 99.99" />
-            </div>
-            <div class="mb-3">
-              <label for="productCategory" class="form-label">Categoría</label>
-              <select class="form-select" id="productCategory" required>
-                <option value="" disabled selected>Selecciona categoría</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="productDescription" class="form-label">Descripción</label>
-              <textarea class="form-control" id="productDescription" rows="3" required placeholder="Ejemplo: Juguete de caucho para perros pequeños"></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="productStock" class="form-label">Stock</label>
-              <input type="number" class="form-control" id="productStock" min="0" required placeholder="Ejemplo: 15" />
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Guardar</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          </div>
-        </form>
-      </div>
+        <div class="modal-content">
+            <form id="productForm">
+                <div class="modal-header bg-primary text-white">
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="modalTitle">Producto</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="productId">
+                    <div class="form-group">
+                        <label>Nombre del Producto</label>
+                        <input type="text" class="form-control" id="productName" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 form-group">
+                            <label>Precio ($)</label>
+                            <input type="number" step="0.01" class="form-control" id="productPrice" required>
+                        </div>
+                        <div class="col-xs-6 form-group">
+                            <label>Stock Actual</label>
+                            <input type="number" class="form-control" id="productStock" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select class="form-control" id="productCategory" required>
+                            <option value="Perros">Perros</option>
+                            <option value="Gatos">Gatos</option>
+                            <option value="Peces">Peces</option>
+                            <option value="Roedores">Roedores</option>
+                            <option value="Aves">Aves</option>
+                            <option value="Accesorios">Accesorios</option>
+                            <option value="Alimento">Alimento</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ruta de Imagen</label>
+                        <input type="text" class="form-control" id="productImage" placeholder="img/productos/ejemplo.png">
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción Corta</label>
+                        <textarea class="form-control" id="productDescription" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link text-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
+</div>
 
-  <script src="../js/bootstrap.bundle.min.js"></script>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
 
-  <script>
-    // Manejo simple añadir producto
-    const formAddProduct = document.getElementById('formAddProduct');
-    const productsTableBody = document.getElementById('productsTableBody');
+<script>
+    const API_URL = '../api/products.php';
+    let productosCargados = [];
+    let isEditing = false;
 
-    formAddProduct.addEventListener('submit', e => {
-      e.preventDefault();
-
-      const name = document.getElementById('productName').value.trim();
-      const price = parseFloat(document.getElementById('productPrice').value);
-      const category = document.getElementById('productCategory').value;
-      const description = document.getElementById('productDescription').value.trim();
-      const stock = parseInt(document.getElementById('productStock').value);
-
-      if (!name || isNaN(price) || !category || !description || isNaN(stock)) {
-        alert('Completa todos los campos correctamente');
-        return;
-      }
-
-      let maxId = 0;
-      [...productsTableBody.children].forEach(tr => {
-        const id = parseInt(tr.children[0].textContent);
-        if (id > maxId) maxId = id;
-      });
-      const newId = maxId + 1;
-
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${newId}</td>
-        <td>${name}</td>
-        <td>${price.toFixed(2)}</td>
-        <td>${category}</td>
-        <td>${description}</td>
-        <td>${stock}</td>
-        <td>
-          <button class="btn btn-warning btn-sm btn-edit"><i class="fa fa-edit"></i> Editar</button>
-          <button class="btn btn-danger btn-sm btn-delete"><i class="fa fa-trash"></i> Eliminar</button>
-        </td>
-      `;
-
-      productsTableBody.appendChild(tr);
-      formAddProduct.reset();
-
-      tr.querySelector('.btn-delete').addEventListener('click', () => {
-        if (confirm('¿Eliminar este producto?')) {
-          tr.remove();
-        }
-      });
+    $(document).ready(function() {
+        loadProducts();
     });
 
-    document.querySelectorAll('.btn-delete').forEach(btn => {
-      btn.addEventListener('click', e => {
-        if (confirm('¿Eliminar este producto?')) {
-          e.target.closest('tr').remove();
-        }
-      });
+    function loadProducts() {
+        const $tbody = $('#productsTableBody');
+        $tbody.html('<tr><td colspan="7" class="text-center py-5"><i class="fa fa-spinner fa-spin"></i> Cargando inventario...</td></tr>');
+
+        $.getJSON(API_URL, function(data) {
+            productosCargados = data;
+            renderTable(data);
+        });
+    }
+
+    function renderTable(data) {
+        const $tbody = $('#productsTableBody');
+        $tbody.empty();
+        
+        data.forEach(p => {
+            const stockVal = parseInt(p.stock);
+            let badgeClass = stockVal === 0 ? 'label-danger' : (stockVal < 5 ? 'label-warning' : 'label-success');
+
+            const row = `<tr>
+                <td><strong>#${p.id}</strong></td>
+                <td><img src="../${p.imagen || 'img/logo6.png'}" class="img-thumbnail" style="width:45px; height:45px;" onerror="this.src='../img/logo6.png'"></td>
+                <td>${p.nombre}</td>
+                <td><span class="text-dark font-weight-bold">$${parseFloat(p.precio).toFixed(2)}</span></td>
+                <td><span class="label label-info">${p.categoria}</span></td>
+                <td><span class="label ${badgeClass}">${p.stock} unid.</span></td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-outline-primary" onclick="openEditModal(${p.id})"><i class="fa fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteProduct(${p.id})"><i class="fa fa-trash-alt"></i></button>
+                </td>
+            </tr>`;
+            $tbody.append(row);
+        });
+    }
+
+    // FILTROS EN TIEMPO REAL
+    function filterTable() {
+        const search = $('#filterSearch').val().toLowerCase();
+        const category = $('#filterCategory').val();
+
+        const filtered = productosCargados.filter(p => {
+            const matchesSearch = p.nombre.toLowerCase().includes(search) || p.id.toString().includes(search);
+            const matchesCategory = category === "" || p.categoria === category;
+            return matchesSearch && matchesCategory;
+        });
+        renderTable(filtered);
+    }
+
+    function openAddModal() {
+        isEditing = false;
+        $('#productForm')[0].reset();
+        $('#productId').val('');
+        $('#modalTitle').text('Agregar Nuevo Producto');
+        $('#productModal').modal('show');
+    }
+
+    function openEditModal(id) {
+        isEditing = true;
+        const p = productosCargados.find(item => parseInt(item.id) === id);
+        if(!p) return;
+        $('#productId').val(p.id);
+        $('#productName').val(p.nombre);
+        $('#productPrice').val(p.precio);
+        $('#productStock').val(p.stock);
+        $('#productCategory').val(p.categoria);
+        $('#productImage').val(p.imagen);
+        $('#productDescription').val(p.descripcion);
+        $('#modalTitle').text('Editando Producto #' + p.id);
+        $('#productModal').modal('show');
+    }
+
+    $('#productForm').on('submit', function(e) {
+        e.preventDefault();
+        const data = {
+            id: $('#productId').val(),
+            nombre: $('#productName').val(),
+            precio: $('#productPrice').val(),
+            stock: $('#productStock').val(),
+            categoria: $('#productCategory').val(),
+            imagen: $('#productImage').val(),
+            descripcion: $('#productDescription').val()
+        };
+
+        $.ajax({
+            url: API_URL,
+            type: isEditing ? 'PUT' : 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(res) {
+                if(res.status === 'success') {
+                    $('#productModal').modal('hide');
+                    loadProducts();
+                }
+            }
+        });
     });
-  </script>
+
+    function deleteProduct(id) {
+        if(!confirm('¿Estás seguro de eliminar este producto del inventario?')) return;
+        $.ajax({
+            url: API_URL,
+            type: 'DELETE',
+            data: JSON.stringify({ id: id }),
+            success: () => loadProducts()
+        });
+    }
+</script>
+
 </body>
-
 </html>

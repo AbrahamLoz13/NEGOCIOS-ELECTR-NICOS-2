@@ -4,389 +4,289 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pet Palace | Todo para tus Mascotas</title>
+    <title>Pet Palace | Mi Perfil</title>
 
-    <!-- Custom stlylesheet -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <!-- Slick -->
     <link rel="stylesheet" href="css/slick.css">
     <link rel="stylesheet" href="css/slick-theme.css">
-    <!-- Google font -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <!-- nouislider -->
     <link rel="stylesheet" href="css/nouislider.min.css">
-    <!-- Font Awesome Icon -->
     <link rel="stylesheet" href="css/font-awesome.min.css">
 
+    <style>
+        /* BARRA DE BÚSQUEDA FIJA (STICKY) */
+        .sticky-header {
+            position: fixed !important;
+            top: 0;
+            width: 100%;
+            z-index: 9999;
+            background: #15161D !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* Estilos Perfil */
+        .main-body { padding: 15px; }
+        .card { box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06); position: relative; display: flex; flex-direction: column; min-width: 0; word-wrap: break-word; background-color: #fff; background-clip: border-box; border: 0 solid rgba(0,0,0,.125); border-radius: .25rem; margin-bottom: 1rem; }
+        .card-body { flex: 1 1 auto; min-height: 1px; padding: 1rem; }
+        .gutters-sm { margin-right: -8px; margin-left: -8px; }
+        .gutters-sm>.col, .gutters-sm>[class*=col-] { padding-right: 8px; padding-left: 8px; }
+        .mb-3, .my-3 { margin-bottom: 1rem!important; }
+        .bg-gray-300 { background-color: #e2e8f0; }
+        .h-100 { height: 100%!important; }
+        .shadow-none { box-shadow: none!important; }
+
+        .btn-logout { background-color: #D10024; color: white; border: none; padding: 5px 15px; border-radius: 4px; font-weight: bold; margin-top: 10px; }
+        
+        /* Botón Admin Panel */
+        #admin-panel-btn { display: none; margin-bottom: 10px; width: 100%; font-weight: bold; }
+
+        /* Inputs de edición */
+        .edit-input { display: none; margin-bottom: 5px; }
+
+        .social-floating a { display: flex !important; align-items: center !important; justify-content: center !important; }
+    </style>
 </head>
 
 <body>
 
-    <!-- /HEADER -->
     <header>
-        <!-- TOP HEADER -->
         <div id="top-header">
             <div class="container">
                 <ul class="header-links pull-left">
                     <li><a><i class="fa fa-phone"></i> +52 449 928 9336</a></li>
-                    <li><a href="https://mail.google.com/"><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a>
-                    </li>
-                    <li><a href="maps.google.com"><i class="fa fa-map-marker"></i> Av. Adolfo López Mateos </a></li>
+                    <li><a href="https://mail.google.com/"><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a></li>
+                    <li><a href="#"><i class="fa fa-map-marker"></i> Av. Adolfo López Mateos </a></li>
                 </ul>
                 <ul class="header-links pull-right">
-                    <li><a><i class="fa fa-dollar"></i> MXN</a></li>
-                    <li><a href="userprofile.html"><i class="fa fa-user-o"></i> My Account</a></li>
+                    <li id="auth-container">
+                        <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1;"><i class="fa fa-user"></i> Mi Cuenta</a>
+                    </li>
                 </ul>
             </div>
         </div>
-        <!-- /TOP HEADER -->
 
-        <!-- MAIN HEADER -->
         <div id="header">
-            <!-- container -->
             <div class="container">
-                <!-- row -->
                 <div class="row">
-                    <!-- LOGO -->
                     <div class="col-md-3">
                         <div class="header-logo">
                             <a href="index.html" class="logo">
-                                <img src="img/logo6.png" alt="">
+                                <img src="img/logo6.png" alt="Pet Palace">
                             </a>
                         </div>
                     </div>
-                    <!-- /LOGO -->
 
-                    <!-- SEARCH BAR -->
                     <div class="col-md-6">
                         <div class="header-search">
-                            <form>
-                                <select class="input-select">
-                                    <option value="0">Category</option>
-                                    <option value="1">Accessories</option>
-                                    <option value="1">Clothes</option>
-                                    <option value="1">Health & Care</option>
-                                    <option value="1">Home</option>
-                                    <option value="1">Transport</option>
+                            <form action="general.html" method="GET">
+                                <select class="input-select" name="categoria">
+                                    <option value="0">Categorías</option>
+                                    <option value="Perros">Perros</option>
+                                    <option value="Gatos">Gatos</option>
                                 </select>
-                                <input class="input" placeholder="Search here">
-                                <button class="search-btn">Search</button>
+                                <input class="input" name="q" placeholder="Buscar productos...">
+                                <button class="search-btn">Buscar</button>
                             </form>
                         </div>
                     </div>
-                    <!-- /SEARCH BAR -->
 
-                    <!-- ACCOUNT -->
                     <div class="col-md-3 clearfix">
                         <div class="header-ctn">
-                            <!-- Wishlist -->
-                            <div>
-                                <a href="wishlist.html">
-                                    <i class="fa fa-heart-o"></i>
-                                    <span>Wishlist</span>
-                                    <div class="qty wishlist-qty">0</div>
-                                </a>
-                            </div>
-                            <!-- /Wishlist -->
-
-                            <!-- Cart -->
+                            <div><a href="wishlist.html"><i class="fa fa-heart-o"></i><span>Favoritos</span></a></div>
                             <div class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                                    <i class="fa fa-shopping-cart"></i>
-                                    <span>Your Cart</span>
-                                    <div class="qty cart-qty">0</div> <!-- CAMBIO: clase única -->
+                                    <i class="fa fa-shopping-cart"></i><span>Tu Carrito</span>
+                                    <div class="qty cart-qty">0</div>
                                 </a>
                                 <div class="cart-dropdown">
-                                    <div class="cart-list">
-                                        <!-- Los productos se agregarán aquí con JavaScript -->
-                                    </div>
+                                    <div class="cart-list" id="cart-dropdown-list"></div>
                                     <div class="cart-summary">
-                                        <small>0 Item(s) selected</small>
+                                        <small>Items seleccionados</small>
                                         <h5>SUBTOTAL: $0.00</h5>
                                     </div>
                                     <div class="cart-btns">
-                                        <a href="#">View Cart</a>
-                                        <a href="checkout.html">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+                                        <a href="checkout.html" style="background-color: #D10024; color:white; width:100%">Pagar</a>
                                     </div>
                                 </div>
                             </div>
-                            <!-- /Cart -->
-
-                            <!-- Menu Toogle -->
-                            <div class="menu-toggle">
-                                <a href="#">
-                                    <i class="fa fa-bars"></i>
-                                    <span>Menu</span>
-                                </a>
-                            </div>
-                            <!-- /Menu Toogle -->
+                            <div class="menu-toggle"><a href="#"><i class="fa fa-bars"></i><span>Menú</span></a></div>
                         </div>
                     </div>
-                    <!-- /ACCOUNT -->
                 </div>
-                <!-- row -->
             </div>
-            <!-- container -->
         </div>
-        <!-- /MAIN HEADER -->
     </header>
-    <!-- /HEADER -->
 
-    <!-- Barra de Search Fija -->
-    <div class="sticky-space"></div>
+    <nav id="navigation">
+        <div class="container">
+            <div id="responsive-nav">
+                <ul class="main-nav nav navbar-nav">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="general.html">General</a></li>
+                    <li><a href="offers.html">Ofertas</a></li>
+                    <li><a href="dogs.html">Perros</a></li>
+                    <li><a href="cats.html">Gatos</a></li>
+                    <li><a href="rodents.html">Roedores</a></li>
+                    <li><a href="fishes.html">Peces</a></li>
+                    <li><a href="birds.html">Aves</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="breadcrumb" class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="breadcrumb-tree">
+                        <li><a href="index.html">Inicio</a></li>
+                        <li class="active">Mi Perfil</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <div class="main-body">
-
             <div class="row gutters-sm">
                 <div class="col-md-4 mb-3">
                     <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex flex-column align-items-center text-center">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
-                                    class="rounded-circle" width="150">
-                                <div class="mt-3">
-                                    <h4>Fenix Díaz</h4>
-                                    <p class="text-muted font-size-sm">Aguascalientes, Aguascalientes, Mx.</p>
-                                </div>
+                        <div class="card-body text-center">
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Usuario" class="rounded-circle" width="150">
+                            <div class="mt-3">
+                                <h4 id="profile-name-header">Cargando...</h4>
+                                <p class="text-muted font-size-sm" id="profile-role">Cargando datos...</p>
+                                <a id="admin-panel-btn" href="admin/admin-panel.html" class="btn btn-primary">Panel de Control Admin</a>
+                                <button class="btn-logout" onclick="cerrarSesion()"><i class="fa fa-sign-out"></i> Cerrar Sesión</button>
                             </div>
                         </div>
                     </div>
-
                 </div>
+
                 <div class="col-md-8">
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-sm-3">
-                                    <h6 class="mb-0">Full Name</h6>
-                                </div>
+                                <div class="col-sm-3"><h6 class="mb-0">Nombre de Usuario</h6></div>
                                 <div class="col-sm-9 text-secondary">
-                                    Fenix Díaz
+                                    <span id="profile-full-name-view">---</span>
+                                    <input type="text" id="profile-full-name-edit" class="form-control edit-input">
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-sm-3">
-                                    <h6 class="mb-0">Email</h6>
-                                </div>
+                                <div class="col-sm-3"><h6 class="mb-0">Email</h6></div>
                                 <div class="col-sm-9 text-secondary">
-                                    fenixdiaz@gmail.com
+                                    <span id="profile-email-view">---</span>
+                                    <input type="email" id="profile-email-edit" class="form-control edit-input">
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-sm-3">
-                                    <h6 class="mb-0">Phone</h6>
-                                </div>
+                                <div class="col-sm-3"><h6 class="mb-0">Rol de Cuenta</h6></div>
                                 <div class="col-sm-9 text-secondary">
-                                    (449) 125-4466
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <h6 class="mb-0">Mobile</h6>
-                                </div>
-                                <div class="col-sm-9 text-secondary">
-                                    (449) 251-5432
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <h6 class="mb-0">Address</h6>
-                                </div>
-                                <div class="col-sm-9 text-secondary">
-                                    Aguascalientes, Aguascalientes, Mx.
-                                </div>
+                                    <span id="profile-account-type">---</span>
+                                    </div>
                             </div>
                             <hr>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <a class="btn btn-info" href="editperfil.html">Edit</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row gutters-sm">
-                        <div class="col-sm-6 mb-3">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h6 class="card-title">Reviews</h6>
-                                    <div class="progress-wrapper">
-                                        <p><strong>Product 1:</strong> Excellent quality. 5 stars. </p>
-                                        <p><strong>Product 2:</strong> Good service, although shipping took a while. 4
-                                            stars.</p>
-                                        <p><strong>Producto 3:</strong> Average quality, but good price. 3 stars.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 mb-3">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h6 class="card-title">Recent Orders</h6>
-                                    <div class="progress-wrapper">
-                                        <p><strong>Order #12345:</strong> 2 x Product A - MXN $980.00</p>
-                                        <p><strong>Order #12346:</strong> 1 x Product B - MXN $580.00</p>
-                                        <p><strong>Order #12347:</strong> 3 x Product C - MXN $1200.00</p>
-                                    </div>
+                                    <button id="btn-edit" class="btn btn-info" onclick="habilitarEdicion()">Editar Perfil</button>
+                                    <button id="btn-save" class="btn btn-success" style="display:none;" onclick="guardarCambios()">Guardar Cambios</button>
+                                    <button id="btn-cancel" class="btn btn-secondary" style="display:none;" onclick="cancelarEdicion()">Cancelar</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <!-- FOOTER -->
     <footer id="footer">
-        <!-- top footer -->
-        <div class="section">
-            <div class="container">
-                <div class="row">
-                    <!-- About Us -->
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Sobre Nosotros</h3>
-                            <p>PetPalace es una tienda en línea para productos de mascotas, con directorio de
-                                veterinarios y estilistas para tus compañeros peludos.</p>
-                            <ul class="footer-links">
-                                <li><a href="#"><i class="fa fa-map-marker"></i> ITA, Aguascalientes, México</a></li>
-                                <li><a href="#"><i class="fa fa-phone"></i> +52 449 928 9336</a></li>
-                                <li><a href="#"><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Categorías -->
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Categorías</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">Accesorios</a></li>
-                                <li><a href="#">Ropa</a></li>
-                                <li><a href="#">Salud y Cuidado</a></li>
-                                <li><a href="#">Transporte</a></li>
-                                <li><a href="#">Hogar</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="clearfix visible-xs"></div>
-
-                    <!-- Información -->
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Información</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">Nosotros</a></li>
-                                <li><a href="#">Contacto</a></li>
-                                <li><a href="#">Política de Privacidad</a></li>
-                                <li><a href="#">Términos y Condiciones</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Servicios -->
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Servicio</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">Mi Cuenta</a></li>
-                                <li><a href="#">Carrito</a></li>
-                                <li><a href="#">Wishlist</a></li>
-                                <li><a href="#">Ayuda</a></li>
-                                <li><a href="https://maps.app.goo.gl/k5ZtDzjFcVZyq3sV6" target="_blank">
-                                        <i class="fas fa-map-marked-alt"></i> Ubicación</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- bottom footer -->
         <div id="bottom-footer" class="section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        <!-- Iconos de métodos de pago -->
-                        <ul class="footer-payments">
-                            <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
-                            <li><a href="#"><i class="fa fa-credit-card"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
-                        </ul>
-                        <span class="copyright">
-                            &copy;
-                            <script>document.write(new Date().getFullYear());</script> Todos los derechos reservados |
-                            Hecho <i class="fa fa-heart-o" aria-hidden="true"></i> por
-                            <a href="https://aguascalientes.tecnm.mx/" target="_blank">TecNM</a>
-                        </span>
-                    </div>
-                </div>
+            <div class="container text-center">
+                <span class="copyright">© 2026 Pet Palace | Gestión de Perfil</span>
             </div>
         </div>
     </footer>
-    <!-- FOOTER -->
 
-    <!-- Redes sociales y soporte -->
-    <div class="social-floating">
-        <!-- Carrito -->
-        <a href="checkout.html" class="floating-cart" title="Ver carrito">
-            <i class="fa fa-shopping-cart"></i>
-            <span class="cart-count">2</span>
-        </a>
-
-        <!-- Facebook -->
-        <a href="https://www.facebook.com/profile.php?id=61578271885148
-" class="facebook" target="_blank" title="Facebook">
-            <i class="fa fa-facebook"></i>
-        </a>
-
-        <!-- WhatsApp -->
-        <a href="https://wa.me/524499289336" class="whatsapp" target="_blank" title="WhatsApp">
-            <i class="fa fa-whatsapp"></i>
-        </a>
-
-        <!-- Instagram -->
-        <a href="https://www.instagram.com/" class="instagram" target="_blank" title="Instagram">
-            <i class="fa fa-instagram"></i>
-        </a>
-
-        <!-- Maps -->
-        <a href="https://maps.google.com" class="maps" target="_blank" title="Ubicación">
-            <i class="fa fa-map-marker"></i>
-        </a>
-
-        <!-- Chat Soporte -->
-        <a href="https://wa.me/524499289336?text=Hola,%20necesito%20ayuda%20con%20una%20compra" class="floating-chat"
-            target="_blank" title="¿Necesitas ayuda?">
-            <i class="fa fa-comments"></i>
-        </a>
-    </div>
-
-    <!-- Script de acciones -->
-     <script src="js/registroformulario.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/slick.min.js"></script>
-    <script src="js/nouislider.min.js"></script>
-    <script src="js/jquery.zoom.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/cart-handler.js"></script>
 
+    <script>
+        $(document).ready(function() {
+            cargarDatosUsuario();
+        });
+
+        function cargarDatosUsuario() {
+            const userData = JSON.parse(localStorage.getItem('currentUser'));
+
+            if (!userData) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Llenar textos
+            $('#profile-name-header').text(userData.nombre);
+            $('#profile-full-name-view').text(userData.nombre);
+            $('#profile-email-view').text(userData.correo || "No registrado");
+            $('#profile-account-type').text(userData.rol.toUpperCase());
+            $('#profile-role').text("Estatus: " + userData.rol);
+
+            // Actualizar header superior (Solo nombre e icono)
+            $('#auth-container').html(`
+                <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1;">
+                    <i class="fa fa-user"></i> ${userData.nombre}
+                </a>
+            `);
+
+            // Mostrar botón de admin si el rol es 'admin'
+            if (userData.rol === 'admin') {
+                $('#admin-panel-btn').show();
+            }
+        }
+
+        function habilitarEdicion() {
+            const userData = JSON.parse(localStorage.getItem('currentUser'));
+            $('#profile-full-name-view, #profile-email-view').hide();
+            $('#profile-full-name-edit').val(userData.nombre).show();
+            $('#profile-email-edit').val(userData.correo).show();
+            $('#btn-edit').hide();
+            $('#btn-save, #btn-cancel').show();
+        }
+
+        function cancelarEdicion() {
+            $('.edit-input').hide();
+            $('#profile-full-name-view, #profile-email-view').show();
+            $('#btn-edit').show();
+            $('#btn-save, #btn-cancel').hide();
+        }
+
+        function guardarCambios() {
+            let userData = JSON.parse(localStorage.getItem('currentUser'));
+            userData.nombre = $('#profile-full-name-edit').val();
+            userData.correo = $('#profile-email-edit').val();
+
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            alert("Perfil actualizado.");
+            cancelarEdicion();
+            cargarDatosUsuario();
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem('currentUser');
+            window.location.href = "index.html";
+        }
+    </script>
 </body>
-
 </html>

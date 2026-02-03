@@ -2,146 +2,309 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gestión de Clientes - Panel de Administración</title>
-  <link rel="stylesheet" href="../css/bootstrap.min.css" />
-  <link rel="stylesheet" href="../css/font-awesome.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Usuarios | Pet Palace Admin</title>
+    
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <style>
+        /* CONFIGURACIÓN DEFINITIVA */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            background-color: #f4f7f6;
+        }
+
+        /* SIDEBAR FIJA (EL ORIGEN) */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 20px 0 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            background-color: #15161D !important;
+        }
+
+        .nav-stacked li a {
+            color: #8D99AE;
+            font-weight: 500;
+            padding: 12px 20px;
+            transition: 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .nav-stacked li a:hover, .nav-stacked li.active a {
+            color: #4ea3f1 !important;
+            background-color: #1e1f29 !important;
+            border-left: 3px solid #4ea3f1;
+        }
+
+        /* AJUSTE DE CONTENIDO PARA SIDEBAR FIJA */
+        main {
+            margin-left: 16.666667%; /* Compensa col-md-2 */
+            padding: 20px;
+        }
+
+        /* BARRA DE FILTROS DEFINITIVA */
+        .filter-bar {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .table thead th {
+            background-color: #1e1f29;
+            color: #fff;
+            border: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 15px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: white;
+        }
+
+        .badge-status {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .btn-success { background-color: #28a745; border: none; color: white; }
+        .btn-primary { background-color: #4ea3f1; border: none; color: white; }
+
+        html { scroll-behavior: smooth; }
+    </style>
 </head>
 
 <body>
-  <div class="container-fluid">
+
+<div class="container-fluid">
     <div class="row">
-      <!-- Sidebar -->
-      <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
-        <div class="position-sticky">
-          <div class="text-center py-4">
-            <img src="../img/logo6.png" alt="Logo Pet Palace" class="mb-3" style="width: 80px;" />
-            <h4 class="text-white">Administrador</h4>
-          </div>
-          <ul class="nav flex-column">
-            <li class="nav-item">
-              <a class="nav-link text-white" href="admin-panel.html">
-                <i class="fa fa-tachometer"></i> Dashboard
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white active" href="clients.html">
-                <i class="fa fa-users"></i> Usuarios
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="products.html">
-                <i class="fa fa-paw"></i> Inventario
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="orders.html">
-                <i class="fa fa-shopping-cart"></i> Pedidos
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="statistics.html">
-                <i class="fa fa-bar-chart"></i> Reportes
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="logs.html">
-                <i class="fa fa-cog"></i> Bitácoras de Movimientos
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="login.html">
-                <i class="fa fa-sign-out"></i> Cerrar Sesión
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block">
+            <div class="text-center py-4">
+                <img src="../img/logo6.png" alt="Logo" class="mb-3" style="width: 70px;" />
+                <h5 class="text-white">Admin Panel</h5>
+                <p class="text-muted small">Pet Palace v2.0</p>
+            </div>
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="admin-panel.html"><i class="fa fa-tachometer-alt"></i> Dashboard</a></li>
+                <li class="active"><a href="clients.html"><i class="fa fa-users"></i> Usuarios</a></li>
+                <li><a href="products.html"><i class="fa fa-boxes"></i> Inventario</a></li>
+                <li><a href="orders.html"><i class="fa fa-shopping-cart"></i> Pedidos</a></li>
+                <hr style="border-color: #2c2e3e; margin: 10px 20px;">
+                <li><a href="../index.html"><i class="fa fa-eye"></i> Ver Tienda</a></li>
+                <li><a href="#" onclick="cerrarSesion()" class="text-danger"><i class="fa fa-sign-out-alt"></i> Salir</a></li>
+            </ul>
+        </nav>
 
-      <!-- Main Content -->
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <div class="container mt-5">
-          <h2>Gestión de Clientes</h2>
+        <main class="col-md-9 col-lg-10">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2" style="margin-top: 0;">Gestión de Clientes</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <button class="btn btn-success" data-toggle="modal" data-target="#addClientModal">
+                        <i class="fa fa-user-plus"></i> Nuevo Cliente
+                    </button>
+                </div>
+            </div>
 
-          <div class="mb-3">
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addClientModal">
-              <i class="fa fa-plus"></i> Añadir Cliente
-            </button>
-          </div>
+            <div class="filter-bar row">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        <input type="text" id="filterSearch" class="form-control" placeholder="Buscar cliente por nombre, ID o email..." onkeyup="filterClients()">
+                    </div>
+                </div>
+            </div>
 
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Teléfono</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Clientes hardcodeados para ejemplo -->
-              <tr>
-                <td>1</td>
-                <td>Juan Pérez</td>
-                <td>juan.perez@example.com</td>
-                <td>555-1234</td>
-                <td>
-                  <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Suspender</button>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>María López</td>
-                <td>maria.lopez@example.com</td>
-                <td>555-5678</td>
-                <td>
-                  <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Suspender</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </main>
+            <div class="card overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente / Email</th>
+                                <th>Teléfono</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTableBody">
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <i class="fa fa-spinner fa-spin fa-2x text-primary"></i>
+                                    <p class="mt-2 text-muted">Cargando base de datos...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
     </div>
-  </div>
+</div>
 
-  <!-- Modal Añadir Cliente -->
-  <div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
+<div class="modal fade" id="addClientModal" role="dialog">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <form id="formAddClient">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addClientModalLabel">Añadir Cliente</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="clientName" class="form-label">Nombre</label>
-              <input type="text" class="form-control" id="clientName" required />
-            </div>
-            <div class="mb-3">
-              <label for="clientEmail" class="form-label">Email</label>
-              <input type="email" class="form-control" id="clientEmail" required />
-            </div>
-            <div class="mb-3">
-              <label for="clientPhone" class="form-label">Teléfono</label>
-              <input type="text" class="form-control" id="clientPhone" required />
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Guardar</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          </div>
-        </form>
-      </div>
+        <div class="modal-content">
+            <form id="formAddClient">
+                <div class="modal-header bg-primary text-white">
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Registrar Nuevo Cliente</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="fw-bold">Nombre Completo</label>
+                        <input type="text" class="form-control" id="clientName" required placeholder="Ej: Juan Pérez" />
+                    </div>
+                    <div class="form-group">
+                        <label class="fw-bold">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="clientEmail" required placeholder="ejemplo@gmail.com" />
+                    </div>
+                    <div class="form-group">
+                        <label class="fw-bold">Teléfono</label>
+                        <input type="text" class="form-control" id="clientPhone" placeholder="Opcional" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link text-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
+</div>
 
-  <script src="../js/bootstrap.bundle.min.js"></script>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
 
+<script>
+    let clientesCargados = [];
+
+    $(document).ready(function() {
+        cargarClientes();
+    });
+
+    async function cargarClientes() {
+        const $tbody = $('#clientsTableBody');
+        try {
+            const res = await fetch('../api/clients.php');
+            clientesCargados = await res.json();
+            renderTable(clientesCargados);
+        } catch (e) {
+            $tbody.html('<tr><td colspan="5" class="text-center text-danger py-4">Error al conectar con el servidor.</td></tr>');
+        }
+    }
+
+    function renderTable(data) {
+        const $tbody = $('#clientsTableBody');
+        $tbody.empty();
+        
+        if (data.length === 0) {
+            $tbody.html('<tr><td colspan="5" class="text-center p-4 text-muted">No se encontraron registros.</td></tr>');
+            return;
+        }
+
+        data.forEach(c => {
+            const isSuspended = c.estado === 'suspendido';
+            const badgeClass = isSuspended ? 'label-danger' : 'label-success';
+            const statusText = isSuspended ? 'Suspendido' : 'Activo';
+
+            const actionBtn = isSuspended
+                ? `<button class="btn btn-xs btn-success mx-1" onclick="cambiarEstado(${c.id}, 'activo')"><i class="fa fa-check"></i> Activar</button>`
+                : `<button class="btn btn-xs btn-warning mx-1" onclick="cambiarEstado(${c.id}, 'suspendido')"><i class="fa fa-ban"></i> Suspender</button>`;
+
+            const row = `
+                <tr>
+                    <td><strong>#${c.id}</strong></td>
+                    <td>
+                        <div class="fw-bold text-dark" style="font-weight:700;">${c.nombre}</div>
+                        <small class="text-muted">${c.correo}</small>
+                    </td>
+                    <td>${c.telefono || '<span class="text-muted">N/A</span>'}</td>
+                    <td class="text-center">
+                        <span class="label ${badgeClass} badge-status">${statusText}</span>
+                    </td>
+                    <td class="text-center">
+                        ${actionBtn}
+                        <button class="btn btn-xs btn-danger mx-1" onclick="eliminar(${c.id})">
+                            <i class="fa fa-trash-alt"></i> Eliminar
+                        </button>
+                    </td>
+                </tr>`;
+            $tbody.append(row);
+        });
+    }
+
+    function filterClients() {
+        const search = $('#filterSearch').val().toLowerCase();
+        const filtered = clientesCargados.filter(c => 
+            c.nombre.toLowerCase().includes(search) || 
+            c.correo.toLowerCase().includes(search) || 
+            c.id.toString().includes(search)
+        );
+        renderTable(filtered);
+    }
+
+    async function cambiarEstado(id, nuevoEstado) {
+        if (!confirm(`¿Desea cambiar el estado del usuario #${id}?`)) return;
+        try {
+            const res = await fetch('../api/clients.php', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, estado: nuevoEstado })
+            });
+            const result = await res.json();
+            if (result.status === 'success') cargarClientes();
+        } catch (e) { alert("Error de conexión"); }
+    }
+
+    async function eliminar(id) {
+        if (!confirm("¿Eliminar usuario permanentemente?")) return;
+        try {
+            await fetch('../api/clients.php', {
+                method: 'DELETE',
+                body: JSON.stringify({ id: id })
+            });
+            cargarClientes();
+        } catch (e) { alert("Error al eliminar"); }
+    }
+
+    $('#formAddClient').on('submit', async function (e) {
+        e.preventDefault();
+        const data = {
+            nombre: $('#clientName').val(),
+            correo: $('#clientEmail').val(),
+            telefono: $('#clientPhone').val()
+        };
+        await fetch('../api/clients.php', { method: 'POST', body: JSON.stringify(data) });
+        $('#addClientModal').modal('hide');
+        this.reset();
+        cargarClientes();
+    });
+
+    function cerrarSesion() {
+        if (confirm("¿Desea cerrar la sesión administrativa?")) {
+            localStorage.removeItem('currentUser');
+            window.location.href = '../login.html';
+        }
+    }
+</script>
 </body>
 
 </html>

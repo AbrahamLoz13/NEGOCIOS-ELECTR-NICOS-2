@@ -4,880 +4,290 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pet Palace | Todo para tus Mascotas</title>
+    <title>Pet Palace | Todo para tus Gatos</title>
 
-    <!-- Custom stlylesheet -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <!-- Slick -->
     <link rel="stylesheet" href="css/slick.css">
     <link rel="stylesheet" href="css/slick-theme.css">
-    <!-- Google font -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <!-- nouislider -->
     <link rel="stylesheet" href="css/nouislider.min.css">
-    <!-- Font Awesome Icon -->
     <link rel="stylesheet" href="css/font-awesome.min.css">
-
-
-
 </head>
 
 <body>
 
-    <!-- /HEADER -->
     <header>
-        <!-- TOP HEADER -->
         <div id="top-header">
             <div class="container">
                 <ul class="header-links pull-left">
                     <li><a><i class="fa fa-phone"></i> +52 449 928 9336</a></li>
-                    <li><a href="https://mail.google.com/"><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a>
-                    </li>
-                    <li><a href="maps.google.com"><i class="fa fa-map-marker"></i> Av. Adolfo López Mateos </a></li>
+                    <li><a href="https://mail.google.com/"><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a></li>
+                    <li><a href="#"><i class="fa fa-map-marker"></i> Av. Adolfo López Mateos </a></li>
                 </ul>
                 <ul class="header-links pull-right">
                     <li><a><i class="fa fa-dollar"></i> MXN</a></li>
-                    <li><a href="userprofile.html"><i class="fa fa-user-o"></i> My Account</a></li>
+                    <li><a href="userprofile.html"><i class="fa fa-user-o"></i> Mi Cuenta</a></li>
                 </ul>
             </div>
         </div>
-        <!-- /TOP HEADER -->
-
-        <!-- MAIN HEADER -->
         <div id="header">
-            <!-- container -->
             <div class="container">
-                <!-- row -->
                 <div class="row">
-                    <!-- LOGO -->
                     <div class="col-md-3">
                         <div class="header-logo">
                             <a href="index.html" class="logo">
-                                <img src="img/logo6.png" alt="">
+                                <img src="img/logo6.png" alt="Pet Palace Logo">
                             </a>
                         </div>
                     </div>
-                    <!-- /LOGO -->
 
-                    <!-- SEARCH BAR -->
                     <div class="col-md-6">
                         <div class="header-search">
                             <form>
                                 <select class="input-select">
-                                    <option value="0">Category</option>
-                                    <option value="1">Accessories</option>
-                                    <option value="1">Clothes</option>
-                                    <option value="1">Health & Care</option>
-                                    <option value="1">Home</option>
-                                    <option value="1">Transport</option>
+                                    <option value="0">Categorías</option>
+                                    <option value="1">Accesorios</option>
+                                    <option value="1">Ropa</option>
+                                    <option value="1">Salud y Cuidado</option>
+                                    <option value="1">Hogar</option>
+                                    <option value="1">Transporte</option>
                                 </select>
-                                <input class="input" placeholder="Search here">
-                                <button class="search-btn">Search</button>
+                                <input class="input" placeholder="Buscar aquí...">
+                                <button class="search-btn">Buscar</button>
                             </form>
                         </div>
                     </div>
-                    <!-- /SEARCH BAR -->
 
-                    <!-- ACCOUNT -->
                     <div class="col-md-3 clearfix">
                         <div class="header-ctn">
-                            <!-- Wishlist -->
                             <div>
                                 <a href="wishlist.html">
                                     <i class="fa fa-heart-o"></i>
-                                    <span>Wishlist</span>
+                                    <span>Favoritos</span>
                                     <div class="qty wishlist-qty">0</div>
                                 </a>
                             </div>
-                            <!-- /Wishlist -->
 
-                            <!-- Cart -->
                             <div class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                                     <i class="fa fa-shopping-cart"></i>
-                                    <span>Your Cart</span>
-                                    <div class="qty cart-qty">0</div> <!-- CAMBIO: clase única -->
+                                    <span>Tu Carrito</span>
+                                    <div class="qty cart-qty" id="cart-count">0</div>
                                 </a>
                                 <div class="cart-dropdown">
-                                    <div class="cart-list">
-                                        <!-- Los productos se agregarán aquí con JavaScript -->
-                                    </div>
+                                    <div class="cart-list" id="cart-dropdown-list">
+                                        </div>
                                     <div class="cart-summary">
-                                        <small>0 Item(s) selected</small>
-                                        <h5>SUBTOTAL: $0.00</h5>
+                                        <small>Items seleccionados</small>
+                                        <h5 id="cart-summary-total">SUBTOTAL: $0.00</h5>
                                     </div>
                                     <div class="cart-btns">
-                                        <a href="#">View Cart</a>
-                                        <a href="checkout.html">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+                                        <a href="checkout.html">Ver Carrito</a>
+                                        <a href="checkout.html">Pagar <i class="fa fa-arrow-circle-right"></i></a>
                                     </div>
                                 </div>
                             </div>
-                            <!-- /Cart -->
 
-
-                            <!-- Menu Toogle -->
                             <div class="menu-toggle">
-                                <a href="#">
-                                    <i class="fa fa-bars"></i>
-                                    <span>Menu</span>
-                                </a>
+                                <a href="#"><i class="fa fa-bars"></i><span>Menú</span></a>
                             </div>
-                            <!-- /Menu Toogle -->
                         </div>
                     </div>
-                    <!-- /ACCOUNT -->
                 </div>
-                <!-- row -->
             </div>
-            <!-- container -->
         </div>
-        <!-- /MAIN HEADER -->
     </header>
-    <!-- /HEADER -->
 
-    <!-- Barra de Search Fija -->
     <div class="sticky-space"></div>
 
-    <!-- NAVIGATION -->
     <nav id="navigation">
-        <!-- container -->
         <div class="container">
-            <!-- responsive-nav -->
             <div id="responsive-nav">
-                <!-- NAV -->
                 <ul class="main-nav nav navbar-nav">
-                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html">Inicio</a></li>
                     <li><a href="general.html">General</a></li>
-                    <li><a href="offers.html">Offers</a></li>
-                    <li><a href="dogs.html">Dogs</a></li>
-                    <li class="active"><a href="cats.html">Cats</a></li>
-                    <li><a href="rodents.html">Rodents</a></li>
-                    <li><a href="fishes.html">Fishes</a></li>
-                    <li><a href="birds.html">Birds</a></li>
+                    <li><a href="offers.html">Ofertas</a></li>
+                    <li><a href="dogs.html">Perros</a></li>
+                    <li class="active"><a href="cats.html">Gatos</a></li>
+                    <li><a href="rodents.html">Roedores</a></li>
+                    <li><a href="fishes.html">Peces</a></li>
+                    <li><a href="birds.html">Aves</a></li>
                 </ul>
-                <!-- /NAV -->
             </div>
-            <!-- /responsive-nav -->
         </div>
-        <!-- /container -->
     </nav>
-    <!-- /NAVIGATION -->
 
-    <!-- BREADCRUMB -->
     <div id="breadcrumb" class="section">
-        <!-- container -->
         <div class="container">
-            <!-- row -->
             <div class="row">
                 <div class="col-md-12">
                     <ul class="breadcrumb-tree">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="general.html">Categories</a></li>
-                        <li><a href="#">Accessories</a></li>
-                        <li class="active">Toys (227,490 Results)</li>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="general.html">Categorías</a></li>
+                        <li class="active">Gatos</li>
                     </ul>
                 </div>
             </div>
-            <!-- /row -->
         </div>
-        <!-- /container -->
     </div>
-    <!-- /BREADCRUMB -->
 
-    <!-- SECTION -->
     <div class="section">
-        <!-- container -->
         <div class="container">
-            <!-- row -->
             <div class="row">
-                <!-- ASIDE -->
                 <div id="aside" class="col-md-3">
-                    <!-- aside Widget -->
                     <div class="aside">
-                        <h3 class="aside-title">Categories</h3>
+                        <h3 class="aside-title">Categorías</h3>
                         <div class="checkbox-filter">
-
-                            <div class="input-checkbox">
-                                <input type="checkbox" id="category-1">
-                                <label for="category-1">
-                                    <span></span>
-                                    Accessories
-                                    <small>(120)</small>
-                                </label>
-                            </div>
-
-                            <div class="input-checkbox">
-                                <input type="checkbox" id="category-2">
-                                <label for="category-2">
-                                    <span></span>
-                                    Food
-                                    <small>(740)</small>
-                                </label>
-                            </div>
-
-                            <div class="input-checkbox">
-                                <input type="checkbox" id="category-3">
-                                <label for="category-3">
-                                    <span></span>
-                                    Home
-                                    <small>(1450)</small>
-                                </label>
-                            </div>
-
-                            <div class="input-checkbox">
-                                <input type="checkbox" id="category-4">
-                                <label for="category-4">
-                                    <span></span>
-                                    Health & Care
-                                    <small>(578)</small>
-                                </label>
-                            </div>
-
-                            <div class="input-checkbox">
-                                <input type="checkbox" id="category-5">
-                                <label for="category-5">
-                                    <span></span>
-                                    Clothes
-                                    <small>(120)</small>
-                                </label>
-                            </div>
-
-                            <div class="input-checkbox">
-                                <input type="checkbox" id="category-4">
-                                <label for="category-4">
-                                    <span></span>
-                                    Transport
-                                    <small>(578)</small>
-                                </label>
-                            </div>
+                            <div class="input-checkbox"><input type="checkbox" id="cat-1"><label for="cat-1"><span></span>Accesorios</label></div>
+                            <div class="input-checkbox"><input type="checkbox" id="cat-2"><label for="cat-2"><span></span>Alimento</label></div>
+                            <div class="input-checkbox"><input type="checkbox" id="cat-3"><label for="cat-3"><span></span>Hogar</label></div>
                         </div>
                     </div>
-                    <!-- /aside Widget -->
 
-                    <!-- aside Widget -->
                     <div class="aside">
-                        <h3 class="aside-title">Price</h3>
+                        <h3 class="aside-title">Precio</h3>
                         <div class="price-filter">
                             <div id="price-slider"></div>
-                            <div class="input-number price-min">
-                                <input id="price-min" type="number">
-                                <span class="qty-up">+</span>
-                                <span class="qty-down">-</span>
-                            </div>
+                            <div class="input-number price-min"><input id="price-min" type="number"><span class="qty-up">+</span><span class="qty-down">-</span></div>
                             <span>-</span>
-                            <div class="input-number price-max">
-                                <input id="price-max" type="number">
-                                <span class="qty-up">+</span>
-                                <span class="qty-down">-</span>
-                            </div>
+                            <div class="input-number price-max"><input id="price-max" type="number"><span class="qty-up">+</span><span class="qty-down">-</span></div>
                         </div>
                     </div>
-                    <!-- /aside Widget -->
 
-                    <!-- aside Widget -->
                     <div class="aside">
-                        <h3 class="aside-title">Brand</h3>
-                        <div class="checkbox-filter">
-                            <div class="input-checkbox">
-                                <input type="checkbox" id="brand-1">
-                                <label for="brand-1">
-                                    <span></span>
-                                    Catit
-                                    <small>(578)</small>
-                                </label>
-                            </div>
-                            <div class="input-checkbox">
-                                <input type="checkbox" id="brand-2">
-                                <label for="brand-2">
-                                    <span></span>
-                                    Petstages
-                                    <small>(125)</small>
-                                </label>
-                            </div>
-                            <div class="input-checkbox">
-                                <input type="checkbox" id="brand-3">
-                                <label for="brand-3">
-                                    <span></span>
-                                    SmartyKat
-                                    <small>(755)</small>
-                                </label>
-                            </div>
-                            <div class="input-checkbox">
-                                <input type="checkbox" id="brand-4">
-                                <label for="brand-4">
-                                    <span></span>
-                                    KONG
-                                    <small>(578)</small>
-                                </label>
-                            </div>
-                            <div class="input-checkbox">
-                                <input type="checkbox" id="brand-5">
-                                <label for="brand-5">
-                                    <span></span>
-                                    Yeowww!
-                                    <small>(125)</small>
-                                </label>
+                        <h3 class="aside-title">Más Vendidos</h3>
+                        <div class="product-widget">
+                            <div class="product-img"><img src="img/productcat2.png" alt=""></div>
+                            <div class="product-body">
+                                <p class="product-category">Gatos</p>
+                                <h3 class="product-name"><a href="#">Rascador Torre Pro</a></h3>
+                                <h4 class="product-price">$1,200.00</h4>
                             </div>
                         </div>
                     </div>
-                    <!-- /aside Widget -->
-
-                    <!-- aside Widget -->
-                    <div class="aside">
-                        <h3 class="aside-title">Top selling</h3>
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="img/productcat2.png" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="img/productcat2.png">Product name goes here</a></h3>
-                                <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                            </div>
-                        </div>
-
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="img/productcat4.png" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="img/productcat4.png">Product name goes here</a></h3>
-                                <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                            </div>
-                        </div>
-
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="img/productcat6.png" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="img/productcat6.png">Product name goes here</a></h3>
-                                <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /aside Widget -->
                 </div>
-                <!-- /ASIDE -->
 
-                <!-- STORE -->
                 <div id="store" class="col-md-9">
-                    <!-- store top filter -->
                     <div class="store-filter clearfix">
                         <div class="store-sort">
-                            <label>
-                                Sort By:
+                            <label>Ordenar por: 
                                 <select class="input-select">
-                                    <option value="0">Popular</option>
-                                    <option value="1">Position</option>
-                                </select>
-                            </label>
-
-                            <label>
-                                Show:
-                                <select class="input-select">
-                                    <option value="0">20</option>
-                                    <option value="1">50</option>
+                                    <option value="0">Popularidad</option>
+                                    <option value="1">Precio</option>
                                 </select>
                             </label>
                         </div>
-                        <ul class="store-grid">
-                            <li class="active"><i class="fa fa-th"></i></li>
-                            <li><a href="#"><i class="fa fa-th-list"></i></a></li>
-                        </ul>
                     </div>
-                    <!-- /store top filter -->
 
-                    <!-- store products -->
-                    <div class="row">
-                        <!-- product -->
-                        <div class="col-md-4 col-xs-6">
-                            <div class="product">
-                                <div class="product-img">
-                                    <img src="img/productcat1.png" alt="">
-                                    <div class="product-label">
-                                        <span class="new">NEW</span>
-                                    </div>
-                                </div>
-                                <div class="product-body">
-                                    <p class="product-category">Category</p>
-                                    <h3 class="product-name"><a href="img/productcat1.png">product name goes here</a></h3>
-                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                                    <div class="product-rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                    </div>
-                                    <div class="product-btns">
-                                        <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
-                                                class="tooltipp">add to wishlist</span></button>
-                                        <button class="add-to-compare"><i class="fa fa-exchange"></i><span
-                                                class="tooltipp">add to compare</span></button>
-                                        <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick
-                                                view</span></button>
-                                    </div>
-                                </div>
-                                <div class="add-to-cart">
-                                    <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
-                                        cart</button>
-                                </div>
-                            </div>
+                    <div class="row" id="products-container">
+                        <div class="col-md-12 text-center" style="padding: 100px;">
+                            <h3><i class="fa fa-spinner fa-spin"></i> Cargando productos para gatos...</h3>
                         </div>
-                        <!-- /product -->
-
-                        <!-- product -->
-                        <div class="col-md-4 col-xs-6">
-                            <div class="product">
-                                <div class="product-img">
-                                    <img src="img/productcat2.png" alt="">
-                                    <div class="product-label">
-                                        <span class="new">NEW</span>
-                                    </div>
-                                </div>
-                                <div class="product-body">
-                                    <p class="product-category">Category</p>
-                                    <h3 class="product-name"><a href="img/productcat2.png">product name goes here</a></h3>
-                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                                    <div class="product-rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-o"></i>
-                                    </div>
-                                    <div class="product-btns">
-                                        <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
-                                                class="tooltipp">add to wishlist</span></button>
-                                        <button class="add-to-compare"><i class="fa fa-exchange"></i><span
-                                                class="tooltipp">add to compare</span></button>
-                                        <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick
-                                                view</span></button>
-                                    </div>
-                                </div>
-                                <div class="add-to-cart">
-                                    <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
-                                        cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /product -->
-
-                        <div class="clearfix visible-sm visible-xs"></div>
-
-                        <!-- product -->
-                        <div class="col-md-4 col-xs-6">
-                            <div class="product">
-                                <div class="product-img">
-                                    <img src="img/productcat3.png" alt="">
-                                </div>
-                                <div class="product-body">
-                                    <p class="product-category">Category</p>
-                                    <h3 class="product-name"><a href="img/productcat3.png">product name goes here</a></h3>
-                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                                    <div class="product-rating">
-                                    </div>
-                                    <div class="product-btns">
-                                        <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
-                                                class="tooltipp">add to wishlist</span></button>
-                                        <button class="add-to-compare"><i class="fa fa-exchange"></i><span
-                                                class="tooltipp">add to compare</span></button>
-                                        <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick
-                                                view</span></button>
-                                    </div>
-                                </div>
-                                <div class="add-to-cart">
-                                    <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
-                                        cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /product -->
-
-                        <div class="clearfix visible-lg visible-md"></div>
-
-                        <!-- product -->
-                        <div class="col-md-4 col-xs-6">
-                            <div class="product">
-                                <div class="product-img">
-                                    <img src="img/productcat4.png" alt="">
-                                </div>
-                                <div class="product-body">
-                                    <p class="product-category">Category</p>
-                                    <h3 class="product-name"><a href="img/productcat4.png">product name goes here</a></h3>
-                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                                    <div class="product-rating">
-                                    </div>
-                                    <div class="product-btns">
-                                        <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
-                                                class="tooltipp">add to wishlist</span></button>
-                                        <button class="add-to-compare"><i class="fa fa-exchange"></i><span
-                                                class="tooltipp">add to compare</span></button>
-                                        <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick
-                                                view</span></button>
-                                    </div>
-                                </div>
-                                <div class="add-to-cart">
-                                    <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
-                                        cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /product -->
-
-                        <div class="clearfix visible-sm visible-xs"></div>
-
-                        <!-- product -->
-                        <div class="col-md-4 col-xs-6">
-                            <div class="product">
-                                <div class="product-img">
-                                    <img src="./img/product1_02.png" alt="">
-                                </div>
-                                <div class="product-body">
-                                    <p class="product-category">Category</p>
-                                    <h3 class="product-name"><a href="product01.html">product name goes here</a></h3>
-                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                                    <div class="product-rating">
-                                    </div>
-                                    <div class="product-btns">
-                                        <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
-                                                class="tooltipp">add to wishlist</span></button>
-                                        <button class="add-to-compare"><i class="fa fa-exchange"></i><span
-                                                class="tooltipp">add to compare</span></button>
-                                        <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick
-                                                view</span></button>
-                                    </div>
-                                </div>
-                                <div class="add-to-cart">
-                                    <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
-                                        cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /product -->
-
-                        <!-- product -->
-                        <div class="col-md-4 col-xs-6">
-                            <div class="product">
-                                <div class="product-img">
-                                    <img src="./img/product2_02.png" alt="">
-                                </div>
-                                <div class="product-body">
-                                    <p class="product-category">Category</p>
-                                    <h3 class="product-name"><a href="product02.html">product name goes here</a></h3>
-                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                                    <div class="product-rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-o"></i>
-                                    </div>
-                                    <div class="product-btns">
-                                        <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
-                                                class="tooltipp">add to wishlist</span></button>
-                                        <button class="add-to-compare"><i class="fa fa-exchange"></i><span
-                                                class="tooltipp">add to compare</span></button>
-                                        <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick
-                                                view</span></button>
-                                    </div>
-                                </div>
-                                <div class="add-to-cart">
-                                    <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
-                                        cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /product -->
-
-                        <div class="clearfix visible-lg visible-md visible-sm visible-xs"></div>
-
-                        <!-- product -->
-                        <div class="col-md-4 col-xs-6">
-                            <div class="product">
-                                <div class="product-img">
-                                    <img src="./img/product1_07.png" alt="">
-                                </div>
-                                <div class="product-body">
-                                    <p class="product-category">Category</p>
-                                    <h3 class="product-name"><a href="product01.html">product name goes here</a></h3>
-                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                                    <div class="product-rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                    </div>
-                                    <div class="product-btns">
-                                        <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
-                                                class="tooltipp">add to wishlist</span></button>
-                                        <button class="add-to-compare"><i class="fa fa-exchange"></i><span
-                                                class="tooltipp">add to compare</span></button>
-                                        <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick
-                                                view</span></button>
-                                    </div>
-                                </div>
-                                <div class="add-to-cart">
-                                    <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
-                                        cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /product -->
-
-                        <!-- product -->
-                        <div class="col-md-4 col-xs-6">
-                            <div class="product">
-                                <div class="product-img">
-                                    <img src="./img/product3_02.png" alt="">
-                                </div>
-                                <div class="product-body">
-                                    <p class="product-category">Category</p>
-                                    <h3 class="product-name"><a href="product03.html">product name goes here</a></h3>
-                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                                    <div class="product-rating">
-                                    </div>
-                                    <div class="product-btns">
-                                        <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
-                                                class="tooltipp">add to wishlist</span></button>
-                                        <button class="add-to-compare"><i class="fa fa-exchange"></i><span
-                                                class="tooltipp">add to compare</span></button>
-                                        <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick
-                                                view</span></button>
-                                    </div>
-                                </div>
-                                <div class="add-to-cart">
-                                    <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
-                                        cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /product -->
-
-                        <div class="clearfix visible-sm visible-xs"></div>
-
-                        <!-- product -->
-                        <div class="col-md-4 col-xs-6">
-                            <div class="product">
-                                <div class="product-img">
-                                    <img src="img/gatoinicio.jpg" alt="">
-                                </div>
-                                <div class="product-body">
-                                    <p class="product-category">Category</p>
-                                    <h3 class="product-name"><a href="img/gatoinicio.jpg">product name goes here</a></h3>
-                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                                    <div class="product-rating">
-                                    </div>
-                                    <div class="product-btns">
-                                        <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
-                                                class="tooltipp">add to wishlist</span></button>
-                                        <button class="add-to-compare"><i class="fa fa-exchange"></i><span
-                                                class="tooltipp">add to compare</span></button>
-                                        <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick
-                                                view</span></button>
-                                    </div>
-                                </div>
-                                <div class="add-to-cart">
-                                    <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
-                                        cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /product -->
                     </div>
-                    <!-- /store products -->
 
-                    <!-- store bottom filter -->
                     <div class="store-filter clearfix">
-                        <span class="store-qty">Showing 20-100 products</span>
                         <ul class="store-pagination">
-                            <!--Se implementarán después las demás páginas y su redireccionamiento-->
                             <li class="active">1</li>
-                           <!--  <li><a href="store.html">2</a></li>-->
-                            <li><a href="cats.html">2</a></li>
-                            <li><a href="cats.html">3</a></li>
-                            <li><a href="cats.html">4</a></li>
+                            <li><a href="#">2</a></li>
                             <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
                         </ul>
                     </div>
-                    <!-- /store bottom filter -->
                 </div>
-                <!-- /STORE -->
             </div>
-            <!-- /row -->
         </div>
-        <!-- /container -->
     </div>
-    <!-- /SECTION -->
 
-    <!-- NEWSLETTER -->
     <div id="newsletter" class="section">
-        <!-- container -->
         <div class="container">
-            <!-- row -->
             <div class="row">
                 <div class="col-md-12">
                     <div class="newsletter">
-                        <p>Send your comments to <strong>PetPalace</strong></p>
+                        <p>Envía tus comentarios a <strong>PetPalace</strong></p>
                         <form>
-                            <input class="input" type="email" placeholder="Enter Your Email">
-                            <button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
+                            <input class="input" type="email" placeholder="Tu Correo Electrónico">
+                            <button class="newsletter-btn"><i class="fa fa-envelope"></i> Suscribirse</button>
                         </form>
                     </div>
                 </div>
             </div>
-            <!-- /row -->
         </div>
-        <!-- /container -->
     </div>
-    <!-- /NEWSLETTER -->
 
-    <!-- Mensaje flotante -->
-	<div id="toast" class="toast-msg" style="display:none;"></div>
-
-    <!-- FOOTER -->
     <footer id="footer">
-        <!-- top footer -->
         <div class="section">
-            <div class="container">
-                <div class="row">
-                    <!-- About Us -->
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Sobre Nosotros</h3>
-                            <p>PetPalace es una tienda en línea para productos de mascotas, con directorio de
-                                veterinarios y estilistas para tus compañeros peludos.</p>
-                            <ul class="footer-links">
-                                <li><a href="#"><i class="fa fa-map-marker"></i> ITA, Aguascalientes, México</a></li>
-                                <li><a href="#"><i class="fa fa-phone"></i> +52 449 928 9336</a></li>
-                                <li><a href="#"><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Categorías -->
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Categorías</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">Accesorios</a></li>
-                                <li><a href="#">Ropa</a></li>
-                                <li><a href="#">Salud y Cuidado</a></li>
-                                <li><a href="#">Transporte</a></li>
-                                <li><a href="#">Hogar</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="clearfix visible-xs"></div>
-
-                    <!-- Información -->
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Información</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">Nosotros</a></li>
-                                <li><a href="#">Contacto</a></li>
-                                <li><a href="#">Política de Privacidad</a></li>
-                                <li><a href="#">Términos y Condiciones</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Servicios -->
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Servicio</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">Mi Cuenta</a></li>
-                                <li><a href="#">Carrito</a></li>
-                                <li><a href="#">Wishlist</a></li>
-                                <li><a href="#">Ayuda</a></li>
-                                <li><a href="https://maps.app.goo.gl/k5ZtDzjFcVZyq3sV6" target="_blank">
-                                        <i class="fas fa-map-marked-alt"></i> Ubicación</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- bottom footer -->
-        <div id="bottom-footer" class="section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        <!-- Iconos de métodos de pago -->
-                        <ul class="footer-payments">
-                            <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
-                            <li><a href="#"><i class="fa fa-credit-card"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
-                        </ul>
-                        <span class="copyright">
-                            &copy;
-                            <script>document.write(new Date().getFullYear());</script> Todos los derechos reservados |
-                            Hecho <i class="fa fa-heart-o" aria-hidden="true"></i> por
-                            <a href="https://aguascalientes.tecnm.mx/" target="_blank">TecNM</a>
-                        </span>
-                    </div>
-                </div>
+            <div class="container text-center">
+                <p>© 2026 Pet Palace | TecNM</p>
             </div>
         </div>
     </footer>
-    <!-- FOOTER -->
 
-    <!-- Redes sociales y soporte -->
     <div class="social-floating">
-        <!-- Carrito -->
-        <a href="checkout.html" class="floating-cart" title="Ver carrito">
-            <i class="fa fa-shopping-cart"></i>
-            <span class="cart-count">2</span>
-        </a>
-
-        <!-- Facebook -->
-        <a href="https://www.facebook.com/profile.php?id=61578271885148
-" class="facebook" target="_blank" title="Facebook">
-            <i class="fa fa-facebook"></i>
-        </a>
-
-        <!-- WhatsApp -->
-        <a href="https://wa.me/524499289336" class="whatsapp" target="_blank" title="WhatsApp">
-            <i class="fa fa-whatsapp"></i>
-        </a>
-
-        <!-- Instagram -->
-        <a href="https://www.instagram.com/" class="instagram" target="_blank" title="Instagram">
-            <i class="fa fa-instagram"></i>
-        </a>
-
-        <!-- Maps -->
-        <a href="https://maps.google.com" class="maps" target="_blank" title="Ubicación">
-            <i class="fa fa-map-marker"></i>
-        </a>
+        <a href="checkout.html" class="floating-cart"><i class="fa fa-shopping-cart"></i><span class="cart-count cart-qty">0</span></a>
+        <a href="https://wa.me/524499289336" class="whatsapp" target="_blank"><i class="fa fa-whatsapp"></i></a>
     </div>
 
-    <!-- Script de acciones -->
-    <script src="js/registroformulario.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/slick.min.js"></script>
-    <script src="js/nouislider.min.js"></script>
-    <script src="js/jquery.zoom.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/cart-handler.js"></script>
 
+    <script>
+        $(document).ready(function() {
+            $.getJSON('api/products.php?categoria=Gatos', function(data) {
+                const $container = $('#products-container');
+                $container.empty();
 
+                if (data.length === 0) {
+                    $container.html('<div class="col-md-12 text-center"><h3>No hay productos para gatos en este momento.</h3></div>');
+                    return;
+                }
+
+                data.forEach(function(p) {
+                    const stock = parseInt(p.stock);
+                    const isAgotado = stock <= 0;
+                    
+                    // Lógica de Marketing de Stock
+                    let stockMsg = "";
+                    if (stock > 10) {
+                        stockMsg = '<span class="text-success"><i class="fa fa-check"></i> Disponible</span>';
+                    } else if (stock > 0) {
+                        stockMsg = '<span class="text-warning" style="font-weight:bold;"><i class="fa fa-clock-o"></i> ¡Solo quedan ' + stock + '!</span>';
+                    } else {
+                        stockMsg = '<span class="text-danger" style="font-weight:bold;"><i class="fa fa-times"></i> Agotado</span>';
+                    }
+
+                    let btnHtml = isAgotado 
+                        ? '<button class="add-to-cart-btn" disabled style="background:#999; cursor:not-allowed;"><i class="fa fa-ban"></i> AGOTADO</button>' 
+                        : '<button class="add-to-cart-btn" data-id="'+p.id+'" data-name="'+p.nombre+'" data-price="'+p.precio+'" data-img="'+p.imagen+'"><i class="fa fa-shopping-cart"></i> Añadir al carrito</button>';
+
+                    let badgeHtml = isAgotado 
+                        ? '<div class="product-label"><span class="new" style="background:red;">AGOTADO</span></div>' 
+                        : '';
+
+                    const html = `
+                        <div class="col-md-4 col-xs-6">
+                            <div class="product">
+                                <div class="product-img">
+                                    <img src="${p.imagen}" onerror="this.src='img/logo6.png'">
+                                    ${badgeHtml}
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">${p.categoria}</p>
+                                    <h3 class="product-name"><a href="#">${p.nombre}</a></h3>
+                                    <h4 class="product-price">$${parseFloat(p.precio).toFixed(2)}</h4>
+                                    <p>${stockMsg}</p>
+                                </div>
+                                <div class="add-to-cart">${btnHtml}</div>
+                            </div>
+                        </div>`;
+                    $container.append(html);
+                });
+
+                if (window.inicializarBotones) { inicializarBotones(); }
+            });
+        });
+    </script>
 </body>
-
 </html>
