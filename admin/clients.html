@@ -4,307 +4,526 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Usuarios | Pet Palace Admin</title>
+    <title>Clientes | Pet Palace Admin</title>
     
     <link rel="stylesheet" href="../css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700,800" rel="stylesheet">
 
     <style>
-        /* CONFIGURACIÓN DEFINITIVA */
-        body {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
-            background-color: #f4f7f6;
-        }
+        /* --- DISEÑO CLEAN UI --- */
+        body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
 
-        /* SIDEBAR FIJA (EL ORIGEN) */
+        /* SIDEBAR */
         #sidebar {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 100;
-            padding: 20px 0 0;
-            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-            background-color: #15161D !important;
+            position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
+            padding-top: 25px; background-color: #15161D;
+            width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        .sidebar-brand { text-align: center; margin-bottom: 35px; }
+        .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
+        .sidebar-brand h5 { color: #fff; letter-spacing: 1px; font-weight: 700; font-size: 16px; margin: 0; }
+        .sidebar-brand p { color: #6c757d; font-size: 11px; text-transform: uppercase; margin-top: 5px; }
+
+        .nav-sidebar { list-style: none; padding: 0; margin: 0; }
+        .nav-sidebar li a {
+            display: flex; align-items: center; padding: 14px 25px;
+            color: #aeb4be; text-decoration: none; font-weight: 500; font-size: 13px;
+            transition: all 0.2s ease-in-out; border-left: 4px solid transparent;
+        }
+        .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
+        .nav-sidebar li a:hover, .nav-sidebar li.active a {
+            background-color: #1e2029; color: #fff; border-left-color: #D10024;
+        }
+        .nav-sidebar hr { border-color: #2c2e3e; margin: 20px 25px; opacity: 0.5; }
+
+        /* CONTENIDO PRINCIPAL */
+        main { margin-left: 240px; padding: 30px; transition: all 0.3s; }
+
+        /* HEADER */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .top-bar h2 { margin: 0; font-weight: 800; color: #15161D; font-size: 24px; }
+
+        /* TARJETAS */
+        .card-custom {
+            background: white; border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
+            overflow: hidden; margin-bottom: 25px;
+        }
+        .card-body-custom { padding: 20px; }
+
+        /* FILTROS */
+        .search-box { position: relative; }
+        .search-box i { position: absolute; left: 15px; top: 12px; color: #aaa; }
+        .search-box input { padding-left: 40px; border-radius: 8px; border: 1px solid #e0e0e0; height: 40px; box-shadow: none; }
+        .search-box input:focus { border-color: #D10024; }
+
+        /* TABLA */
+        .table { width: 100%; margin-bottom: 0; color: #525f7f; }
+        .table thead th { 
+            background-color: #f8f9fa; color: #8898aa; font-weight: 700; 
+            text-transform: uppercase; font-size: 11px; padding: 15px; border-bottom: 1px solid #e9ecef; border-top: none;
+        }
+        .table tbody td { vertical-align: middle; padding: 15px; border-top: 1px solid #f0f0f0; font-size: 13px; }
+        
+        .text-avatar {
+            width: 35px; height: 35px; background: #e3f2fd; color: #4ea3f1; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-weight: 800; margin-right: 10px; font-size: 14px;
         }
 
-        .nav-stacked li a {
-            color: #8D99AE;
-            font-weight: 500;
-            padding: 12px 20px;
-            transition: 0.3s;
-            text-decoration: none;
-            display: block;
+        /* BADGES */
+        .badge-status { padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .bg-activo { background-color: #e8f5e9; color: #28a745; border: 1px solid #c3e6cb; }
+        .bg-suspendido { background-color: #fbe9eb; color: #dc3545; border: 1px solid #f5c6cb; }
+        .bg-pendiente { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+
+        .role-badge { font-size: 11px; font-weight: 600; text-transform: capitalize; padding: 3px 8px; border-radius: 4px; background: #f6f9fc; color: #525f7f; border: 1px solid #e9ecef; }
+
+        /* BOTONES ACCIÓN */
+        .btn-action { 
+            width: 32px; height: 32px; border-radius: 8px; border: none; 
+            display: inline-flex; align-items: center; justify-content: center; 
+            margin: 0 2px; transition: 0.2s; color: white; cursor: pointer;
         }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .btn-edit { background: #4ea3f1; }
+        .btn-delete { background: #ff4b5c; }
+        .btn-suspend { background: #ffc107; color: #333; }
+        .btn-activate { background: #28a745; color: #fff; }
+        .btn-chat { background: #6610f2; position: relative; }
 
-        .nav-stacked li a:hover, .nav-stacked li.active a {
-            color: #4ea3f1 !important;
-            background-color: #1e1f29 !important;
-            border-left: 3px solid #4ea3f1;
+        .notification-badge {
+            position: absolute; top: -5px; right: -5px; background-color: #D10024; color: white;
+            border-radius: 50%; width: 18px; height: 18px; font-size: 10px; line-height: 18px;
+            text-align: center; font-weight: bold; border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: popIn 0.3s;
         }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
 
-        /* AJUSTE DE CONTENIDO PARA SIDEBAR FIJA */
-        main {
-            margin-left: 16.666667%; /* Compensa col-md-2 */
-            padding: 20px;
+        /* MODAL FORMS */
+        .form-control-custom { border-radius: 8px; border: 1px solid #e0e0e0; padding: 10px; font-size: 13px; }
+        .modal-header-custom { background: linear-gradient(135deg, #15161D, #2c3e50); color: white; border-radius: 8px 8px 0 0; }
+        
+        /* CHAT */
+        #chatHistory {
+            height: 300px; overflow-y: auto; background-color: #e5ddd5;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-blend-mode: soft-light; border-radius: 8px; padding: 15px; margin-bottom: 15px;
+            display: flex; flex-direction: column; gap: 10px;
         }
-
-        /* BARRA DE FILTROS DEFINITIVA */
-        .filter-bar {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
-        }
-
-        .table thead th {
-            background-color: #1e1f29;
-            color: #fff;
-            border: none;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 12px;
-            padding: 15px;
-        }
-
-        .card {
-            border: none;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            background: white;
-        }
-
-        .badge-status {
-            font-size: 11px;
-            font-weight: 700;
-            padding: 5px 10px;
-            border-radius: 20px;
-            display: inline-block;
-        }
-
-        .btn-success { background-color: #28a745; border: none; color: white; }
-        .btn-primary { background-color: #4ea3f1; border: none; color: white; }
-
-        html { scroll-behavior: smooth; }
+        .chat-msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.15); word-wrap: break-word; }
+        .chat-msg.admin { align-self: flex-end; background-color: #dcf8c6; border-radius: 12px 0 12px 12px; }
+        .chat-msg.cliente { align-self: flex-start; background-color: #ffffff; border-radius: 0 12px 12px 12px; }
+        .chat-meta { display: flex; justify-content: flex-end; align-items: center; gap: 4px; font-size: 10px; color: #999; margin-top: 4px; }
+        .leido { color: #34b7f1; } 
     </style>
 </head>
 
 <body>
 
-<div class="container-fluid">
-    <div class="row">
-        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block">
-            <div class="text-center py-4">
-                <img src="../img/logo6.png" alt="Logo" class="mb-3" style="width: 70px;" />
-                <h5 class="text-white">Admin Panel</h5>
-                <p class="text-muted small">Pet Palace v2.0</p>
-            </div>
-            <ul class="nav nav-pills nav-stacked">
-                <li><a href="admin-panel.html"><i class="fa fa-tachometer-alt"></i> Dashboard</a></li>
-                <li class="active"><a href="clients.html"><i class="fa fa-users"></i> Usuarios</a></li>
-                <li><a href="products.html"><i class="fa fa-boxes"></i> Inventario</a></li>
-                <li><a href="orders.html"><i class="fa fa-shopping-cart"></i> Pedidos</a></li>
-                <hr style="border-color: #2c2e3e; margin: 10px 20px;">
-                <li><a href="../index.html"><i class="fa fa-eye"></i> Ver Tienda</a></li>
-                <li><a href="#" onclick="cerrarSesion()" class="text-danger"><i class="fa fa-sign-out-alt"></i> Salir</a></li>
-            </ul>
-        </nav>
+    <nav id="sidebar">
+        <div class="sidebar-brand">
+            <img src="../img/logo6.png" alt="Logo">
+            <h5>Pet Palace</h5>
+            <p id="rolDisplay">Verificando...</p>
+        </div>
+        <ul class="nav-sidebar">
+            <li><a href="admin-panel.html"><i class="fa fa-chart-line"></i> Dashboard</a></li>
+            <li class="active"><a href="#"><i class="fa fa-users"></i> Clientes</a></li>
+            <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
+            <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
+            <hr>
+            <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
+            <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+        </ul>
+    </nav>
 
-        <main class="col-md-9 col-lg-10">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2" style="margin-top: 0;">Gestión de Clientes</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <button class="btn btn-success" data-toggle="modal" data-target="#addClientModal">
-                        <i class="fa fa-user-plus"></i> Nuevo Cliente
-                    </button>
+    <main>
+        
+        <div class="top-bar">
+            <div>
+                <h2 class="fw-bold m-0" style="color: #15161D;">Gestión de Clientes</h2>
+                <small class="text-muted">Directorio de usuarios y administración de roles</small>
+            </div>
+            
+            <div id="admin-actions" style="display:none;">
+                <button class="btn btn-success shadow-sm" onclick="openAddModal()" style="border-radius: 8px; font-weight: 600;">
+                    <i class="fa fa-user-plus"></i> Nuevo Usuario
+                </button>
+            </div>
+        </div>
+
+        <div class="card-custom">
+            <div class="card-body-custom">
+                <div class="search-box">
+                    <i class="fa fa-search"></i>
+                    <input type="text" id="filterSearch" class="form-control" placeholder="Buscar por nombre, correo o teléfono..." onkeyup="filterTable()">
                 </div>
             </div>
+        </div>
 
-            <div class="filter-bar row">
-                <div class="col-md-12">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
-                        <input type="text" id="filterSearch" class="form-control" placeholder="Buscar cliente por nombre, ID o email..." onkeyup="filterClients()">
-                    </div>
-                </div>
+        <div class="card-custom">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th width="50">ID</th>
+                            <th>Usuario</th>
+                            <th>Contacto</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th class="text-center" width="180">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientsTableBody">
+                        <tr><td colspan="6" class="text-center py-5 text-muted"><i class="fa fa-spinner fa-spin"></i> Cargando base de datos...</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="card overflow-hidden">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Cliente / Email</th>
-                                <th>Teléfono</th>
-                                <th class="text-center">Estado</th>
-                                <th class="text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="clientsTableBody">
-                            <tr>
-                                <td colspan="5" class="text-center py-5">
-                                    <i class="fa fa-spinner fa-spin fa-2x text-primary"></i>
-                                    <p class="mt-2 text-muted">Cargando base de datos...</p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-    </div>
-</div>
+    </main>
 
-<div class="modal fade" id="addClientModal" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="formAddClient">
-                <div class="modal-header bg-primary text-white">
+    <div class="modal fade" id="clientModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 12px; border:none;">
+                <div class="modal-header modal-header-custom">
                     <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Registrar Nuevo Cliente</h4>
+                    <h4 class="modal-title" id="modalTitle">Gestión de Usuario</h4>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label class="fw-bold">Nombre Completo</label>
-                        <input type="text" class="form-control" id="clientName" required placeholder="Ej: Juan Pérez" />
-                    </div>
-                    <div class="form-group">
-                        <label class="fw-bold">Correo Electrónico</label>
-                        <input type="email" class="form-control" id="clientEmail" required placeholder="ejemplo@gmail.com" />
-                    </div>
-                    <div class="form-group">
-                        <label class="fw-bold">Teléfono</label>
-                        <input type="text" class="form-control" id="clientPhone" placeholder="Opcional" />
-                    </div>
+                <div class="modal-body" style="background: #fdfdfd; padding: 25px;">
+                    <form id="clientForm">
+                        <input type="hidden" id="clientId">
+                        
+                        <div class="form-group">
+                            <label class="font-weight-bold small text-muted">Nombre Completo</label>
+                            <input type="text" class="form-control form-control-custom" id="clientName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold small text-muted">Correo Electrónico</label>
+                            <input type="email" class="form-control form-control-custom" id="clientEmail" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 form-group">
+                                <label class="font-weight-bold small text-muted">Teléfono</label>
+                                <input type="text" class="form-control form-control-custom" id="clientPhone">
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label class="font-weight-bold small text-muted">Rol</label>
+                                <select class="form-control form-control-custom" id="clientRole">
+                                    <option value="usuario">Cliente (Usuario)</option>
+                                    <option value="vendedor">Vendedor</option>
+                                    <option value="admin">Administrador</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold small text-muted">Dirección</label>
+                            <textarea class="form-control form-control-custom" id="clientAddress" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold small text-muted">Contraseña <span style="font-weight: normal; color: #999;">(Opcional al editar)</span></label>
+                            <input type="password" class="form-control form-control-custom" id="clientPassword" placeholder="******">
+                        </div>
+
+                        <div class="text-right mt-3">
+                            <button type="button" class="btn btn-link text-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" style="border-radius: 8px;">Guardar Cambios</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link text-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Cliente</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
 
-<script src="../js/jquery.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
+    <div class="modal fade" id="notifyModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 12px; border:none;">
+                <div class="modal-header bg-primary text-white" style="background: linear-gradient(135deg, #6610f2, #5e72e4); border-radius: 12px 12px 0 0;">
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><i class="fa fa-comments"></i> Chat con <span id="notifyClientName"></span></h4>
+                </div>
+                <div class="modal-body" style="background: #f4f6f9;">
+                    <input type="hidden" id="notifyClientId">
+                    <div id="chatHistory"></div>
+                    <form id="notifyForm">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="notifyMessage" placeholder="Escribe un mensaje..." required autocomplete="off" style="border-radius: 20px 0 0 20px;">
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-primary" id="btnSendNotify" style="background:#6610f2; border-radius: 0 20px 20px 0;">
+                                    <i class="fa fa-paper-plane"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script>
-    let clientesCargados = [];
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
 
-    $(document).ready(function() {
-        cargarClientes();
-    });
-
-    async function cargarClientes() {
-        const $tbody = $('#clientsTableBody');
-        try {
-            const res = await fetch('../api/clients.php');
-            clientesCargados = await res.json();
-            renderTable(clientesCargados);
-        } catch (e) {
-            $tbody.html('<tr><td colspan="5" class="text-center text-danger py-4">Error al conectar con el servidor.</td></tr>');
-        }
-    }
-
-    function renderTable(data) {
-        const $tbody = $('#clientsTableBody');
-        $tbody.empty();
+    <script>
+        const API_CLIENTS = '../api/clients.php';
+        const API_NOTIF = '../api/notifications.php';
         
-        if (data.length === 0) {
-            $tbody.html('<tr><td colspan="5" class="text-center p-4 text-muted">No se encontraron registros.</td></tr>');
-            return;
-        }
+        let clientesCargados = [];
+        let unreadCounts = {}; 
+        let userRole = '';
+        let chatInterval = null;
+        let isEditing = false;
 
-        data.forEach(c => {
-            const isSuspended = c.estado === 'suspendido';
-            const badgeClass = isSuspended ? 'label-danger' : 'label-success';
-            const statusText = isSuspended ? 'Suspendido' : 'Activo';
-
-            const actionBtn = isSuspended
-                ? `<button class="btn btn-xs btn-success mx-1" onclick="cambiarEstado(${c.id}, 'activo')"><i class="fa fa-check"></i> Activar</button>`
-                : `<button class="btn btn-xs btn-warning mx-1" onclick="cambiarEstado(${c.id}, 'suspendido')"><i class="fa fa-ban"></i> Suspender</button>`;
-
-            const row = `
-                <tr>
-                    <td><strong>#${c.id}</strong></td>
-                    <td>
-                        <div class="fw-bold text-dark" style="font-weight:700;">${c.nombre}</div>
-                        <small class="text-muted">${c.correo}</small>
-                    </td>
-                    <td>${c.telefono || '<span class="text-muted">N/A</span>'}</td>
-                    <td class="text-center">
-                        <span class="label ${badgeClass} badge-status">${statusText}</span>
-                    </td>
-                    <td class="text-center">
-                        ${actionBtn}
-                        <button class="btn btn-xs btn-danger mx-1" onclick="eliminar(${c.id})">
-                            <i class="fa fa-trash-alt"></i> Eliminar
-                        </button>
-                    </td>
-                </tr>`;
-            $tbody.append(row);
+        $(document).ready(function() {
+            verificarPermisos();
+            loadData();
+            setInterval(loadUnreadCounts, 10000); 
         });
-    }
 
-    function filterClients() {
-        const search = $('#filterSearch').val().toLowerCase();
-        const filtered = clientesCargados.filter(c => 
-            c.nombre.toLowerCase().includes(search) || 
-            c.correo.toLowerCase().includes(search) || 
-            c.id.toString().includes(search)
-        );
-        renderTable(filtered);
-    }
-
-    async function cambiarEstado(id, nuevoEstado) {
-        if (!confirm(`¿Desea cambiar el estado del usuario #${id}?`)) return;
-        try {
-            const res = await fetch('../api/clients.php', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id, estado: nuevoEstado })
-            });
-            const result = await res.json();
-            if (result.status === 'success') cargarClientes();
-        } catch (e) { alert("Error de conexión"); }
-    }
-
-    async function eliminar(id) {
-        if (!confirm("¿Eliminar usuario permanentemente?")) return;
-        try {
-            await fetch('../api/clients.php', {
-                method: 'DELETE',
-                body: JSON.stringify({ id: id })
-            });
-            cargarClientes();
-        } catch (e) { alert("Error al eliminar"); }
-    }
-
-    $('#formAddClient').on('submit', async function (e) {
-        e.preventDefault();
-        const data = {
-            nombre: $('#clientName').val(),
-            correo: $('#clientEmail').val(),
-            telefono: $('#clientPhone').val()
-        };
-        await fetch('../api/clients.php', { method: 'POST', body: JSON.stringify(data) });
-        $('#addClientModal').modal('hide');
-        this.reset();
-        cargarClientes();
-    });
-
-    function cerrarSesion() {
-        if (confirm("¿Desea cerrar la sesión administrativa?")) {
-            localStorage.removeItem('currentUser');
-            window.location.href = '../login.html';
+        // 1. VERIFICACIÓN DE ROL
+        function verificarPermisos() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user) { window.location.href = '../login.html'; return; }
+            
+            userRole = user.rol;
+            $('#rolDisplay').text(userRole === 'admin' ? 'Administrador' : 'Vendedor Autorizado');
+            
+            // Mostrar botones de admin si corresponde
+            if (userRole === 'admin') $('#admin-actions').show();
         }
-    }
-</script>
-</body>
 
+        // 2. CARGAR DATOS
+        function loadData() {
+            $.getJSON(API_NOTIF, { get_counts: true }, function(counts) {
+                unreadCounts = counts;
+                loadClients();
+            });
+        }
+
+        function loadUnreadCounts() {
+            $.getJSON(API_NOTIF, { get_counts: true }, function(counts) {
+                unreadCounts = counts;
+                renderTable(clientesCargados); 
+            });
+        }
+
+        function loadClients() {
+            $.getJSON(API_CLIENTS, function(data) {
+                clientesCargados = data;
+                renderTable(data);
+            });
+        }
+
+        // 3. RENDERIZAR TABLA (CON FILTRO DE SEGURIDAD)
+        function renderTable(data) {
+            const $tbody = $('#clientsTableBody');
+            $tbody.empty();
+
+            // --- FILTRO DE SEGURIDAD: Vendedor solo ve Usuarios ---
+            let displayData = data;
+            if (userRole === 'vendedor') {
+                displayData = data.filter(client => client.rol === 'usuario');
+            }
+            
+            if(displayData.length === 0) {
+                $tbody.html('<tr><td colspan="6" class="text-center p-5 text-muted">No se encontraron clientes disponibles.</td></tr>');
+                return;
+            }
+
+            displayData.forEach(c => {
+                const unread = unreadCounts[c.id] || 0;
+                const badgeHTML = unread > 0 ? `<span class="notification-badge">${unread}</span>` : '';
+                
+                let estado = (c.estado || 'activo').toLowerCase();
+                let estadoBadge = '<span class="badge-status bg-activo">Activo</span>';
+                
+                if(estado === 'suspendido') estadoBadge = '<span class="badge-status bg-suspendido">Suspendido</span>';
+                else if(estado === 'pendiente') estadoBadge = '<span class="badge-status bg-pendiente">Pendiente</span>';
+
+                let actions = '';
+                
+                if (userRole === 'admin') {
+                    // LÓGICA DE SUSPENSIÓN (Admin)
+                    let suspendBtn = '';
+                    if (estado === 'suspendido') {
+                        suspendBtn = `<button class="btn-action btn-activate" onclick="toggleStatus(${c.id}, 'activo')" title="Reactivar Cuenta"><i class="fa fa-check"></i></button>`;
+                    } else {
+                        suspendBtn = `<button class="btn-action btn-suspend" onclick="toggleStatus(${c.id}, 'suspendido')" title="Suspender Cuenta"><i class="fa fa-ban"></i></button>`;
+                    }
+
+                    actions = `
+                        <button class="btn-action btn-edit" onclick="openEditModal(${c.id})" title="Editar"><i class="fa fa-pencil-alt"></i></button>
+                        ${suspendBtn}
+                        <button class="btn-action btn-delete" onclick="deleteClient(${c.id})" title="Eliminar"><i class="fa fa-trash-alt"></i></button>
+                    `;
+                } else {
+                    // BOTONES DE VENDEDOR (SOLO CHAT)
+                    actions = `
+                        <button class="btn-action btn-chat" onclick="openChatModal(${c.id}, '${c.nombre}')">
+                            <i class="fa fa-comments"></i> ${badgeHTML}
+                        </button>
+                    `;
+                }
+
+                $tbody.append(`
+                    <tr>
+                        <td class="font-weight-bold">#${c.id}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="text-avatar">${c.nombre.charAt(0).toUpperCase()}</div>
+                                <div>
+                                    <span class="d-block font-weight-bold text-dark">${c.nombre}</span>
+                                    <small class="text-muted">${c.correo}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${c.telefono || '-'}</td>
+                        <td><span class="role-badge">${c.rol}</span></td>
+                        <td>${estadoBadge}</td>
+                        <td class="text-center">${actions}</td>
+                    </tr>
+                `);
+            });
+        }
+
+        // --- LÓGICA DE NEGOCIO ---
+
+        // 1. SUSPENDER / ACTIVAR
+        function toggleStatus(id, nuevoEstado) {
+            let verbo = nuevoEstado === 'suspendido' ? 'suspender' : 'activar';
+            if(!confirm(`¿Estás seguro de que deseas ${verbo} a este usuario?`)) return;
+
+            const payload = { id: id, estado: nuevoEstado };
+
+            $.ajax({
+                url: API_CLIENTS,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                success: function(res) {
+                    if(res.status === 'success') loadClients();
+                    else alert("Error: " + (res.message || 'Error desconocido'));
+                }
+            });
+        }
+
+        // 2. CREAR / EDITAR
+        function openAddModal() { 
+            isEditing = false; 
+            $('#clientForm')[0].reset(); 
+            $('#clientId').val('');
+            $('#modalTitle').text('Registrar Nuevo Usuario');
+            $('#clientModal').modal('show'); 
+        }
+
+        function openEditModal(id) {
+            isEditing = true;
+            const c = clientesCargados.find(item => item.id == id);
+            if(!c) return;
+
+            $('#clientId').val(c.id);
+            $('#clientName').val(c.nombre);
+            $('#clientEmail').val(c.correo);
+            $('#clientPhone').val(c.telefono);
+            $('#clientRole').val(c.rol);
+            $('#clientAddress').val(c.direccion || '');
+            $('#clientPassword').val(''); 
+            
+            $('#modalTitle').text('Editar Datos de: ' + c.nombre);
+            $('#clientModal').modal('show');
+        }
+
+        $('#clientForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            // Construir objeto para edición
+            const data = {
+                id: $('#clientId').val(),
+                nombre: $('#clientName').val(),
+                correo: $('#clientEmail').val(),
+                telefono: $('#clientPhone').val(),
+                rol: $('#clientRole').val(),
+                password: $('#clientPassword').val()
+            };
+
+            const method = isEditing ? 'PUT' : 'POST';
+
+            $.ajax({
+                url: API_CLIENTS,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(res) {
+                    if(res.status === 'success') {
+                        $('#clientModal').modal('hide');
+                        loadClients();
+                    } else {
+                        alert("Error: " + (res.message || 'Error en la base de datos'));
+                    }
+                }
+            });
+        });
+
+        // 3. ELIMINAR
+        function deleteClient(id) {
+            if(confirm('ADVERTENCIA: ¿Eliminar este usuario permanentemente?')) {
+                $.ajax({ 
+                    url: API_CLIENTS, 
+                    type: 'DELETE', 
+                    contentType: 'application/json',
+                    data: JSON.stringify({id: id}), 
+                    success: () => loadClients() 
+                });
+            }
+        }
+
+        // 4. CHAT
+        function openChatModal(clientId, clientName) {
+            $('#notifyClientId').val(clientId);
+            $('#notifyClientName').text(clientName);
+            $('#notifyModal').modal('show');
+            $.ajax({ url: API_NOTIF, type: 'PUT', contentType: 'application/json', data: JSON.stringify({ mark_all_read_for_client: clientId }), success: () => loadUnreadCounts() });
+            cargarHistorial(clientId);
+            if (chatInterval) clearInterval(chatInterval);
+            chatInterval = setInterval(() => cargarHistorial(clientId), 3000);
+        }
+        function cargarHistorial(clientId) {
+            $.getJSON(API_NOTIF, { user_id: clientId }, function(data) {
+                const $box = $('#chatHistory');
+                $box.empty();
+                data.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
+                data.forEach(m => {
+                    const isMe = m.origen === 'admin';
+                    const msgClass = isMe ? 'admin' : 'cliente';
+                    const checks = m.estado === 'leido' ? '<i class="fa fa-check-double leido"></i>' : '<i class="fa fa-check"></i>';
+                    $box.append(`<div class="chat-msg ${msgClass}"><div>${m.mensaje}</div><div class="chat-meta"><span>${m.fecha.substring(11, 16)}</span> ${isMe ? checks : ''}</div></div>`);
+                });
+                $box.scrollTop($box[0].scrollHeight);
+            });
+        }
+        $('#notifyForm').submit(function(e){
+            e.preventDefault();
+            const msg = $('#notifyMessage').val().trim();
+            if(!msg) return;
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            $.ajax({
+                url: API_NOTIF, type: 'POST', contentType: 'application/json',
+                data: JSON.stringify({ user_id: $('#notifyClientId').val(), sender_id: currentUser.id, message: msg, origen: 'admin' }),
+                success: function() { $('#notifyMessage').val(''); cargarHistorial($('#notifyClientId').val()); }
+            });
+        });
+        
+        function filterTable() {
+            const val = $('#filterSearch').val().toLowerCase();
+            const filtered = clientesCargados.filter(c => c.nombre.toLowerCase().includes(val) || c.correo.toLowerCase().includes(val));
+            renderTable(filtered);
+        }
+
+        function cerrarSesion() { localStorage.removeItem('currentUser'); window.location.href = '../login.html'; }
+    </script>
+
+</body>
 </html>

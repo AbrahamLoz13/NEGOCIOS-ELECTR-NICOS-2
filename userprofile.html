@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="css/font-awesome.min.css">
 
     <style>
-        /* BARRA DE BÚSQUEDA FIJA (STICKY) */
+        /* BARRA DE BÚSQUEDA FIJA */
         .sticky-header {
             position: fixed !important;
             top: 0;
@@ -39,18 +39,14 @@
         .gutters-sm { margin-right: -8px; margin-left: -8px; }
         .gutters-sm>.col, .gutters-sm>[class*=col-] { padding-right: 8px; padding-left: 8px; }
         .mb-3, .my-3 { margin-bottom: 1rem!important; }
-        .bg-gray-300 { background-color: #e2e8f0; }
-        .h-100 { height: 100%!important; }
-        .shadow-none { box-shadow: none!important; }
-
-        .btn-logout { background-color: #D10024; color: white; border: none; padding: 5px 15px; border-radius: 4px; font-weight: bold; margin-top: 10px; }
+        .btn-logout { background-color: #D10024; color: white; border: none; padding: 5px 15px; border-radius: 4px; font-weight: bold; margin-top: 10px; width: 100%; }
         
         /* Botón Admin Panel */
         #admin-panel-btn { display: none; margin-bottom: 10px; width: 100%; font-weight: bold; }
+        /* Botón Vendedor Panel */
+        #vendor-panel-btn { display: none; margin-bottom: 10px; width: 100%; font-weight: bold; background-color: #ffc107; color: #333; border: none; }
 
-        /* Inputs de edición */
         .edit-input { display: none; margin-bottom: 5px; }
-
         .social-floating a { display: flex !important; align-items: center !important; justify-content: center !important; }
     </style>
 </head>
@@ -83,7 +79,6 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="col-md-6">
                         <div class="header-search">
                             <form action="general.html" method="GET">
@@ -97,27 +92,9 @@
                             </form>
                         </div>
                     </div>
-
                     <div class="col-md-3 clearfix">
                         <div class="header-ctn">
                             <div><a href="wishlist.html"><i class="fa fa-heart-o"></i><span>Favoritos</span></a></div>
-                            <div class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                                    <i class="fa fa-shopping-cart"></i><span>Tu Carrito</span>
-                                    <div class="qty cart-qty">0</div>
-                                </a>
-                                <div class="cart-dropdown">
-                                    <div class="cart-list" id="cart-dropdown-list"></div>
-                                    <div class="cart-summary">
-                                        <small>Items seleccionados</small>
-                                        <h5>SUBTOTAL: $0.00</h5>
-                                    </div>
-                                    <div class="cart-btns">
-                                        <a href="checkout.html" style="background-color: #D10024; color:white; width:100%">Pagar</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="menu-toggle"><a href="#"><i class="fa fa-bars"></i><span>Menú</span></a></div>
                         </div>
                     </div>
                 </div>
@@ -165,7 +142,10 @@
                             <div class="mt-3">
                                 <h4 id="profile-name-header">Cargando...</h4>
                                 <p class="text-muted font-size-sm" id="profile-role">Cargando datos...</p>
-                                <a id="admin-panel-btn" href="admin/admin-panel.html" class="btn btn-primary">Panel de Control Admin</a>
+                                
+                                <a id="admin-panel-btn" href="admin/admin-panel.html" class="btn btn-primary">Panel de Administrador</a>
+                                <a id="vendor-panel-btn" href="admin/admin-panel.html" class="btn btn-warning">Panel de Ventas</a>
+                                
                                 <button class="btn-logout" onclick="cerrarSesion()"><i class="fa fa-sign-out"></i> Cerrar Sesión</button>
                             </div>
                         </div>
@@ -195,7 +175,7 @@
                                 <div class="col-sm-3"><h6 class="mb-0">Rol de Cuenta</h6></div>
                                 <div class="col-sm-9 text-secondary">
                                     <span id="profile-account-type">---</span>
-                                    </div>
+                                </div>
                             </div>
                             <hr>
                             <div class="row">
@@ -240,19 +220,27 @@
             $('#profile-name-header').text(userData.nombre);
             $('#profile-full-name-view').text(userData.nombre);
             $('#profile-email-view').text(userData.correo || "No registrado");
-            $('#profile-account-type').text(userData.rol.toUpperCase());
-            $('#profile-role').text("Estatus: " + userData.rol);
+            
+            // Mostrar Rol
+            let rolMostrar = userData.rol ? userData.rol.toUpperCase() : "CLIENTE";
+            $('#profile-account-type').text(rolMostrar);
+            $('#profile-role').text("Estatus: Activo | Rol: " + rolMostrar);
 
-            // Actualizar header superior (Solo nombre e icono)
+            // Actualizar header superior
             $('#auth-container').html(`
                 <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1;">
                     <i class="fa fa-user"></i> ${userData.nombre}
                 </a>
             `);
 
-            // Mostrar botón de admin si el rol es 'admin'
-            if (userData.rol === 'admin') {
-                $('#admin-panel-btn').show();
+            // LÓGICA DE PERMISOS
+            // Normalizamos el rol a minúsculas para evitar errores
+            const userRole = (userData.rol || "").toLowerCase();
+
+            if (userRole === 'admin') {
+                $('#admin-panel-btn').show(); // Muestra botón azul de Admin
+            } else if (userRole === 'vendedor') {
+                $('#vendor-panel-btn').show(); // Muestra botón amarillo de Vendedor
             }
         }
 
@@ -278,7 +266,7 @@
             userData.correo = $('#profile-email-edit').val();
 
             localStorage.setItem('currentUser', JSON.stringify(userData));
-            alert("Perfil actualizado.");
+            alert("Perfil actualizado correctamente.");
             cancelarEdicion();
             cargarDatosUsuario();
         }

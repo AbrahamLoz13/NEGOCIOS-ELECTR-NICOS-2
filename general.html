@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pet Palace | Catálogo General</title>
+    <title>Pet Palace | Catálogo Premium</title>
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -16,75 +16,154 @@
     <link rel="stylesheet" href="css/font-awesome.min.css">
 
     <style>
-        /* BARRA DE BÚSQUEDA ANCLADA (STICKY) */
-        .sticky-header {
-            position: fixed !important;
-            top: 0;
-            width: 100%;
-            z-index: 9999;
-            background: #15161D !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            animation: slideDown 0.4s ease;
+        /* =========================================
+           CORRECCIONES DE LAYOUT HEADER
+           ========================================= */
+        .header-ctn > div > a { width: 70px !important; display: block; }
+        .header-ctn > div + div { margin-left: 5px !important; }
+
+        /* Badge de Notificaciones */
+        .qty-msg {
+            position: absolute; top: -10px; right: 15px; width: 20px; height: 20px;
+            line-height: 20px; text-align: center; border-radius: 50%; font-size: 10px;
+            color: #FFF; background-color: #D10024; display: none; border: 2px solid #15161D;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3); animation: popIn 0.3s ease;
+        }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        /* =========================================
+           WIDGET DE CHAT PROFESIONAL (CSS COMPLETO)
+           ========================================= */
+        #chat-widget {
+            position: fixed; bottom: 25px; right: 25px; 
+            width: 380px; height: 600px;
+            background: #ffffff; 
+            border-radius: 20px; 
+            box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+            z-index: 10000; display: none;
+            flex-direction: column; 
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
         }
 
-        @keyframes slideDown {
-            from { transform: translateY(-100%); }
-            to { transform: translateY(0); }
-        }
-
-        /* AJUSTE PARA PRODUCTOS */
-        .product {
-            margin-bottom: 60px; 
-            transition: 0.3s;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        
-        .product:hover {
-            box-shadow: 0px 0px 15px -5px rgba(0,0,0,0.2);
-        }
-
-        /* AVISO DE COOKIES */
-        .cookie-banner {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            max-width: 350px;
-            background: #1e1f29;
-            color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            z-index: 11000;
-            border-left: 5px solid #4ea3f1;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            display: none;
-        }
-        
-        .cookie-btn {
-            background-color: #4ea3f1;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
+        /* HEADER DEL CHAT */
+        .chat-header {
+            background: #ffffff; padding: 15px 20px; height: 75px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid #f0f0f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             cursor: pointer;
-            margin-top: 10px;
-            font-weight: bold;
+        }
+        .chat-header-left { display: flex; align-items: center; gap: 15px; }
+        .chat-back-btn { font-size: 18px; color: #333; cursor: pointer; display: none; padding: 8px; border-radius: 50%; transition: 0.2s; }
+        .chat-back-btn:hover { background: #f5f5f5; }
+        
+        .chat-avatar-wrapper { position: relative; }
+        .chat-avatar-header { 
+            width: 45px; height: 45px; background: linear-gradient(135deg, #D10024, #ff4d4d); 
+            color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: 20px; box-shadow: 0 2px 5px rgba(209, 0, 36, 0.3);
+        }
+        .status-dot { position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: #31a24c; border: 2px solid #fff; border-radius: 50%; }
+        
+        .chat-info h4 { margin: 0; color: #1c1e21; font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+        .chat-info small { font-size: 13px; color: #65676b; }
+        .close-chat { font-size: 24px; color: #bcc0c4; cursor: pointer; transition: 0.2s; padding: 5px; }
+        .close-chat:hover { color: #D10024; }
+
+        /* CUERPO DEL CHAT */
+        .chat-body {
+            flex-grow: 1; background-color: #fff; overflow-y: auto; padding: 20px;
+            display: flex; flex-direction: column; gap: 2px; 
+        }
+        .chat-body::-webkit-scrollbar { width: 6px; }
+        .chat-body::-webkit-scrollbar-thumb { background-color: #e4e6eb; border-radius: 10px; }
+
+        /* BURBUJAS */
+        .message-row { display: flex; margin-bottom: 8px; width: 100%; }
+        .message-content-wrapper { max-width: 75%; display: flex; flex-direction: column; }
+
+        .message-row.incoming { justify-content: flex-start; }
+        .message-row.incoming .message-bubble { background-color: #f0f2f5; color: #050505; border-bottom-left-radius: 4px; }
+        .message-row.incoming .msg-name-label { display: block; font-size: 11px; color: #65676b; margin-left: 12px; margin-bottom: 2px; }
+        .message-row.incoming .msg-time { color: rgba(0,0,0,0.45); }
+
+        .message-row.outgoing { justify-content: flex-end; }
+        .message-row.outgoing .message-bubble { background-color: #D10024; color: #ffffff; border-bottom-right-radius: 4px; }
+        .message-row.outgoing .msg-time { color: rgba(255,255,255,0.7); }
+
+        /* DISEÑO DE BURBUJA Y HORA (FIX) */
+        .message-bubble {
+            padding: 8px 12px; border-radius: 18px; font-size: 15px; line-height: 1.4;
+            position: relative; word-wrap: break-word; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            animation: fadeIn 0.3s ease; display: inline-block; min-width: 60px; 
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .msg-time {
+            font-size: 10px; margin-top: 5px; margin-left: 8px; float: right; 
+            white-space: nowrap; vertical-align: bottom; line-height: 1;
         }
 
-        /* Alineación iconos flotantes */
-        .social-floating a {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
+        /* INPUT AREA */
+        .chat-footer { padding: 15px; background: #fff; border-top: 1px solid #f0f0f0; display: none; align-items: center; gap: 10px; }
+        .chat-input-wrapper { flex: 1; background: #f0f2f5; border-radius: 20px; padding: 8px 15px; display: flex; align-items: center; }
+        .chat-input { width: 100%; background: transparent; border: none; outline: none; font-size: 15px; color: #050505; }
+        .btn-chat-send { color: #D10024; background: none; border: none; font-size: 20px; cursor: pointer; transition: 0.2s; padding: 5px; }
+        .btn-chat-send:hover { transform: scale(1.1); color: #a8001d; }
+
+        /* BANDEJA DE ENTRADA */
+        .inbox-list { list-style: none; padding: 0; margin: 0; }
+        .inbox-item { padding: 15px; display: flex; align-items: center; cursor: pointer; border-radius: 10px; transition: 0.2s; }
+        .inbox-item:hover { background-color: #f2f2f2; }
+        .inbox-avatar { width: 50px; height: 50px; background: #D10024; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 15px; }
+        .inbox-details { flex: 1; overflow: hidden; }
+        .inbox-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .inbox-name { font-weight: 600; font-size: 16px; color: #050505; }
+        .inbox-time { font-size: 12px; color: #65676b; }
+        .inbox-msg { font-size: 14px; color: #65676b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .unread-dot { width: 10px; height: 10px; background: #D10024; border-radius: 50%; margin-left: 10px; }
+
+        /* MOVIL */
+        @media (max-width: 480px) {
+            #chat-widget { width: 100%; height: 100%; bottom: 0; right: 0; border-radius: 0; }
+            .chat-header { height: 60px; }
         }
 
-        .search-loader {
-            display: none;
-            margin-left: 10px;
-            color: #4ea3f1;
-        }
+        /* GENERALES */
+        body { font-family: 'Montserrat', sans-serif; background-color: #fcfcfc; }
+        .sticky-header { position: fixed !important; top: 0; width: 100%; z-index: 9999; background: #15161D !important; box-shadow: 0 4px 15px rgba(0,0,0,0.5); animation: slideDown 0.4s ease; }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+
+        /* PRODUCTOS */
+        .product { background: #fff; border: 1px solid #eee; margin-bottom: 30px; transition: 0.3s all; height: 100%; display: flex; flex-direction: column; border-radius: 8px; overflow: hidden; position: relative; }
+        .product:hover { box-shadow: 0px 10px 25px -5px rgba(0,0,0,0.15); border-color: #D10024; transform: translateY(-5px); }
+        .product-img { height: 220px; width: 100%; display: flex; align-items: center; justify-content: center; background-color: #fff; padding: 20px; border-bottom: 1px solid #f9f9f9; position: relative; }
+        .product-img img { max-height: 100%; max-width: 100%; object-fit: contain; transition: 0.3s; }
+        .product:hover .product-img img { transform: scale(1.05); }
+        .add-btn-icon { position: absolute; bottom: 15px; right: 15px; width: 40px; height: 40px; border-radius: 50%; background-color: #D10024; color: white; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; z-index: 20; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .add-btn-icon:hover { background-color: #15161D; transform: scale(1.1); }
+        .add-btn-icon:disabled { background-color: #ccc; cursor: not-allowed; }
+        .product-body { padding: 15px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        .product-category { color: #8D99AE; font-size: 11px; text-transform: uppercase; margin-bottom: 5px; }
+        .product-name { text-transform: uppercase; font-size: 13px; font-weight: 700; margin-bottom: 10px; min-height: 35px; }
+        .product-name a { color: #2B2D42; text-decoration: none; }
+        .product-name a:hover { color: #D10024; }
+        .product-price { color: #D10024; font-size: 18px; font-weight: 700; margin: 0;}
+
+        /* EXTRAS */
+        .cookie-banner { position: fixed; bottom: 20px; left: 20px; max-width: 350px; background: #1e1f29; color: #fff; padding: 20px; border-radius: 8px; z-index: 11000; border-left: 5px solid #4ea3f1; display: none; }
+        .cookie-btn { background-color: #4ea3f1; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+        .row-flex { display: flex; flex-wrap: wrap; }
+        .social-floating a { display: flex !important; align-items: center !important; justify-content: center !important; }
+
+        /* CARRITO */
+        .cart-list .product-widget { padding: 10px 0; border-bottom: 1px solid #E4E7ED; display: flex; align-items: center; width: 100%; position: relative; }
+        .cart-list .product-img { width: 60px; height: 60px; margin-right: 15px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; }
+        .cart-list .product-img img { max-width: 100%; max-height: 100%; }
+        .cart-list .product-body { flex: 1; padding-right: 20px; }
+        .cart-list .delete { position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: none; border: none; color: #D10024; font-size: 16px; cursor: pointer; }
     </style>
 </head>
 
@@ -96,12 +175,12 @@
                 <ul class="header-links pull-left">
                     <li><a><i class="fa fa-phone"></i> +52 449 928 9336</a></li>
                     <li><a href="https://mail.google.com/"><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a></li>
-                    <li><a href="#"><i class="fa fa-map-marker"></i> ITA, Aguascalientes, México</a></li>
+                    <li><a href="#"><i class="fa fa-map-marker"></i> ITA, Aguascalientes</a></li>
                 </ul>
                 <ul class="header-links pull-right">
                     <li id="auth-container">
                         <a href="login.html" style="font-weight: bold; color: #4ea3f1; margin-right: 10px;"><i class="fa fa-sign-in"></i> Iniciar sesión</a>
-                        <a href="#" onclick="document.getElementById('modalRegistro').style.display='block'" style="font-weight: bold; color: #4ea3f1;"><i class="fa fa-user-plus"></i> Registrarse</a>
+                        <a href="login.html" style="font-weight: bold; color: #4ea3f1;"><i class="fa fa-user-plus"></i> Registrarse</a>
                     </li>
                 </ul>
             </div>
@@ -122,22 +201,30 @@
                         <div class="header-search">
                             <form id="searchForm">
                                 <select class="input-select" id="searchCategory">
-                                    <option value="0">Categorías</option>
+                                    <option value="0">Todas</option>
                                     <option value="Perros">Perros</option>
                                     <option value="Gatos">Gatos</option>
                                     <option value="Roedores">Roedores</option>
                                     <option value="Aves">Aves</option>
                                     <option value="Peces">Peces</option>
                                 </select>
-                                <input class="input" id="searchInput" placeholder="Buscar nombre, marca o tipo...">
+                                <input class="input" id="searchInput" placeholder="¿Qué busca tu mascota?">
                                 <button class="search-btn" type="submit">Buscar</button>
-                                <i class="fa fa-spinner fa-spin search-loader" id="searchSpinner"></i>
                             </form>
                         </div>
                     </div>
 
                     <div class="col-md-3 clearfix">
                         <div class="header-ctn">
+                            
+                            <div id="msg-wrapper" style="display:none; position: relative;">
+                                <a href="#" onclick="toggleChatWidget(event)">
+                                    <i class="fa fa-envelope"></i>
+                                    <span>Mensajes</span>
+                                    <div class="qty-msg" id="msg-badge">0</div>
+                                </a>
+                            </div>
+
                             <div>
                                 <a href="wishlist.html">
                                     <i class="fa fa-heart-o"></i>
@@ -147,24 +234,26 @@
                             </div>
 
                             <div class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                <a class="dropdown-toggle" id="cart-icon-btn" data-toggle="dropdown" aria-expanded="true" style="cursor: pointer;">
                                     <i class="fa fa-shopping-cart"></i>
                                     <span>Tu Carrito</span>
-                                    <div class="qty cart-qty" id="cart-count">0</div>
+                                    <div class="qty cart-qty">0</div>
                                 </a>
                                 <div class="cart-dropdown">
-                                    <div class="cart-list" id="cart-dropdown-list"></div>
+                                    <div class="cart-list" id="cart-dropdown-list">
+                                        <div class="text-center py-3"><small>Tu carrito está vacío</small></div>
+                                    </div>
                                     <div class="cart-summary">
-                                        <small>Items seleccionados</small>
-                                        <h5>SUBTOTAL: $0.00</h5>
+                                        <small><span class="cart-count-summary">0</span> Items</small>
+                                        <h5 id="cart-subtotal">TOTAL: $0.00</h5>
                                     </div>
                                     <div class="cart-btns">
-                                        <a href="checkout.html">Ver Carrito</a>
-                                        <a href="checkout.html" style="background-color: #D10024;">Pagar</a>
+                                        <a href="#">Ver Carrito</a>
+                                        <a href="checkout.html" onclick="return verificarLoginParaCheckout()">Pagar <i class="fa fa-arrow-circle-right"></i></a>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="menu-toggle"><a href="#"><i class="fa fa-bars"></i><span>Menú</span></a></div>
                         </div>
                     </div>
@@ -190,13 +279,40 @@
         </div>
     </nav>
 
+    <div id="chat-widget">
+        <div class="chat-header" onclick="if(currentView==='chat') mostrarBandeja();">
+            <div class="chat-header-left">
+                <i class="fa fa-arrow-left chat-back-btn" id="chatBackBtn"></i>
+                <div class="chat-avatar-wrapper">
+                    <div class="chat-avatar-header" id="headerAvatar"><i class="fa fa-headset"></i></div>
+                    <div class="status-dot"></div>
+                </div>
+                <div class="chat-info">
+                    <h4 id="chatTitle">Soporte</h4>
+                    <small id="chatSubtitle">Haga clic para ver bandeja</small>
+                </div>
+            </div>
+            <i class="fa fa-times close-chat" onclick="toggleChatWidget(event)"></i>
+        </div>
+
+        <div class="chat-body" id="chatBody">
+            </div>
+
+        <div class="chat-footer" id="chatFooter">
+            <div class="chat-input-wrapper">
+                <input type="text" class="chat-input" id="chatInputMain" placeholder="Escribe un mensaje..." autocomplete="off">
+            </div>
+            <button class="btn-chat-send" onclick="enviarMensajeChat()"><i class="fa fa-paper-plane"></i></button>
+        </div>
+    </div>
+
     <div id="breadcrumb" class="section">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <ul class="breadcrumb-tree">
                         <li><a href="index.html">Inicio</a></li>
-                        <li class="active" id="dynamicTitle">General</li>
+                        <li class="active" id="breadcrumbTitle">Catálogo Completo</li>
                     </ul>
                 </div>
             </div>
@@ -206,53 +322,32 @@
     <div class="section">
         <div class="container">
             <div class="row">
-                <div id="aside" class="col-md-3">
-                    <div class="aside">
-                        <h3 class="aside-title">Categorías</h3>
-                        <div class="checkbox-filter">
-                            <div class="input-checkbox"><input type="checkbox" id="cat-1"><label for="cat-1"><span></span>Accesorios</label></div>
-                            <div class="input-checkbox"><input type="checkbox" id="cat-2"><label for="cat-2"><span></span>Alimento</label></div>
-                            <div class="input-checkbox"><input type="checkbox" id="cat-3"><label for="cat-3"><span></span>Hogar</label></div>
-                        </div>
-                    </div>
-
-                    <div class="aside">
-                        <h3 class="aside-title">Precio Máximo</h3>
-                        <div class="price-filter">
-                            <div id="price-slider"></div>
-                            <div class="input-number price-min"><input id="price-min" type="number"></div>
-                            <span>-</span>
-                            <div class="input-number price-max"><input id="price-max" type="number"></div>
-                        </div>
-                    </div>
-
-                    <div class="aside">
-                        <h3 class="aside-title">Más Vendidos</h3>
-                        <div class="product-widget">
-                            <div class="product-img"><img src="img/productdog1.png" alt=""></div>
-                            <div class="product-body">
-                                <p class="product-category">Perros</p>
-                                <h3 class="product-name"><a href="#">Correa Reforzada</a></h3>
-                                <h4 class="product-price">$120.00</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="store" class="col-md-9">
+                <div class="col-md-12">
                     <div class="store-filter clearfix">
                         <div class="store-sort">
-                            <label>Ordenar por: <select class="input-select"><option value="0">Popularidad</option></select></label>
+                            <label>
+                                Ordenar por:
+                                <select class="input-select" onchange="ordenarProductos(this.value)">
+                                    <option value="0">Popularidad</option>
+                                    <option value="1">Precio: Menor a Mayor</option>
+                                    <option value="2">Precio: Mayor a Menor</option>
+                                </select>
+                            </label>
                         </div>
+                        <ul class="store-grid">
+                            <li class="active"><i class="fa fa-th"></i></li>
+                            <li><a href="#"><i class="fa fa-th-list"></i></a></li>
+                        </ul>
                     </div>
 
-                    <div class="row" id="products-container">
+                    <div class="row row-flex" id="products-container">
                         <div class="col-md-12 text-center" style="padding: 100px;">
                             <h3><i class="fa fa-spinner fa-spin"></i> Cargando Catálogo...</h3>
                         </div>
                     </div>
 
                     <div class="store-filter clearfix">
+                        <span class="store-qty" id="result-count">Mostrando productos</span>
                         <ul class="store-pagination">
                             <li class="active">1</li>
                             <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
@@ -287,18 +382,19 @@
                         <div class="footer">
                             <h3 class="footer-title">Nosotros</h3>
                             <ul class="footer-links">
-                                <li><a href="#"><i class="fa fa-map-marker"></i> Aguascalientes, MEX</a></li>
+                                <li><a href="#"><i class="fa fa-map-marker"></i> ITA, Aguascalientes</a></li>
                                 <li><a><i class="fa fa-phone"></i> +52 449 928 9336</a></li>
-                                <li><a><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a></li>
+                                <li><a><i class="fa fa-envelope-o"></i> contacto@petpalace.com</a></li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-md-3 col-xs-6">
                         <div class="footer">
-                            <h3 class="footer-title">Legal</h3>
+                            <h3 class="footer-title">Categorías</h3>
                             <ul class="footer-links">
-                                <li><a href="privacidad.html" style="color:#4ea3f1; font-weight:bold;">Privacidad y Políticas</a></li>
-                                <li><a href="terminos.html">Términos y Condiciones</a></li>
+                                <li><a href="dogs.html">Perros</a></li>
+                                <li><a href="cats.html">Gatos</a></li>
+                                <li><a href="offers.html">Ofertas</a></li>
                             </ul>
                         </div>
                     </div>
@@ -307,28 +403,21 @@
         </div>
         <div id="bottom-footer" class="section">
             <div class="container text-center">
-                <ul class="footer-payments">
-                    <li><a><i class="fa fa-cc-visa"></i></a></li>
-                    <li><a><i class="fa fa-credit-card"></i></a></li>
-                    <li><a><i class="fa fa-cc-paypal"></i></a></li>
-                    <li><a><i class="fa fa-cc-mastercard"></i></a></li>
-                </ul>
-                <span class="copyright">© 2026 Pet Palace | Hecho con <i class="fa fa-heart-o"></i> por TecNM</span>
+                <span class="copyright">© 2026 Pet Palace | Calidad para tu mejor amigo</span>
             </div>
         </div>
     </footer>
 
     <div id="cookieBanner" class="cookie-banner">
-        <p>Utilizamos cookies para mejorar tu experiencia. <a href="privacidad.html">Leer más</a></p>
-        <button class="cookie-btn" onclick="aceptarCookies()">Aceptar</button>
+        <p>Usamos cookies para mejorar tu experiencia. <button class="cookie-btn" onclick="aceptarCookies()">Aceptar</button></p>
     </div>
 
     <div class="social-floating">
-        <a href="checkout.html" class="floating-cart" title="Ver carrito"><i class="fa fa-shopping-cart"></i><span class="cart-count">2</span></a>
-        <a href="https://www.facebook.com/profile.php?id=61578271885148" class="facebook" target="_blank"><i class="fa fa-facebook"></i></a>
+        <a href="javascript:void(0)" onclick="abrirCarritoFlotante()" class="floating-cart" title="Ver carrito">
+            <i class="fa fa-shopping-cart"></i><span class="cart-count cart-qty">0</span>
+        </a>
         <a href="https://wa.me/524499289336" class="whatsapp" target="_blank"><i class="fa fa-whatsapp"></i></a>
-        <a href="https://www.instagram.com/" class="instagram" target="_blank"><i class="fa fa-instagram"></i></a>
-        <a href="https://maps.google.com" class="maps" target="_blank"><i class="fa fa-map-marker"></i></a>
+        <a href="https://www.facebook.com/" class="facebook" target="_blank"><i class="fa fa-facebook"></i></a>
     </div>
 
     <script src="js/jquery.min.js"></script>
@@ -336,71 +425,401 @@
     <script src="js/main.js"></script>
 
     <script>
+        let currentUser = null;
+        let cart = [];
+        let allProducts = []; 
+        let filteredProducts = [];
+        
+        // VARIABLES DEL CHAT
+        let currentView = 'inbox'; 
+        let chatPollInterval = null;
+
         $(document).ready(function() {
-            // --- DETECTAR SESIÓN: ESTILO EL ORIGEN ---
-            const userData = JSON.parse(localStorage.getItem('currentUser'));
-            if (userData) {
+            // 1. CARGAR USUARIO
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (currentUser) {
                 $('#auth-container').html(`
-                    <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1;">
-                        <i class="fa fa-user"></i> ${userData.nombre}
+                    <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1; margin-right: 15px;">
+                        <i class="fa fa-user"></i> ${currentUser.nombre}
                     </a>
+                    <a href="#" onclick="cerrarSesionIndex()" style="font-size:12px; color:#D10024;">(Salir)</a>
                 `);
+
+                // FIX ALINEACIÓN HEADER
+                $('#msg-wrapper').css('display', 'inline-block'); 
+                
+                // INICIAR POLLING DE BADGE (Chat)
+                verificarBadge();
+                setInterval(verificarBadge, 5000);
+
+                const savedCart = localStorage.getItem(`cart_${currentUser.id}`);
+                if (savedCart) {
+                    cart = JSON.parse(savedCart);
+                    actualizarInterfazCarrito();
+                }
+            } else {
+                $('#msg-wrapper').hide();
             }
 
-            if (localStorage.getItem('cookiesPetPalace') !== 'true') {
-                $('#cookieBanner').fadeIn();
-            }
-            cargarProductos(); 
+            if (localStorage.getItem('cookiesPetPalace') !== 'true') $('#cookieBanner').fadeIn();
+            
+            // 2. CARGA INICIAL DE PRODUCTOS
+            cargarTodosLosProductos(); 
         });
 
-        function cargarProductos(termino = "", categoria = "") {
-            $('#searchSpinner').show();
-            let url = 'api/products.php?';
-            if(termino) url += 'q=' + encodeURIComponent(termino) + '&';
-            if(categoria && categoria !== "0") url += 'categoria=' + encodeURIComponent(categoria);
+        // =================================================================
+        // LÓGICA DEL CHAT PROFESIONAL
+        // =================================================================
+        function toggleChatWidget(e) {
+            if(e) { e.preventDefault(); e.stopPropagation(); }
+            const widget = $('#chat-widget');
+            
+            if (widget.is(':visible')) {
+                widget.css('opacity', '0');
+                setTimeout(() => widget.hide(), 300);
+                if(chatPollInterval) clearInterval(chatPollInterval);
+            } else {
+                widget.show();
+                setTimeout(() => widget.css('opacity', '1'), 10);
+                widget.css('display', 'flex'); 
+                mostrarBandeja(); 
+            }
+        }
 
-            $.getJSON(url, function(data) {
-                const $container = $('#products-container');
-                $container.empty();
-                $('#searchSpinner').hide();
-                data.forEach(function(p) {
-                    const isAgotado = parseInt(p.stock) <= 0;
-                    const html = `
-                        <div class="col-md-4 col-xs-6">
-                            <div class="product">
-                                <div class="product-img"><img src="${p.imagen}" onerror="this.src='img/logo6.png'"></div>
-                                <div class="product-body">
-                                    <p class="product-category">${p.categoria}</p>
-                                    <h3 class="product-name"><a href="#">${p.nombre}</a></h3>
-                                    <h4 class="product-price">$${parseFloat(p.precio).toFixed(2)}</h4>
+        // VISTA 1: BANDEJA
+        function mostrarBandeja() {
+            currentView = 'inbox';
+            $('#chatBackBtn').hide();
+            $('#headerAvatar').html('<i class="fa fa-comments"></i>');
+            $('#chatTitle').text('Mensajes');
+            $('#chatSubtitle').text('Bandeja de Entrada');
+            $('#chatFooter').hide();
+            
+            if(chatPollInterval) clearInterval(chatPollInterval);
+            cargarBandeja();
+            chatPollInterval = setInterval(cargarBandeja, 5000);
+        }
+
+        function cargarBandeja() {
+            if(!currentUser || currentView !== 'inbox') return;
+
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                const $box = $('#chatBody');
+                
+                if(data.length === 0) {
+                    $box.html('<div class="text-center py-5 text-muted" style="margin-top:50px;">Aún no tienes mensajes.<br><button class="btn btn-default btn-sm mt-3" onclick="entrarAlChat()">Contactar Soporte</button></div>');
+                    return;
+                }
+
+                const adminMsgs = data.filter(m => m.origen === 'admin');
+                const unreadCount = adminMsgs.filter(n => n.estado !== 'leido').length;
+                
+                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                let senderName = "Soporte Pet Palace"; 
+                if (adminMsgs.length > 0 && adminMsgs[0].remitente) {
+                    senderName = adminMsgs[0].remitente;
+                }
+
+                data.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                const lastMsg = data[0];
+                const time = lastMsg.fecha.substring(11, 16);
+                const preview = (lastMsg.origen === 'cliente' ? 'Tú: ' : '') + lastMsg.mensaje;
+                const unreadDot = unreadCount > 0 ? '<div class="unread-dot"></div>' : '';
+                const boldStyle = unreadCount > 0 ? 'font-weight:700; color:#000;' : '';
+
+                const html = `
+                    <ul class="inbox-list">
+                        <li class="inbox-item" onclick="entrarAlChat()">
+                            <div class="inbox-avatar"><i class="fa fa-headset"></i></div>
+                            <div class="inbox-details">
+                                <div class="inbox-top">
+                                    <span class="inbox-name">${senderName}</span>
+                                    <span class="inbox-time">${time}</span>
                                 </div>
-                                <div class="add-to-cart">
-                                    <button class="add-to-cart-btn" ${isAgotado ? 'disabled' : ''}>
-                                        <i class="fa fa-shopping-cart"></i> ${isAgotado ? 'AGOTADO' : 'Añadir'}
-                                    </button>
-                                </div>
+                                <div class="inbox-msg" style="${boldStyle}">${preview}</div>
                             </div>
-                        </div>`;
-                    $container.append(html);
-                });
+                            ${unreadDot}
+                        </li>
+                    </ul>`;
+                $box.html(html);
             });
         }
 
-        $(window).scroll(function() {
-            if ($(this).scrollTop() > 150) $('#header').addClass('sticky-header');
-            else $('#header').removeClass('sticky-header');
-        });
+        // VISTA 2: CONVERSACIÓN
+        function entrarAlChat() {
+            currentView = 'chat';
+            $('#chatBackBtn').show();
+            $('#chatFooter').css('display', 'flex'); 
+            
+            cargarConversacion(false);
+            if(chatPollInterval) clearInterval(chatPollInterval);
+            chatPollInterval = setInterval(() => cargarConversacion(true), 3000);
+            marcarTodoLeido();
+        }
 
-        function aceptarCookies() {
-            localStorage.setItem('cookiesPetPalace', 'true');
-            $('#cookieBanner').fadeOut();
+        function cargarConversacion(silent = false) {
+            if(!currentUser || currentView !== 'chat') return;
+            const $box = $('#chatBody');
+            const isAtBottom = ($box.scrollTop() + $box.innerHeight() >= $box[0].scrollHeight - 60);
+
+            if(!silent) $box.html('<div class="text-center py-5"><i class="fa fa-circle-o-notch fa-spin text-muted"></i></div>');
+
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                let finalTitle = "Soporte Pet Palace";
+                const adminMsgs = data.filter(m => m.origen === 'admin');
+                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                if (adminMsgs.length > 0 && adminMsgs[0].remitente) finalTitle = adminMsgs[0].remitente;
+                
+                $('#chatTitle').text(finalTitle);
+                $('#chatSubtitle').text('Activo ahora');
+
+                data.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+                let html = '<div style="margin-top:auto;">'; 
+                if(data.length === 0) html += '<div class="text-center text-muted small mt-3">¡Hola! ¿En qué podemos ayudarte?</div>';
+
+                data.forEach(n => {
+                    const isMe = (n.origen === 'cliente');
+                    const rowClass = isMe ? 'outgoing' : 'incoming';
+                    const nameLabel = !isMe ? `<span class="msg-name-label">${n.remitente || 'Soporte'}</span>` : '';
+
+                    html += `
+                        <div class="message-row ${rowClass}">
+                            <div class="message-content-wrapper">
+                                ${nameLabel}
+                                <div class="message-bubble">
+                                    ${n.mensaje}
+                                    <span class="msg-time">${n.fecha.substring(11, 16)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                if(silent) {
+                    if($box.html() !== html) {
+                        $box.html(html);
+                        if(isAtBottom) $box.scrollTop($box[0].scrollHeight);
+                    }
+                } else {
+                    $box.html(html);
+                    $box.scrollTop($box[0].scrollHeight); 
+                }
+            });
+        }
+
+        function enviarMensajeChat() {
+            const txt = $('#chatInputMain').val().trim();
+            if(!txt) return;
+            $('#chatInputMain').val('').focus(); 
+
+            $.ajax({
+                url: 'api/notifications.php', type: 'POST', contentType: 'application/json',
+                data: JSON.stringify({
+                    user_id: currentUser.id,
+                    message: txt,
+                    origen: 'cliente' 
+                }),
+                success: function() { cargarConversacion(true); }
+            });
+        }
+
+        $('#chatInputMain').on('keypress', function(e) { if(e.which === 13) enviarMensajeChat(); });
+
+        function verificarBadge() {
+            if(!currentUser) return;
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                const unread = data.filter(n => n.estado !== 'leido' && n.origen === 'admin');
+                const badge = $('#msg-badge');
+                if(unread.length > 0) badge.text(unread.length).show(); else badge.hide();
+            });
+        }
+
+        function marcarTodoLeido() {
+            if(!currentUser) return;
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                data.filter(n => n.estado !== 'leido' && n.origen === 'admin').forEach(m => {
+                    $.ajax({ url: 'api/notifications.php', type: 'PUT', contentType: 'application/json', data: JSON.stringify({ id: m.id, estado: 'leido' }) });
+                });
+                $('#msg-badge').hide();
+            });
+        }
+
+        // =================================================================
+        // LÓGICA DE PRODUCTOS (CATÁLOGO)
+        // =================================================================
+        function cargarTodosLosProductos() {
+            $.getJSON('api/products.php', function(data) {
+                allProducts = data;
+                
+                // Revisar búsqueda URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const q = urlParams.get('q');
+                const cat = urlParams.get('categoria');
+
+                if(q || cat) {
+                    if(q) $('#searchInput').val(q);
+                    if(cat) $('#searchCategory').val(cat);
+                    filtrarProductos(q, cat);
+                } else {
+                    renderizarProductos(allProducts);
+                }
+            }).fail(function() {
+                $('#products-container').html('<div class="col-md-12 text-center text-danger"><h3>Error al conectar con la base de datos.</h3></div>');
+            });
+        }
+
+        function filtrarProductos(termino, categoria) {
+            let resultados = allProducts;
+            if (categoria && categoria !== "0" && categoria !== "Todas") {
+                resultados = resultados.filter(p => p.categoria && p.categoria.toLowerCase() === categoria.toLowerCase());
+            }
+            if (termino && termino.trim() !== "") {
+                const termLower = termino.toLowerCase();
+                resultados = resultados.filter(p => p.nombre.toLowerCase().includes(termLower));
+            }
+
+            filteredProducts = resultados;
+            renderizarProductos(resultados);
+            
+            if(termino) {
+                $('#breadcrumbTitle').text(`Resultados para: "${termino}"`);
+            } else if (categoria && categoria !== "0") {
+                $('#breadcrumbTitle').text(`Categoría: ${categoria}`);
+            } else {
+                $('#breadcrumbTitle').text('Catálogo Completo');
+            }
+        }
+
+        function renderizarProductos(productos) {
+            const $container = $('#products-container');
+            $container.empty();
+            $('#result-count').text(`Mostrando ${productos.length} productos`);
+
+            if(productos.length === 0) {
+                $container.html('<div class="col-md-12 text-center" style="padding:80px;"><h3><i class="fa fa-frown-o"></i> No encontramos lo que buscas.</h3></div>');
+                return;
+            }
+
+            productos.forEach(function(p) {
+                const isAgotado = parseInt(p.stock) <= 0;
+                const nombreSafe = p.nombre.replace(/'/g, "\\'");
+                const imagenSafe = p.imagen.replace(/'/g, "\\'");
+
+                const html = `
+                    <div class="col-md-3 col-sm-6" style="display:flex;">
+                        <div class="product">
+                            <div class="product-img">
+                                <img src="${p.imagen}" onerror="this.src='img/logo6.png'" alt="${p.nombre}">
+                                <button class="add-btn-icon" 
+                                        onclick="agregarAlCarrito(${p.id}, '${nombreSafe}', ${p.precio}, '${imagenSafe}')" 
+                                        ${isAgotado ? 'disabled' : ''} title="${isAgotado ? 'Agotado' : 'Añadir'}">
+                                    <i class="fa ${isAgotado ? 'fa-ban' : 'fa-cart-plus'}"></i>
+                                </button>
+                            </div>
+                            <div class="product-body">
+                                <p class="product-category">${p.categoria || 'General'}</p>
+                                <h3 class="product-name"><a href="#">${p.nombre}</a></h3>
+                                <h4 class="product-price">$${parseFloat(p.precio).toFixed(2)}</h4>
+                            </div>
+                        </div>
+                    </div>`;
+                $container.append(html);
+            });
         }
 
         $('#searchForm').submit(function(e) {
             e.preventDefault();
-            const busqueda = $('#searchInput').val();
-            const categoria = $('#searchCategory').val();
-            cargarProductos(busqueda, categoria);
+            const term = $('#searchInput').val();
+            const cat = $('#searchCategory').val();
+            filtrarProductos(term, cat);
+        });
+
+        function ordenarProductos(criterio) {
+            let listaAOrdenar = (filteredProducts.length > 0 || $('#searchInput').val()) ? filteredProducts : allProducts;
+            let sorted = [...listaAOrdenar]; 
+
+            if(criterio === "1") sorted.sort((a, b) => parseFloat(a.precio) - parseFloat(b.precio));
+            else if (criterio === "2") sorted.sort((a, b) => parseFloat(b.precio) - parseFloat(a.precio));
+            
+            renderizarProductos(sorted);
+        }
+
+        // =================================================================
+        // CARRITO Y UTILIDADES
+        // =================================================================
+        function agregarAlCarrito(id, nombre, precio, imagen) {
+            if (!validarLogin()) return;
+            const existente = cart.find(p => p.id === id);
+            if(existente) { existente.cantidad++; } else { cart.push({ id, nombre, precio, imagen, cantidad: 1 }); }
+            guardarCarrito();
+            $('#cart-icon-btn').dropdown('toggle');
+        }
+
+        function guardarCarrito() {
+            if(currentUser) {
+                localStorage.setItem(`cart_${currentUser.id}`, JSON.stringify(cart));
+                actualizarInterfazCarrito();
+            }
+        }
+
+        function actualizarInterfazCarrito() {
+            const $list = $('#cart-dropdown-list');
+            $list.empty();
+            let total = 0; let count = 0;
+
+            if (cart.length === 0) {
+                $list.html('<div class="text-center py-3"><small>Tu carrito está vacío</small></div>');
+            } else {
+                cart.forEach((prod, index) => {
+                    total += prod.precio * prod.cantidad;
+                    count += prod.cantidad;
+                    const html = `
+                        <div class="product-widget">
+                            <div class="product-img"><img src="${prod.imagen}" onerror="this.src='img/logo6.png'"></div>
+                            <div class="product-body">
+                                <h3 class="product-name"><a href="#">${prod.nombre}</a></h3>
+                                <h4 class="product-price"><span class="qty">${prod.cantidad}x</span>$${parseFloat(prod.precio).toFixed(2)}</h4>
+                            </div>
+                            <button class="delete" onclick="eliminarDelCarrito(${index})"><i class="fa fa-trash"></i></button>
+                        </div>`;
+                    $list.append(html);
+                });
+            }
+            $('.cart-qty').text(count);
+            $('.cart-count-summary').text(count);
+            $('#cart-subtotal').text('TOTAL: $' + total.toFixed(2));
+        }
+
+        function eliminarDelCarrito(index) { cart.splice(index, 1); guardarCarrito(); }
+
+        function validarLogin() {
+            if (!currentUser) {
+                alert("Debes iniciar sesión para comprar.");
+                window.location.href = "login.html";
+                return false;
+            }
+            return true;
+        }
+
+        function abrirCarritoFlotante() {
+            if (validarLogin()) {
+                $('#cart-icon-btn').dropdown('toggle');
+                $('html, body').animate({ scrollTop: 0 }, 'fast');
+            }
+        }
+
+        function verificarLoginParaCheckout() { return validarLogin(); }
+
+        function cerrarSesionIndex() { localStorage.removeItem('currentUser'); location.reload(); }
+
+        function aceptarCookies() { localStorage.setItem('cookiesPetPalace', 'true'); $('#cookieBanner').fadeOut(); }
+
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 150) $('#header').addClass('sticky-header');
+            else $('#header').removeClass('sticky-header');
         });
     </script>
 </body>

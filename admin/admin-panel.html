@@ -3,295 +3,523 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Dashboard | Pet Palace Admin</title>
-
+    
     <link rel="stylesheet" href="../css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
     <style>
-        /* CONFIGURACIÓN DEFINITIVA */
-        body {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
-            background-color: #f4f7f6;
-        }
-
-        /* SIDEBAR FIJA (EL ORIGEN) */
+        /* --- ESTILOS MODERNOS (CLEAN UI) --- */
+        body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
+        
+        /* SIDEBAR */
         #sidebar {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 1000;
-            padding: 20px 0 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            background-color: #15161D !important;
-            width: 16.666667%;
+            position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
+            padding-top: 25px; background-color: #15161D;
+            width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
         }
+        
+        .sidebar-brand { text-align: center; margin-bottom: 35px; }
+        .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
+        .sidebar-brand h5 { color: #fff; letter-spacing: 1px; font-weight: 700; font-size: 16px; margin: 0; }
+        .sidebar-brand p { color: #6c757d; font-size: 11px; text-transform: uppercase; margin-top: 5px; letter-spacing: 0.5px; }
 
-        .nav-stacked li a {
-            color: #8D99AE;
-            font-weight: 500;
-            padding: 12px 20px;
+        .nav-sidebar { list-style: none; padding: 0; margin: 0; }
+        .nav-sidebar li a {
+            display: flex; align-items: center; padding: 14px 25px;
+            color: #aeb4be; text-decoration: none; font-weight: 500; font-size: 13px;
+            transition: all 0.2s ease-in-out; border-left: 4px solid transparent;
+        }
+        .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
+        .nav-sidebar li a:hover, .nav-sidebar li.active a {
+            background-color: #1e2029; color: #fff; border-left-color: #D10024;
+        }
+        .nav-sidebar hr { border-color: #2c2e3e; margin: 20px 25px; opacity: 0.5; }
+
+        /* CONTENIDO PRINCIPAL */
+        main { margin-left: 240px; padding: 30px; transition: all 0.3s; }
+
+        /* HEADER SUPERIOR */
+        .top-bar { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 30px;
+        }
+        .page-title h2 { margin: 0; font-weight: 800; color: #15161D; font-size: 24px; }
+        .page-title span { color: #888; font-size: 13px; }
+        
+        .user-profile { display: flex; align-items: center; gap: 15px; }
+        .user-info { text-align: right; }
+        .user-info span { display: block; font-weight: 700; color: #15161D; font-size: 14px; }
+        .user-info small { color: #888; font-size: 11px; text-transform: uppercase; }
+        .user-avatar { width: 45px; height: 45px; background: #D10024; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; box-shadow: 0 4px 10px rgba(209,0,36,0.3); }
+
+        /* KPI WIDGETS (Estilo Tarjeta Blanca Moderno) */
+        .kpi-card {
+            background: white; border-radius: 16px; padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
+            display: flex; justify-content: space-between; align-items: center;
+            position: relative; overflow: hidden; height: 120px; cursor: pointer;
             transition: 0.3s;
-            text-decoration: none;
-            display: block;
+        }
+        .kpi-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        
+        /* Estado Activo (Pestaña seleccionada) - ESTO ES LO QUE INDICA DÓNDE ESTÁS */
+        .kpi-card.active-tab { 
+            border: 2px solid #4ea3f1; background: #fbfdff; 
+            box-shadow: 0 0 15px rgba(78, 163, 241, 0.2);
         }
 
-        .nav-stacked li a:hover, .nav-stacked li.active a {
-            color: #4ea3f1 !important;
-            background-color: #1e1f29 !important;
-            border-left: 4px solid #4ea3f1;
+        /* Tarjeta de Dinero (Solo informativa) */
+        .kpi-card.money-card { 
+            cursor: default; border-bottom: 4px solid #D10024;
+        }
+        .kpi-card.money-card:hover { transform: none; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+        
+        .kpi-content h6 { color: #8898aa; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 700; }
+        .kpi-content h3 { font-size: 30px; font-weight: 800; color: #32325d; margin: 0; }
+        
+        .kpi-icon {
+            width: 60px; height: 60px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px;
         }
 
-        /* AJUSTE DE CONTENIDO */
-        main {
-            margin-left: 16.666667%; 
-            padding: 30px;
+        /* Colores KPI */
+        .icon-blue { background: #e3f2fd; color: #4ea3f1; }
+        .icon-red { background: #fbe9eb; color: #D10024; }
+        .icon-green { background: #e8f5e9; color: #28a745; }
+        .icon-orange { background: #fff3cd; color: #ffc107; }
+
+        /* PANELES DE GRÁFICAS (OCULTOS POR DEFECTO) */
+        .dashboard-section { display: none; animation: fadeIn 0.4s ease-out; }
+        .dashboard-section.active { display: block; } /* Solo se muestra el que tenga esta clase */
+
+        .chart-card {
+            background: white; border-radius: 16px; padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
+            margin-bottom: 25px; height: 100%; position: relative;
         }
-
-        /* TARJETAS MEJORADAS */
-        .card-stats {
-            border: none;
-            border-radius: 15px;
-            padding: 25px;
-            color: white;
-            transition: 0.4s;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .chart-title { font-size: 16px; font-weight: 800; color: #15161D; display: flex; align-items: center; gap: 10px; }
+        
+        /* FILTROS */
+        .chart-select { 
+            border: 1px solid #dee2e6; padding: 6px 15px; border-radius: 30px; 
+            font-size: 12px; color: #525f7f; background: #fff; cursor: pointer; outline: none; transition: 0.2s;
         }
+        .chart-select:hover { border-color: #D10024; }
 
-        .card-stats:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            #sidebar { left: -240px; }
+            main { margin-left: 0; }
         }
-
-        .card-stats i {
-            position: absolute;
-            right: 15px;
-            bottom: 10px;
-            font-size: 5rem;
-            opacity: 0.2;
-        }
-
-        .bg-gradient-blue { background: linear-gradient(45deg, #4ea3f1, #1e3c72); }
-        .bg-gradient-green { background: linear-gradient(45deg, #28a745, #114b1f); }
-        .bg-gradient-orange { background: linear-gradient(45deg, #ffc107, #b98b00); }
-
-        .chart-container {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-        }
-
-        .card-header {
-            background: none !important;
-            border-bottom: 2px solid #f4f7f6;
-            font-weight: 700;
-            color: #15161D;
-            font-size: 16px;
-        }
-
-        html { scroll-behavior: smooth; }
     </style>
 </head>
 
 <body>
 
-    <div class="container-fluid">
-        <div class="row">
-            <nav id="sidebar">
-                <div class="text-center py-4">
-                    <img src="../img/logo6.png" alt="Logo" class="mb-3" style="width: 75px;" />
-                    <h5 class="text-white">Pet Palace Admin</h5>
-                    <p class="text-muted small">v2.5 Definitivo</p>
-                </div>
-                <ul class="nav nav-pills nav-stacked">
-                    <li class="active"><a href="admin-panel.html"><i class="fa fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="clients.html"><i class="fa fa-users"></i> Usuarios</a></li>
-                    <li><a href="products.html"><i class="fa fa-boxes"></i> Inventario</a></li>
-                    <li><a href="orders.html"><i class="fa fa-shopping-cart"></i> Pedidos</a></li>
-                    <hr style="border-color: #2c2e3e; margin: 15px 20px;">
-                    <li><a href="../index.html"><i class="fa fa-home"></i> Ir a Tienda</a></li>
-                    <li><a href="#" onclick="cerrarSesion()" class="text-danger"><i class="fa fa-power-off"></i> Salir</a></li>
-                </ul>
-            </nav>
-
-            <main class="col-md-10 offset-md-2">
-                <div class="d-flex justify-content-between align-items-center mb-5">
-                    <div>
-                        <h2 class="fw-bold m-0">Dashboard de Análisis</h2>
-                        <p class="text-muted">Reporte general de Pet Palace</p>
-                    </div>
-                    <button class="btn btn-primary shadow-sm" onclick="cargarDatosDashboard()">
-                        <i class="fa fa-sync-alt"></i> Refrescar Datos
-                    </button>
-                </div>
-
-                <div class="row mb-5">
-                    <div class="col-md-4">
-                        <div class="card-stats bg-gradient-blue" onclick="cambiarGrafica('usuarios')">
-                            <h5>CLIENTES</h5>
-                            <h2 class="fw-bold" id="totalUsuarios">0</h2>
-                            <p class="m-0"><i class="fa fa-arrow-up"></i> Base de datos activa</p>
-                            <i class="fa fa-users"></i>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card-stats bg-gradient-green" onclick="cambiarGrafica('productos')">
-                            <h5>PRODUCTOS</h5>
-                            <h2 class="fw-bold" id="totalProductos">0</h2>
-                            <p class="m-0">Total en Almacén</p>
-                            <i class="fa fa-paw"></i>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card-stats bg-gradient-orange" onclick="cambiarGrafica('pedidos')">
-                            <h5 class="text-dark">PEDIDOS</h5>
-                            <h2 class="fw-bold text-dark" id="totalPedidos">0</h2>
-                            <p class="m-0 text-dark">Pendientes por revisión</p>
-                            <i class="fa fa-shopping-cart text-dark"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="chart-container">
-                            <div class="card-header py-2 mb-4 d-flex justify-content-between">
-                                <span id="tituloGrafico">Cargando análisis...</span>
-                                <span class="badge bg-primary">Pet Analytics</span>
-                            </div>
-                            <div style="height: 400px; position: relative;">
-                                <canvas id="mainDashboardChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
+    <nav id="sidebar">
+        <div class="sidebar-brand">
+            <img src="../img/logo6.png" alt="Logo">
+            <h5>Pet Palace</h5>
+            <p id="rolDisplay">Verificando...</p>
         </div>
-    </div>
+        <ul class="nav-sidebar">
+            <li class="active"><a href="#"><i class="fa fa-chart-pie"></i> Dashboard</a></li>
+            <li><a href="clients.html"><i class="fa fa-users"></i> Clientes</a></li>
+            <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
+            <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
+            <hr>
+            <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
+            <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        
+        <div class="top-bar">
+            <div class="page-title">
+                <h2 id="welcomeMsg">Panel de Control</h2>
+                <span>Resumen general y estadísticas en tiempo real</span>
+            </div>
+            <div class="user-profile">
+                <button class="btn btn-default btn-sm shadow-sm" onclick="cargarDatosDashboard()" title="Actualizar" style="margin-right:10px;">
+                    <i class="fa fa-sync-alt"></i>
+                </button>
+                <div class="user-info text-right hidden-xs">
+                    <span id="userNameDisplay">Usuario</span>
+                    <small id="userRoleDisplay">Rol</small>
+                </div>
+                <div class="user-avatar" id="userInitial">U</div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="kpi-card" id="tab-usuarios" onclick="mostrarSeccion('usuarios')">
+                    <div class="kpi-content">
+                        <h6>Clientes Registrados</h6>
+                        <h3 id="kpi-users">0</h3>
+                    </div>
+                    <div class="kpi-icon icon-blue"><i class="fa fa-users"></i></div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="kpi-card money-card">
+                    <div class="kpi-content">
+                        <h6>Ingresos Totales</h6>
+                        <h3 id="kpi-money" style="color: #D10024;">$0</h3>
+                    </div>
+                    <div class="kpi-icon icon-red"><i class="fa fa-dollar-sign"></i></div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="kpi-card" id="tab-pedidos" onclick="mostrarSeccion('pedidos')">
+                    <div class="kpi-content">
+                        <h6>Pedidos Totales</h6>
+                        <h3 id="kpi-orders">0</h3>
+                    </div>
+                    <div class="kpi-icon icon-orange"><i class="fa fa-shopping-bag"></i></div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="kpi-card" id="tab-productos" onclick="mostrarSeccion('productos')">
+                    <div class="kpi-content">
+                        <h6>En Inventario</h6>
+                        <h3 id="kpi-products">0</h3>
+                    </div>
+                    <div class="kpi-icon icon-green"><i class="fa fa-box"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-pedidos" class="dashboard-section active">
+            <div class="row">
+                <div class="col-lg-8 mb-4">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title"><i class="fa fa-chart-area text-primary"></i> Tendencia de Ventas</div>
+                            <small class="text-muted">Últimos 7 días</small>
+                        </div>
+                        <div style="height: 320px;">
+                            <canvas id="chartSales"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title"><i class="fa fa-chart-pie text-warning"></i> Estado de Pedidos</div>
+                        </div>
+                        <div style="height: 320px; display:flex; justify-content:center;">
+                            <canvas id="chartStatus"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-productos" class="dashboard-section">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title"><i class="fa fa-boxes text-success"></i> Productos por Categoría</div>
+                        </div>
+                        <div style="height: 300px;">
+                            <canvas id="chartProductsMain"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title"><i class="fa fa-exclamation-triangle text-danger"></i> Alerta de Stock</div>
+                            <select class="chart-select" id="stockFilter" onchange="renderProductStockChart(this.value)">
+                                <option value="low">Stock Crítico (Bajo)</option>
+                                <option value="high">Stock Saludable</option>
+                                <option value="all">Todo el Inventario</option>
+                                <option disabled>--- Categorías ---</option>
+                                <option value="Perros">Perros</option>
+                                <option value="Gatos">Gatos</option>
+                                <option value="Peces">Peces</option>
+                                <option value="Roedores">Roedores</option>
+                                <option value="Aves">Aves</option>
+                            </select>
+                        </div>
+                        <div style="height: 300px;">
+                            <canvas id="chartProductsStock"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-usuarios" class="dashboard-section">
+            <div class="row">
+                <div class="col-lg-8 mb-4">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title"><i class="fa fa-bullseye text-danger"></i> Oportunidad de Venta</div>
+                        </div>
+                        <p class="text-muted small mb-3">Análisis de conversión: Clientes que han comprado vs. Clientes registrados sin compras.</p>
+                        <div style="height: 300px;">
+                            <canvas id="chartClientsActivity"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title"><i class="fa fa-user-tag text-info"></i> Roles de Sistema</div>
+                        </div>
+                        <div style="height: 300px; display:flex; justify-content:center;">
+                            <canvas id="chartUserRoles"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
 
     <script src="../js/jquery.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        const ctx = document.getElementById('mainDashboardChart').getContext('2d');
-        let myChart;
+        let globalData = { users: [], products: [], orders: [] };
+        let charts = {};
+        let userRole = '';
 
-        // Configuraciones de visualización para que tengan sentido
-        const chartConfigs = {
-            usuarios: {
-                type: 'doughnut',
-                title: "Distribución de Usuarios por Estatus",
-                labels: ['Activos', 'Nuevos', 'Inactivos'],
-                data: [0, 0, 0],
-                bg: ['#4ea3f1', '#28a745', '#eee'],
-                options: { cutout: '70%' }
-            },
-            productos: {
-                type: 'bar',
-                title: "Stock Estimado por Categoría Principal",
-                labels: ['Perros', 'Gatos', 'Peces', 'Aves', 'Otros'],
-                data: [0, 0, 0, 0, 0],
-                bg: ['#15161D', '#4ea3f1', '#28a745', '#ffc107', '#6c757d'],
-                options: { scales: { y: { beginAtZero: true } } }
-            },
-            pedidos: {
-                type: 'line',
-                title: "Tendencia de Pedidos (Simulado)",
-                labels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'],
-                data: [0, 0, 0, 0, 0, 0, 0],
-                bg: 'rgba(255, 193, 7, 0.2)',
-                borderColor: '#b98b00',
-                fill: true,
-                options: { tension: 0.4 }
-            }
-        };
-
-        // Inicializar gráfica vacía
-        function initChart(config) {
-            if (myChart) myChart.destroy();
+        $(document).ready(function() {
+            verificarUsuario();
+            cargarDatosDashboard();
             
-            myChart = new Chart(ctx, {
-                type: config.type,
-                data: {
-                    labels: config.labels,
-                    datasets: [{
-                        label: 'Cantidad',
-                        data: config.data,
-                        backgroundColor: config.bg,
-                        borderColor: config.borderColor || 'transparent',
-                        fill: config.fill || false,
-                        borderRadius: config.type === 'bar' ? 8 : 0
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    ...config.options
-                }
-            });
-            $('#tituloGrafico').text(config.title);
+            // Iniciar mostrando Pedidos (Ventas) que es lo más relevante
+            mostrarSeccion('pedidos');
+        });
+
+        // 1. VERIFICACIÓN DE ROL
+        function verificarUsuario() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user) { window.location.href = '../login.html'; return; }
+            
+            userRole = user.rol;
+            const roleName = userRole === 'admin' ? 'Administrador' : 'Vendedor Autorizado';
+            
+            // Header Profile
+            $('#userNameDisplay').text(user.nombre.split(' ')[0]);
+            $('#userRoleDisplay').text(roleName);
+            $('#userInitial').text(user.nombre.charAt(0).toUpperCase());
+            $('#rolDisplay').text(roleName);
+
+            $('#welcomeMsg').text(`Hola, ${user.nombre.split(' ')[0]}`);
         }
 
+        // 2. CARGA DE DATOS ASÍNCRONA
         async function cargarDatosDashboard() {
             try {
-                // Llamada al PHP original
-                const res = await fetch('../api/dashboard_stats.php');
-                const data = await res.json();
+                const [resUsers, resProds, resOrders] = await Promise.all([
+                    fetch('../api/clients.php'),
+                    fetch('../api/products.php'),
+                    fetch('../api/orders.php')
+                ]);
 
-                // Actualizar números
-                const u = parseInt(data.usuarios) || 0;
-                const p = parseInt(data.productos) || 0;
-                const o = parseInt(data.pedidos) || 0;
+                globalData.users = await resUsers.json();
+                globalData.products = await resProds.json();
+                globalData.orders = await resOrders.json();
 
-                $('#totalUsuarios').text(u);
-                $('#totalProductos').text(p);
-                $('#totalPedidos').text(o);
-
-                // Inyectar datos en las configuraciones
-                // Usuarios: Repartimos para que la dona se vea completa
-                chartConfigs.usuarios.data = [Math.floor(u*0.8), Math.floor(u*0.15), Math.floor(u*0.05)];
+                actualizarKPIs();
                 
-                // Productos: Repartimos el total en las categorías para llenar las barras
-                chartConfigs.productos.data = [
-                    Math.floor(p*0.35), // Perros
-                    Math.floor(p*0.30), // Gatos
-                    Math.floor(p*0.15), // Peces
-                    Math.floor(p*0.10), // Aves
-                    Math.floor(p*0.10)  // Otros
-                ];
+                // Refrescar gráficas de la sección que esté activa en este momento
+                const seccionActiva = $('.dashboard-section.active').attr('id').replace('panel-', '');
+                renderizarGraficas(seccionActiva);
 
-                // Pedidos: Simular curva semanal basada en el total pendiente
-                chartConfigs.pedidos.data = [o, o+2, o-1, o+3, o+5, o+8, o+4];
-
-                // Mostrar gráfica de productos por defecto para ver movimiento
-                cambiarGrafica('productos');
-
-            } catch (e) {
-                console.error("Fallo de conexión:", e);
+            } catch (error) {
+                console.error("Error API:", error);
             }
         }
 
-        function cambiarGrafica(tipo) {
-            initChart(chartConfigs[tipo]);
+        // 3. ACTUALIZAR WIDGETS SUPERIORES
+        function actualizarKPIs() {
+            $('#kpi-users').text(globalData.users.length);
+            $('#kpi-products').text(globalData.products.length);
+            $('#kpi-orders').text(globalData.orders.length);
+
+            let totalMoney = globalData.orders.reduce((sum, o) => {
+                return o.estado !== 'Cancelado' ? sum + parseFloat(o.total) : sum;
+            }, 0);
+            $('#kpi-money').text('$' + totalMoney.toLocaleString('es-MX', { minimumFractionDigits: 0 }));
+        }
+
+        // 4. LÓGICA DE NAVEGACIÓN (TABS) - AQUÍ ESTABA EL PROBLEMA ANTERIOR
+        function mostrarSeccion(seccion) {
+            // Ocultar todos los paneles
+            $('.dashboard-section').removeClass('active');
+            // Quitar clase activa de todas las tarjetas
+            $('.kpi-card').removeClass('active-tab');
+
+            // Mostrar el panel seleccionado
+            $(`#panel-${seccion}`).addClass('active');
+            
+            // Marcar la tarjeta como activa (visual)
+            $(`#tab-${seccion}`).addClass('active-tab');
+            
+            // Renderizar las gráficas de esa sección
+            renderizarGraficas(seccion);
+        }
+
+        function renderizarGraficas(seccion) {
+            // Un pequeño timeout asegura que el contenedor ya es visible y tiene tamaño
+            setTimeout(() => {
+                if (seccion === 'usuarios') renderUsersCharts();
+                else if (seccion === 'productos') renderProductsCharts();
+                else if (seccion === 'pedidos') renderOrdersCharts();
+            }, 10);
+        }
+
+        // --- A. GRÁFICAS DE PEDIDOS (VENTAS) ---
+        function renderOrdersCharts() {
+            // Flujo de Ventas (Línea)
+            let sales = {};
+            globalData.orders.forEach(o => {
+                if (o.estado !== 'Cancelado') {
+                    let f = o.fecha.split(' ')[0];
+                    sales[f] = (sales[f] || 0) + parseFloat(o.total);
+                }
+            });
+            let dates = Object.keys(sales).sort().slice(-7);
+            crearChart('chartSales', 'line', dates, [{
+                label: 'Ingresos ($)',
+                data: dates.map(d => sales[d]),
+                borderColor: '#4ea3f1',
+                backgroundColor: 'rgba(78, 163, 241, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#fff',
+                pointRadius: 5
+            }]);
+
+            // Estatus (Dona)
+            let st = { 'Pendiente': 0, 'Enviado': 0, 'Entregado': 0, 'Cancelado': 0 };
+            globalData.orders.forEach(o => {
+                let s = o.estado.charAt(0).toUpperCase() + o.estado.slice(1).toLowerCase();
+                if(st[s] !== undefined) st[s]++; else st['Pendiente']++;
+            });
+            crearChart('chartStatus', 'doughnut', Object.keys(st), [{
+                data: Object.values(st),
+                backgroundColor: ['#ffc107', '#17a2b8', '#28a745', '#dc3545'],
+                borderWidth: 0,
+                hoverOffset: 15
+            }]);
+        }
+
+        // --- B. GRÁFICAS DE PRODUCTOS ---
+        function renderProductsCharts() {
+            let cats = {};
+            globalData.products.forEach(p => {
+                let c = p.categoria || 'Otros';
+                cats[c] = (cats[c] || 0) + 1;
+            });
+            crearChart('chartProductsMain', 'bar', Object.keys(cats), [{
+                label: 'Total',
+                data: Object.values(cats),
+                backgroundColor: '#28a745',
+                borderRadius: 5
+            }]);
+
+            renderProductStockChart($('#stockFilter').val());
+        }
+
+        function renderProductStockChart(filter) {
+            let items = globalData.products;
+            let filtered = [];
+
+            if (filter === 'low') filtered = items.filter(p => parseInt(p.stock) < 5);
+            else if (filter === 'high') filtered = items.filter(p => parseInt(p.stock) >= 10);
+            else if (filter === 'all') filtered = items;
+            else filtered = items.filter(p => p.categoria === filter);
+
+            if (filtered.length > 20 && filter === 'all') filtered = filtered.slice(0, 20);
+
+            let labels = filtered.map(p => p.nombre.length > 15 ? p.nombre.substring(0,12)+'...' : p.nombre);
+            let data = filtered.map(p => parseInt(p.stock));
+            let colors = data.map(s => s < 5 ? '#dc3545' : '#28a745');
+
+            crearChart('chartProductsStock', 'bar', labels, [{
+                label: 'Stock',
+                data: data,
+                backgroundColor: colors,
+                borderRadius: 5
+            }]);
+        }
+
+        // --- C. GRÁFICAS DE USUARIOS ---
+        function renderUsersCharts() {
+            const compradores = new Set(globalData.orders.map(o => o.cliente.trim().toLowerCase()));
+            let activos = 0, inactivos = 0;
+            globalData.users.forEach(u => {
+                if (u.rol !== 'admin') {
+                    if (compradores.has(u.nombre.trim().toLowerCase())) activos++; else inactivos++;
+                }
+            });
+            crearChart('chartClientsActivity', 'bar', ['Clientes con Compra', 'Potenciales (Sin compra)'], [{
+                label: 'Usuarios',
+                data: [activos, inactivos],
+                backgroundColor: ['#28a745', '#D10024'],
+                borderRadius: 6,
+                barThickness: 50
+            }], { indexAxis: 'y' });
+
+            let roles = { Admin: 0, Vendedor: 0, Cliente: 0 };
+            globalData.users.forEach(u => {
+                let r = u.rol ? u.rol.charAt(0).toUpperCase() + u.rol.slice(1) : 'Cliente';
+                if(roles[r] !== undefined) roles[r]++; else roles['Cliente']++;
+            });
+            crearChart('chartUserRoles', 'pie', Object.keys(roles), [{
+                data: Object.values(roles),
+                backgroundColor: ['#15161D', '#ffc107', '#4ea3f1'],
+                borderWidth: 0
+            }]);
+        }
+
+        // --- HELPER CHART.JS ---
+        function crearChart(id, type, labels, datasets, extraOptions = {}) {
+            const ctx = document.getElementById(id).getContext('2d');
+            if (charts[id]) charts[id].destroy();
+
+            charts[id] = new Chart(ctx, {
+                type: type,
+                data: { labels: labels, datasets: datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', display: (type === 'pie' || type === 'doughnut' || type === 'line') } },
+                    scales: (type === 'bar' || type === 'line') ? {
+                        y: { beginAtZero: true, grid: { color: '#f0f0f0' } },
+                        x: { grid: { display: false } }
+                    } : {},
+                    ...extraOptions
+                }
+            });
         }
 
         function cerrarSesion() {
-            if (confirm("¿Cerrar sesión de administrador?")) {
-                localStorage.removeItem('currentUser');
-                window.location.href = '../login.html';
-            }
+            localStorage.removeItem('currentUser');
+            window.location.href = '../login.html';
         }
-
-        document.addEventListener("DOMContentLoaded", cargarDatosDashboard);
     </script>
 </body>
 </html>

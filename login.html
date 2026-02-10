@@ -2,231 +2,257 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Acceso | Pet Palace</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .card-custom {
-      background-color: white;
-      border-radius: 1rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      padding: 2rem;
-      width: 100%;
-      max-width: 400px;
-    }
-    .logo-img { width: 80px; margin-bottom: 1rem; }
-    .hidden { display: none; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso | Pet Palace</title>
     
-    /* Mensajes de alerta */
-    #error-msg {
-        display: none;
-        color: #721c24;
-        background-color: #f8d7da;
-        border: 1px solid #f5c6cb;
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 0.9rem;
-        text-align: center;
-        margin-top: 15px;
-        font-weight: bold;
-    }
-    #success-msg {
-        display: none;
-        color: #155724;
-        background-color: #d4edda;
-        border: 1px solid #c3e6cb;
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 0.9rem;
-        text-align: center;
-        margin-top: 15px;
-    }
-    a { text-decoration: none; cursor: pointer; }
-  </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0eafe 0%, #ffffff 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        /* TARJETA PRINCIPAL */
+        .main-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+            width: 900px;
+            max-width: 95%;
+            min-height: 600px;
+            display: flex;
+        }
+
+        /* LADO IZQUIERDO (IMAGEN) */
+        .left-panel {
+            flex: 1.1;
+            background: url('https://images.unsplash.com/photo-1548199973-03cce0bbc87b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80') center/cover no-repeat;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 40px;
+            color: white;
+        }
+        .left-panel::before {
+            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+        }
+        .panel-text { position: relative; z-index: 2; }
+        .panel-text h2 { font-weight: 800; font-size: 2.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .panel-text p { font-size: 1.1rem; opacity: 0.9; }
+
+        /* LADO DERECHO (FORMULARIOS) */
+        .right-panel {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+        }
+
+        .brand-header { text-align: center; margin-bottom: 30px; }
+        .brand-header img { width: 80px; margin-bottom: 10px; }
+        .brand-header h4 { font-weight: 700; color: #15161D; letter-spacing: -0.5px; }
+
+        /* INPUTS */
+        .form-floating > .form-control {
+            border-radius: 12px; border: 1px solid #e1e5eb; background: #f8f9fa; height: 50px;
+        }
+        .form-floating > .form-control:focus { background: #fff; border-color: #D10024; box-shadow: none; }
+        .form-floating > label { color: #888; font-size: 13px; padding-top: 13px; }
+        
+        .btn-custom {
+            background: #15161D; color: #fff; border: none; padding: 12px;
+            border-radius: 12px; font-weight: 600; width: 100%; margin-top: 20px;
+            transition: 0.3s; font-size: 15px;
+        }
+        .btn-custom:hover { background: #D10024; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(209,0,36,0.3); }
+
+        .link-switch { text-align: center; margin-top: 25px; font-size: 13px; color: #666; }
+        .link-switch span { color: #D10024; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .link-switch span:hover { text-decoration: underline; }
+
+        #alertBox { display: none; font-size: 13px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
+
+        /* ANIMACIONES */
+        .auth-view { display: none; animation: slideUp 0.4s ease-out; }
+        .auth-view.active { display: block; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            .left-panel { display: none; }
+            .main-card { height: 100vh; max-width: 100%; border-radius: 0; }
+            .right-panel { padding: 30px; }
+        }
+    </style>
 </head>
 
 <body>
 
-  <div class="card-custom">
-    <div class="text-center mb-4">
-      <img src="img/logo6.png" alt="Logo Pet Palace" class="logo-img">
-      <h3 id="formTitle">Iniciar Sesión</h3>
+    <div class="main-card">
+        
+        <div class="left-panel">
+            <div class="panel-text">
+                <h2>Pet Palace</h2>
+                <p>Donde la felicidad de tu mascota comienza.</p>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            
+            <div class="brand-header">
+                <img src="img/logo6.png" alt="Logo">
+                <h4 id="dynamicTitle">Bienvenido</h4>
+            </div>
+
+            <div id="alertBox" class="alert alert-danger"></div>
+
+            <div id="viewLogin" class="auth-view active">
+                <form id="formLogin" autocomplete="off">
+                    <input type="email" style="display:none">
+                    <input type="password" style="display:none">
+
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="logEmail" name="new_login_email_v2" placeholder="Correo" required autocomplete="off">
+                        <label>Correo Electrónico</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="logPass" name="new_login_pass_v2" placeholder="Contraseña" required autocomplete="off">
+                        <label>Contraseña</label>
+                    </div>
+                    
+                    <button type="submit" class="btn-custom">INICIAR SESIÓN</button>
+                    
+                    <div class="link-switch">
+                        ¿No tienes cuenta? <span onclick="switchView('register')">Regístrate gratis</span>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="index.html" class="text-secondary small text-decoration-none"><i class="fa fa-arrow-left"></i> Volver a la tienda</a>
+                    </div>
+                </form>
+            </div>
+
+            <div id="viewRegister" class="auth-view">
+                <form id="formRegister" autocomplete="off">
+                    <input type="text" style="display:none">
+                    <input type="email" style="display:none">
+                    <input type="password" style="display:none">
+
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="regName" name="new_reg_name_v2" placeholder="Nombre" required autocomplete="off">
+                        <label>Nombre Completo</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="regEmail" name="new_reg_email_v2" placeholder="Correo" required autocomplete="off">
+                        <label>Correo Electrónico</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="regPass" name="new_reg_pass_v2" placeholder="Contraseña" required autocomplete="new-password">
+                        <label>Crear Contraseña</label>
+                    </div>
+                    
+                    <button type="submit" class="btn-custom bg-success text-white">CREAR CUENTA</button>
+                    
+                    <div class="link-switch">
+                        ¿Ya estás registrado? <span onclick="switchView('login')">Inicia Sesión</span>
+                    </div>
+                </form>
+            </div>
+
+        </div>
     </div>
 
-    <form id="loginForm">
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="loginEmail" placeholder="Correo" required>
-        <label><i class="fa fa-envelope"></i> Correo Electrónico</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input type="password" class="form-control" id="loginPass" placeholder="Contraseña" required>
-        <label><i class="fa fa-lock"></i> Contraseña</label>
-      </div>
-      <button type="submit" class="btn btn-primary w-100">Entrar</button>
-      
-      <div class="text-center mt-3">
-        <span>¿No tienes cuenta? </span>
-        <a class="text-primary fw-bold" onclick="toggleForms()">Regístrate aquí</a>
-      </div>
-    </form>
+    <script>
+        // --- NAVEGACIÓN UI ---
+        function switchView(viewName) {
+            document.querySelectorAll('.auth-view').forEach(el => el.classList.remove('active'));
+            document.getElementById('alertBox').style.display = 'none';
 
-    <form id="registerForm" class="hidden">
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="regName" placeholder="Nombre Completo" required>
-        <label><i class="fa fa-user"></i> Nombre Completo</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input type="email" class="form-control" id="regEmail" placeholder="Correo" required>
-        <label><i class="fa fa-envelope"></i> Correo Electrónico</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input type="password" class="form-control" id="regPass" placeholder="Contraseña" required>
-        <label><i class="fa fa-lock"></i> Contraseña</label>
-      </div>
-      <button type="submit" class="btn btn-success w-100">Crear Cuenta</button>
-      
-      <div class="text-center mt-3">
-        <span>¿Ya tienes cuenta? </span>
-        <a class="text-success fw-bold" onclick="toggleForms()">Inicia Sesión</a>
-      </div>
-    </form>
+            const target = viewName.charAt(0).toUpperCase() + viewName.slice(1);
+            document.getElementById('view' + target).classList.add('active');
 
-    <div id="error-msg"></div>
-    <div id="success-msg"></div>
-    
-    <div class="text-center mt-3">
-        <button class="btn btn-link text-secondary" onclick="window.location.href='index.html'">
-            <i class="fa fa-arrow-left"></i> Volver a la tienda
-        </button>
-    </div>
-  </div>
-
-  <script>
-    // 1. CAMBIAR VISTAS
-    function toggleForms() {
-        const loginForm = document.getElementById('loginForm');
-        const regForm = document.getElementById('registerForm');
-        const title = document.getElementById('formTitle');
-        const error = document.getElementById('error-msg');
-        const success = document.getElementById('success-msg');
-
-        error.style.display = 'none';
-        success.style.display = 'none';
-
-        if (loginForm.classList.contains('hidden')) {
-            loginForm.classList.remove('hidden');
-            regForm.classList.add('hidden');
-            title.innerText = "Iniciar Sesión";
-        } else {
-            loginForm.classList.add('hidden');
-            regForm.classList.remove('hidden');
-            title.innerText = "Crear Cuenta";
+            const titles = { 'login': 'Iniciar Sesión', 'register': 'Crear Cuenta' };
+            document.getElementById('dynamicTitle').innerText = titles[viewName];
         }
-    }
 
-    // 2. LÓGICA DE LOGIN
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const correo = document.getElementById('loginEmail').value.trim();
-        const password = document.getElementById('loginPass').value.trim();
-        const errorMsg = document.getElementById('error-msg');
+        function showAlert(msg, type = 'danger') {
+            const box = document.getElementById('alertBox');
+            box.className = `alert alert-${type} text-center fade show`;
+            box.innerText = msg;
+            box.style.display = 'block';
+        }
 
-        errorMsg.style.display = 'none';
+        // --- 1. LOGIN ---
+        document.getElementById('formLogin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const correo = document.getElementById('logEmail').value;
+            const password = document.getElementById('logPass').value;
 
-        try {
-            const response = await fetch('api/login.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ correo, password })
-            });
+            try {
+                const res = await fetch('api/login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ correo, password })
+                });
+                const data = await res.json();
 
-            if (!response.ok) throw new Error("Error de conexión");
-
-            const data = await response.json();
-
-            if (data.status === 'success') {
-                // --- EXITO ---
-                localStorage.setItem('currentUser', JSON.stringify({
-                    id: data.data.id,
-                    nombre: data.data.nombre,
-                    rol: data.data.rol,
-                    correo: correo
-                }));
-
-                if (data.data.rol === 'admin') {
-                    window.location.href = "admin/admin-panel.html";
+                if (data.status === 'success') {
+                    localStorage.setItem('currentUser', JSON.stringify(data.data));
+                    
+                    if (data.data.rol === 'admin' || data.data.rol === 'vendedor') {
+                        window.location.href = 'admin/admin-panel.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
                 } else {
-                    window.location.href = "index.html";
+                    showAlert(data.message, 'danger');
                 }
+            } catch (err) { showAlert("Error de conexión con el servidor", 'danger'); }
+        });
 
-            } else {
-                // --- ERROR (Incluyendo suspensión) ---
-                errorMsg.style.display = 'block';
-                // AQUÍ ESTÁ LA MAGIA: Mostramos el mensaje exacto que manda PHP
-                errorMsg.innerText = data.message; 
-            }
+        // --- 2. REGISTRO ---
+        document.getElementById('formRegister').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('regName').value;
+            const correo = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPass').value;
 
-        } catch (error) {
-            console.error("Error técnico:", error);
-            errorMsg.style.display = 'block';
-            errorMsg.innerText = "Error de conexión. Revisa que XAMPP esté encendido.";
-        }
-    });
+            try {
+                const res = await fetch('api/register.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, correo, password })
+                });
+                const data = await res.json();
 
-    // 3. LÓGICA DE REGISTRO
-    document.getElementById('registerForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const nombre = document.getElementById('regName').value.trim();
-        const correo = document.getElementById('regEmail').value.trim();
-        const password = document.getElementById('regPass').value.trim();
-        const errorMsg = document.getElementById('error-msg');
-        const successMsg = document.getElementById('success-msg');
-
-        errorMsg.style.display = 'none';
-        successMsg.style.display = 'none';
-
-        try {
-            const response = await fetch('api/register.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, correo, password })
-            });
-
-            const data = await response.json();
-
-            if (data.status === 'success') {
-                successMsg.style.display = 'block';
-                successMsg.innerText = "¡Cuenta creada! Redirigiendo...";
-                setTimeout(() => {
-                    toggleForms();
-                    document.getElementById('loginEmail').value = correo;
-                    document.getElementById('loginPass').focus();
-                    successMsg.style.display = 'none';
-                }, 1500);
-            } else {
-                errorMsg.style.display = 'block';
-                errorMsg.innerText = data.message;
-            }
-
-        } catch (error) {
-            errorMsg.style.display = 'block';
-            errorMsg.innerText = "Error al conectar con la base de datos.";
-        }
-    });
-  </script>
+                if (data.status === 'success') {
+                    showAlert("¡Cuenta creada con éxito! Por favor inicia sesión.", 'success');
+                    setTimeout(() => {
+                        switchView('login');
+                        // Llenar datos manualmente (navegador preguntará si guardar después)
+                        document.getElementById('logEmail').value = correo;
+                        document.getElementById('logPass').focus();
+                    }, 2000);
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            } catch (err) { showAlert("Error al intentar registrarse", 'danger'); }
+        });
+    </script>
 
 </body>
 </html>

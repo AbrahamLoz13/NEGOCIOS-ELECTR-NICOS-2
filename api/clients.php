@@ -1,6 +1,7 @@
 <?php
 require 'db.php';
 header('Content-Type: application/json');
+// Silenciamos errores visuales para no romper el JSON
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
@@ -8,8 +9,8 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'GET':
-        // Ahora traemos también el 'estado'
-        $sql = "SELECT id, nombre, correo, telefono, estado FROM usuarios WHERE rol != 'admin' ORDER BY id DESC";
+        // Seleccionamos solo lo que existe en tu tabla
+        $sql = "SELECT id, nombre, correo, telefono, rol, estado FROM usuarios ORDER BY id DESC";
         $result = $conn->query($sql);
         $clients = [];
         if ($result) {
@@ -19,36 +20,66 @@ switch ($method) {
         break;
 
     case 'POST':
-        // (Tu código de guardar cliente, sin cambios)
         $data = json_decode(file_get_contents("php://input"), true);
+        
         $nombre = $data['nombre'];
         $correo = $data['correo'];
-        $telefono = $data['telefono'];
-        $pass = "12345"; 
-        $rol = "usuario";
+        $telefono = $data['telefono'] ?? '';
+        $rol = !empty($data['rol']) ? $data['rol'] : "usuario";
+        $pass = !empty($data['password']) ? $data['password'] : "12345";
+        // Si usas hash en login: $pass = password_hash($pass, PASSWORD_DEFAULT);
+
+        // Validar duplicado
+        $check = $conn->prepare("SELECT id FROM usuarios WHERE correo = ?");
+        $check->bind_param("s", $correo);
+        $check->execute();
+        if ($check->get_result()->num_rows > 0) {
+            echo json_encode(["status" => "error", "message" => "El correo ya existe"]);
+            exit;
+        }
+
+        // Insert sin dirección
         $stmt = $conn->prepare("INSERT INTO usuarios (nombre, correo, telefono, password, rol, estado) VALUES (?, ?, ?, ?, ?, 'activo')");
         $stmt->bind_param("sssss", $nombre, $correo, $telefono, $pass, $rol);
+        
         if ($stmt->execute()) {
-            echo json_encode(["status" => "success", "message" => "Cliente registrado"]);
+            echo json_encode(["status" => "success", "message" => "Usuario registrado"]);
         } else {
             echo json_encode(["status" => "error", "message" => $stmt->error]);
         }
         break;
 
     case 'PUT': 
-        // NUEVO: CAMBIAR ESTADO (SUSPENDER / ACTIVAR)
         $data = json_decode(file_get_contents("php://input"), true);
         $id = $data['id'];
-        $nuevo_estado = $data['estado']; // 'activo' o 'suspendido'
 
-        $stmt = $conn->prepare("UPDATE usuarios SET estado = ? WHERE id = ?");
-        $stmt->bind_param("si", $nuevo_estado, $id);
-
-        if ($stmt->execute()) {
-            echo json_encode(["status" => "success"]);
-        } else {
-            echo json_encode(["status" => "error", "message" => $stmt->error]);
+        // LÓGICA DE SUSPENDER (Si solo mandamos estado)
+        if (isset($data['estado']) && !isset($data['nombre'])) {
+            $nuevo_estado = $data['estado'];
+            $stmt = $conn->prepare("UPDATE usuarios SET estado = ? WHERE id = ?");
+            $stmt->bind_param("si", $nuevo_estado, $id);
+        } 
+        // LÓGICA DE EDITAR DATOS (Si mandamos nombre)
+        else {
+            $nombre = $data['nombre'];
+            $correo = $data['correo'];
+            $telefono = $data['telefono'];
+            $rol = $data['rol'];
+            
+            // Checar si hay cambio de contraseña
+            if (!empty($data['password'])) {
+                $pass = $data['password']; 
+                // $pass = password_hash($data['password'], PASSWORD_DEFAULT);
+                $stmt = $conn->prepare("UPDATE usuarios SET nombre=?, correo=?, telefono=?, rol=?, password=? WHERE id=?");
+                $stmt->bind_param("sssssi", $nombre, $correo, $telefono, $rol, $pass, $id);
+            } else {
+                $stmt = $conn->prepare("UPDATE usuarios SET nombre=?, correo=?, telefono=?, rol=? WHERE id=?");
+                $stmt->bind_param("ssssi", $nombre, $correo, $telefono, $rol, $id);
+            }
         }
+
+        if ($stmt->execute()) echo json_encode(["status" => "success"]);
+        else echo json_encode(["status" => "error", "message" => $stmt->error]);
         break;
 
     case 'DELETE':

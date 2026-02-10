@@ -10,32 +10,8 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'GET':
-        $queryStr = "SELECT * FROM productos WHERE 1=1";
-        $params = [];
-        $types = "";
-
-        // Si hay búsqueda por texto
-        if (!empty($_GET['q'])) {
-            $queryStr .= " AND nombre LIKE ?";
-            $params[] = "%" . $_GET['q'] . "%";
-            $types .= "s";
-        }
-
-        // Si hay búsqueda por categoría
-        if (!empty($_GET['categoria']) && $_GET['categoria'] !== "0") {
-            $queryStr .= " AND categoria = ?";
-            $params[] = $_GET['categoria'];
-            $types .= "s";
-        }
-
-        $stmt = $conn->prepare($queryStr);
-        if (!empty($params)) {
-            $stmt->bind_param($types, ...$params);
-        }
-        
-        $stmt->execute();
-        $result = $stmt->get_result();
-
+        $queryStr = "SELECT * FROM productos WHERE 1=1 ORDER BY id DESC";
+        $result = $conn->query($queryStr);
         $productos = [];
         while ($row = $result->fetch_assoc()) {
             $productos[] = $row;
@@ -44,27 +20,62 @@ switch ($method) {
         break;
 
     case 'POST':
-        $input = json_decode(file_get_contents("php://input"), true);
-        $sql = "INSERT INTO productos (nombre, precio, categoria, descripcion, stock, imagen) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $img = !empty($input['imagen']) ? $input['imagen'] : 'img/logo6.png';
-        $stmt->bind_param("sdssis", $input['nombre'], $input['precio'], $input['categoria'], $input['descripcion'], $input['stock'], $img);
-        echo json_encode($stmt->execute() ? ["status" => "success"] : ["status" => "error", "message" => $conn->error]);
+        // ACEPTAR TANTO CREACIÓN COMO EDICIÓN AQUÍ PORQUE "PUT" NO SOPORTA ARCHIVOS FÁCILMENTE
+        
+        // 1. Recoger datos normales
+        $id = isset($_POST['id']) && !empty($_POST['id']) ? $_POST['id'] : null;
+        $nombre = $_POST['nombre'];
+        $precio = $_POST['precio'];
+        $categoria = $_POST['categoria'];
+        $descripcion = $_POST['descripcion'];
+        $stock = $_POST['stock'];
+        
+        // 2. Manejo de la Imagen
+        $ruta_final = $_POST['imagen_actual'] ?? 'img/logo6.png'; // Por defecto la que ya tenía o el logo
+
+        // Si se subió un archivo nuevo y no hay errores
+        if (isset($_FILES['imagen_archivo']) && $_FILES['imagen_archivo']['error'] === UPLOAD_ERR_OK) {
+            
+            // Nombre único para evitar sobrescribir
+            $ext = pathinfo($_FILES['imagen_archivo']['name'], PATHINFO_EXTENSION);
+            $nombre_unico = uniqid('prod_') . '.' . $ext;
+            
+            // Ruta donde se guardará físicamente (relativo a este archivo php en 'api/')
+            // Subimos un nivel (..) y entramos a 'img/'
+            $directorio_destino = "../img/";
+            $archivo_destino = $directorio_destino . $nombre_unico;
+
+            // Mover archivo
+            if (move_uploaded_file($_FILES['imagen_archivo']['tmp_name'], $archivo_destino)) {
+                // Ruta para la base de datos (relativa al index.html)
+                $ruta_final = "img/" . $nombre_unico;
+            }
+        }
+
+        // 3. Insertar o Actualizar
+        if ($id) {
+            // UPDATE
+            $stmt = $conn->prepare("UPDATE productos SET nombre=?, precio=?, categoria=?, descripcion=?, stock=?, imagen=? WHERE id=?");
+            $stmt->bind_param("sdssisi", $nombre, $precio, $categoria, $descripcion, $stock, $ruta_final, $id);
+        } else {
+            // INSERT
+            $stmt = $conn->prepare("INSERT INTO productos (nombre, precio, categoria, descripcion, stock, imagen) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sdssis", $nombre, $precio, $categoria, $descripcion, $stock, $ruta_final);
+        }
+
+        if ($stmt->execute()) {
+            echo json_encode(["status" => "success"]);
+        } else {
+            echo json_encode(["status" => "error", "message" => $stmt->error]);
+        }
         break;
 
-    case 'PUT':
-        $input = json_decode(file_get_contents("php://input"), true);
-        $sql = "UPDATE productos SET nombre=?, precio=?, categoria=?, descripcion=?, stock=?, imagen=? WHERE id=?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sdssisi", $input['nombre'], $input['precio'], $input['categoria'], $input['descripcion'], $input['stock'], $input['imagen'], $input['id']);
-        echo json_encode($stmt->execute() ? ["status" => "success"] : ["status" => "error", "message" => $conn->error]);
-        break;
-        
     case 'DELETE':
         $input = json_decode(file_get_contents("php://input"), true);
         $stmt = $conn->prepare("DELETE FROM productos WHERE id = ?");
         $stmt->bind_param("i", $input['id']);
         if($stmt->execute()) echo json_encode(["status" => "success"]);
+        else echo json_encode(["status" => "error"]);
         break;
 }
 $conn->close();
