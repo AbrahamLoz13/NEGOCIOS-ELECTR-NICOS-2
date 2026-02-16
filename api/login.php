@@ -39,19 +39,21 @@ if ($result->num_rows > 0) {
     }
 
     // 2. VERIFICAR CONTRASEÑA
-    if ($pass === $user['password'] || password_verify($pass, $user['password'])) {
-        // Login Exitoso: Devolvemos el rol que tenga en la BD (admin, vendedor o usuario)
+    if (password_verify($pass, $user['password'])) {
+
         echo json_encode([
             "status" => "success",
             "data"   => [
                 "id"     => $user['id'],
                 "nombre" => $user['nombre'],
-                "rol"    => $user['rol'] // Aquí viaja el dato clave para el JS
+                "rol"    => $user['rol']
             ]
         ]);
+
     } else {
         echo json_encode(["status" => "error", "message" => "Contraseña incorrecta."]);
     }
+
 } else {
     echo json_encode(["status" => "error", "message" => "El correo no está registrado."]);
 }

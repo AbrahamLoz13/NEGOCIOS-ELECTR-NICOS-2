@@ -209,7 +209,7 @@
                         <div class="row">
                             <div class="col-xs-6 form-group">
                                 <label class="font-weight-bold small text-muted">Teléfono</label>
-                                <input type="text" class="form-control form-control-custom" id="clientPhone">
+                                <input type="number" class="form-control form-control-custom" id="clientPhone">
                             </div>
                             <div class="col-xs-6 form-group">
                                 <label class="font-weight-bold small text-muted">Rol</label>
@@ -221,8 +221,18 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="font-weight-bold small text-muted">Dirección</label>
-                            <textarea class="form-control form-control-custom" id="clientAddress" rows="2"></textarea>
+                            <label class="font-weight-bold small text-muted">Dirección </label>
+                            <div class="row">   
+                                <div class="col-xs-4 form-group">
+                                    <input type="text" placeholder="Calle" class="form-control form-control-custom" id="clientStreet">
+                                </div>
+                                <div class="col-xs-4 form-group">
+                                    <input type="text" placeholder="Número" class="form-control form-control-custom" id="clientNumberStreet">
+                                </div>
+                                <div class="col-xs-4 form-group">
+                                    <input type="text" placeholder="Código Postal" class="form-control form-control-custom" id="clientPostalCode">
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="font-weight-bold small text-muted">Contraseña <span style="font-weight: normal; color: #999;">(Opcional al editar)</span></label>
@@ -429,7 +439,9 @@
             $('#clientEmail').val(c.correo);
             $('#clientPhone').val(c.telefono);
             $('#clientRole').val(c.rol);
-            $('#clientAddress').val(c.direccion || '');
+            $('#clientStreet').val(c.calle || '');
+            $('#clientNumberStreet').val(c.numero || '');
+            $('#clientPostalCode').val(c.codigoPostal || '');
             $('#clientPassword').val(''); 
             
             $('#modalTitle').text('Editar Datos de: ' + c.nombre);
@@ -446,7 +458,10 @@
                 correo: $('#clientEmail').val(),
                 telefono: $('#clientPhone').val(),
                 rol: $('#clientRole').val(),
-                password: $('#clientPassword').val()
+                password: $('#clientPassword').val(),
+                calle: $('#clientStreet').val(),
+                numeroCasa: $('#clientNumberStreet').val(),
+                codigoPostal: $('#clientPostalCode').val()
             };
 
             const method = isEditing ? 'PUT' : 'POST';
@@ -518,7 +533,7 @@
         
         function filterTable() {
             const val = $('#filterSearch').val().toLowerCase();
-            const filtered = clientesCargados.filter(c => c.nombre.toLowerCase().includes(val) || c.correo.toLowerCase().includes(val));
+            const filtered = clientesCargados.filter(c => c.nombre.toLowerCase().includes(val) || c.correo.toLowerCase().includes(val) || c.estado.toLowerCase().includes(val) );
             renderTable(filtered);
         }
 

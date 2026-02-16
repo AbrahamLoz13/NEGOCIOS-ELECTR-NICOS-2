@@ -25,8 +25,13 @@ switch ($method) {
         $nombre = $data['nombre'];
         $correo = $data['correo'];
         $telefono = $data['telefono'] ?? '';
+        $calle = $data['calle'] ?? '';
+        $numero = $data['numeroCasa'] ?? '';
+        $codigoPostal = $data['codigoPostal'] ?? '';
         $rol = !empty($data['rol']) ? $data['rol'] : "usuario";
-        $pass = !empty($data['password']) ? $data['password'] : "12345";
+        $plainPassword = !empty($data['password']) ? $data['password'] : "12345";
+$pass = password_hash($plainPassword, PASSWORD_DEFAULT);
+
         // Si usas hash en login: $pass = password_hash($pass, PASSWORD_DEFAULT);
 
         // Validar duplicado
@@ -39,8 +44,8 @@ switch ($method) {
         }
 
         // Insert sin dirección
-        $stmt = $conn->prepare("INSERT INTO usuarios (nombre, correo, telefono, password, rol, estado) VALUES (?, ?, ?, ?, ?, 'activo')");
-        $stmt->bind_param("sssss", $nombre, $correo, $telefono, $pass, $rol);
+        $stmt = $conn->prepare("INSERT INTO usuarios (nombre, correo, telefono, password, rol, estado, calle, numeroCasa, codigoPostal) VALUES (?, ?, ?, ?, ?, 'activo', ?, ?, ?)");
+        $stmt->bind_param("ssssssss", $nombre, $correo, $telefono, $pass, $rol, $calle, $numero, $codigoPostal);
         
         if ($stmt->execute()) {
             echo json_encode(["status" => "success", "message" => "Usuario registrado"]);

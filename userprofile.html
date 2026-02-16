@@ -191,6 +191,29 @@
             </div>
         </div>
     </div>
+    <!-- ================= MI ACTIVIDAD ================= -->
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body">
+                <h4><i class="fa fa-history"></i> Mi Actividad</h4>
+                <hr>
+
+                <!-- PEDIDOS -->
+                <h5><i class="fa fa-shopping-bag"></i> Mis Pedidos</h5>
+                <div id="mis-pedidos">
+                    <p>Cargando pedidos...</p>
+                </div>
+
+                <hr>
+
+                <!-- CHATS -->
+                <h5><i class="fa fa-comments"></i> Mis Conversaciones</h5>
+                <div id="mis-chats">
+                    <p>Cargando conversaciones...</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer id="footer">
         <div id="bottom-footer" class="section">
@@ -206,6 +229,8 @@
     <script>
         $(document).ready(function() {
             cargarDatosUsuario();
+            cargarActividad();
+
         });
 
         function cargarDatosUsuario() {
@@ -275,6 +300,68 @@
             localStorage.removeItem('currentUser');
             window.location.href = "index.html";
         }
+        function cargarActividad() {
+    const userData = JSON.parse(localStorage.getItem('currentUser'));
+    if (!userData) return;
+
+    fetch(`api/actividad.php?nombre=${encodeURIComponent(userData.nombre)}`)
+        .then(res => res.json())
+        .then(data => {
+
+            /* ===== PEDIDOS ===== */
+            if (data.pedidos.length === 0) {
+                $('#mis-pedidos').html("<p>No tienes pedidos registrados.</p>");
+            } else {
+                let pedidosHTML = '<ul class="list-group">';
+                data.pedidos.forEach(p => {
+
+                    let badge = "secondary";
+                    if (p.estado.toLowerCase() === "pendiente") badge = "warning";
+                    if (p.estado.toLowerCase() === "enviado") badge = "info";
+                    if (p.estado.toLowerCase() === "entregado") badge = "success";
+
+                    pedidosHTML += `
+                        <li class="list-group-item">
+                            <strong>${p.producto_nombre}</strong><br>
+                            Cantidad: ${p.cantidad} |
+                            Total: $${p.total} |
+                            Fecha: ${p.fecha}
+                            <span class="badge badge-${badge}" style="float:right;">
+                                ${p.estado}
+                            </span>
+                        </li>
+                    `;
+                });
+                pedidosHTML += '</ul>';
+                $('#mis-pedidos').html(pedidosHTML);
+            }
+
+            /* ===== CHATS ===== */
+            if (data.chats.length === 0) {
+                $('#mis-chats').html("<p>No tienes conversaciones.</p>");
+            } else {
+                let chatsHTML = '<ul class="list-group">';
+                data.chats.forEach(c => {
+
+                    let origenColor = c.origen === "admin" ? "danger" : "primary";
+
+                    chatsHTML += `
+                        <li class="list-group-item">
+                            <span class="badge badge-${origenColor}">
+                                ${c.origen.toUpperCase()}
+                            </span>
+                            ${c.mensaje}<br>
+                            <small>${c.fecha}</small>
+                        </li>
+                    `;
+                });
+                chatsHTML += '</ul>';
+                $('#mis-chats').html(chatsHTML);
+            }
+
+        });
+}
+
     </script>
 </body>
 </html>
