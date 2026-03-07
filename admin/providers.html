@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Proveedores | Pet Palace Admin</title>
+
+<link rel="stylesheet" href="../css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+<style>
+        /* ESTILOS GENERALES (Mismo tema que Clients) */
+        body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
+
+        /* SIDEBAR */
+        #sidebar {
+            position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
+            padding-top: 25px; background-color: #15161D;
+            width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .sidebar-brand { text-align: center; margin-bottom: 35px; }
+        .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
+        .sidebar-brand h5 { color: #fff; letter-spacing: 1px; font-weight: 700; font-size: 16px; margin: 0; }
+        .sidebar-brand p { color: #6c757d; font-size: 11px; text-transform: uppercase; margin-top: 5px; letter-spacing: 0.5px; }
+
+        .nav-sidebar { list-style: none; padding: 0; margin: 0; }
+        .nav-sidebar li a {
+            display: flex; align-items: center; padding: 14px 25px;
+            color: #aeb4be; text-decoration: none; font-weight: 500; font-size: 13px;
+            transition: all 0.2s ease-in-out; border-left: 4px solid transparent;
+        }
+        .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
+        .nav-sidebar li a:hover, .nav-sidebar li.active a {
+            background-color: #1e2029; color: #fff; border-left-color: #D10024;
+        }
+        .nav-sidebar hr { border-color: #2c2e3e; margin: 20px 25px; opacity: 0.5; }
+
+        /* CONTENIDO PRINCIPAL */
+        main { margin-left: 240px; padding: 30px; transition: all 0.3s; }
+
+        /* HEADER */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .top-bar h2 { margin: 0; font-weight: 800; color: #15161D; font-size: 24px; }
+
+        /* CARD BLANCA */
+        .card-custom {
+            background: white; border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
+            overflow: hidden; margin-bottom: 25px;
+        }
+        .card-body-custom { padding: 20px; }
+
+        /* FILTROS */
+        .search-box { position: relative; }
+        .search-box i { position: absolute; left: 15px; top: 12px; color: #aaa; }
+        .search-box input { padding-left: 40px; border-radius: 8px; border: 1px solid #e0e0e0; height: 40px; }
+        .filter-select { border-radius: 8px; border: 1px solid #e0e0e0; height: 40px; }
+
+        /* TABLA DE PEDIDOS */
+        .table thead th { 
+            background-color: #f8f9fa; color: #495057; border-bottom: 2px solid #e9ecef; 
+            font-weight: 700; text-transform: uppercase; font-size: 11px; padding: 15px; 
+        }
+        .table tbody td { vertical-align: middle; padding: 15px; border-top: 1px solid #f0f0f0; }
+
+        /* BADGES DE ESTADO (Colores Modernos) */
+        .badge-status { font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .bg-pendiente { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .bg-enviado { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .bg-entregado { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .bg-cancelado { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* BOTONES DE ACCIÓN */
+        .btn-action { 
+            width: 32px; height: 32px; border-radius: 8px; border: none; 
+            display: inline-flex; align-items: center; justify-content: center; 
+            margin: 0 2px; transition: 0.2s; color: white;
+        }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-edit { background: #4ea3f1; }
+        .btn-delete { background: #ff4b5c; }
+        
+        .btn-add { background: #6610f2; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; color: white; display: flex; align-items: center; gap: 8px; }
+        .btn-add:hover { background: #520dc2; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(102,16,242,0.3); color: white; text-decoration: none; }
+
+        /* ANIMACIONES */
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</style>
+</head>
+
+<body>
+
+<nav id="sidebar">
+    <div class="sidebar-brand">
+        <img src="../img/logo6.png">
+        <h5>Pet Palace</h5>
+        <p id="rolDisplay">Administrador</p>
+    </div>
+    <ul class="nav-sidebar">
+            <li><a href="admin-panel.html"><i class="fa fa-chart-line"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa fa-users"></i> Clientes</a></li>
+            <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
+            <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
+            <li class="active"><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
+            <li><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
+            <hr>
+            <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
+            <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+        </ul>
+</nav>
+
+<main>
+
+<div class="d-flex justify-content-between align-items-center mb-4 fade-in">
+    <div>
+        <h2 class="fw-bold m-0">Gestión de Proveedores</h2>
+        <small class="text-muted">Administra los proveedores del inventario</small>
+    </div>
+
+    <button class="btn-add" onclick="openAddModal()">
+        <i class="fa fa-plus"></i> Nuevo Proveedor
+    </button>
+</div>
+
+<div class="card-custom">
+<div class="table-responsive">
+<table class="table table-hover mb-0">
+<thead>
+<tr>
+<th>ID</th>
+<th>Nombre</th>
+<th>Contacto</th>
+<th>Teléfono</th>
+<th>Email</th>
+<th>Acciones</th>
+</tr>
+</thead>
+<tbody id="providersTableBody"></tbody>
+</table>
+</div>
+</div>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal fade" id="providerModal">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form id="providerForm">
+
+<div class="modal-header bg-dark text-white">
+<h4 id="modalTitle">Proveedor</h4>
+<button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+</div>
+
+<div class="modal-body">
+<input type="hidden" id="providerId" name="id">
+
+<div class="form-group">
+<label>Nombre</label>
+<input type="text" class="form-control" name="nombre" required>
+</div>
+
+<div class="form-group">
+<label>Contacto</label>
+<input type="text" class="form-control" name="contacto">
+</div>
+
+<div class="form-group">
+<label>Teléfono</label>
+<input type="number" class="form-control" name="telefono">
+</div>
+
+<div class="form-group">
+<label>Email</label>
+<input type="email" class="form-control" name="correo">
+</div>
+
+</div>
+
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+<button type="submit" class="btn btn-primary">Guardar</button>
+</div>
+
+</form>
+</div>
+</div>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+
+<script>
+
+const API_URL = '../api/providers.php';
+let proveedores = [];
+
+$(document).ready(function(){
+    loadProviders();
+});
+
+function loadProviders(){
+    $.getJSON(API_URL, function(data){
+        proveedores = data;
+        renderTable();
+    });
+}
+
+function renderTable(){
+    const tbody = $('#providersTableBody');
+    tbody.empty();
+
+    if(proveedores.length === 0){
+        tbody.html('<tr><td colspan="6" class="text-center">No hay proveedores</td></tr>');
+        return;
+    }
+
+    proveedores.forEach(p => {
+        tbody.append(`
+            <tr>
+                <td>${p.id}</td>
+                <td>${p.nombre}</td>
+                <td>${p.contacto || ''}</td>
+                <td>${p.telefono || ''}</td>
+                <td>${p.correo || ''}</td>
+                <td>
+                    <button class="btn-action btn-edit" onclick="editProvider(${p.id})">
+                        <i class="fa fa-pencil-alt"></i>
+                    </button>
+                    <button class="btn-action btn-delete" onclick="deleteProvider(${p.id})">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `);
+    });
+}
+
+function openAddModal(){
+    $('#providerForm')[0].reset();
+    $('#providerId').val('');
+    $('#modalTitle').text('Nuevo Proveedor');
+    $('#providerModal').modal('show');
+}
+
+function editProvider(id){
+    const p = proveedores.find(x => x.id == id);
+    if(!p) return;
+
+    $('#providerId').val(p.id);
+    $('input[name="nombre"]').val(p.nombre);
+    $('input[name="contacto"]').val(p.contacto);
+    $('input[name="telefono"]').val(p.telefono);
+    $('input[name="correo"]').val(p.correo);
+
+    $('#modalTitle').text('Editar Proveedor');
+    $('#providerModal').modal('show');
+}
+
+$('#providerForm').on('submit', function(e){
+    e.preventDefault();
+
+    const id = $('#providerId').val();
+    const formData = $(this).serialize();
+
+    if(id){ 
+        // ===== EDITAR (PUT) =====
+        $.ajax({
+            url: API_URL,
+            type: 'PUT',
+            data: formData,
+            success: function(res){
+                if(typeof res === "string") res = JSON.parse(res);
+
+                if(res.status === 'success'){
+                    $('#providerModal').modal('hide');
+                    loadProviders();
+                } else {
+                    alert(res.message || "Error al actualizar");
+                }
+            }
+        });
+
+    } else {
+        // ===== CREAR (POST) =====
+        $.ajax({
+            url: API_URL,
+            type: 'POST',
+            data: formData,
+            success: function(res){
+                if(typeof res === "string") res = JSON.parse(res);
+
+                if(res.status === 'success'){
+                    $('#providerModal').modal('hide');
+                    loadProviders();
+                } else {
+                    alert(res.message || "Error al crear");
+                }
+            }
+        });
+    }
+});
+
+
+function deleteProvider(id){
+    if(!confirm('¿Eliminar proveedor?')) return;
+
+    $.ajax({
+        url: API_URL,
+        type: 'DELETE',
+        data: JSON.stringify({id:id}),
+        contentType: "application/json",
+        success: function(){
+            loadProviders();
+        }
+    });
+}
+
+</script>
+
+</body>
+</html>

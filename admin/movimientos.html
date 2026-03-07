@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Movimientos | Pet Palace Admin</title>
+    
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* ESTILOS GENERALES */
+        body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
+
+        /* SIDEBAR */
+        #sidebar {
+            position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
+            padding-top: 25px; background-color: #15161D;
+            width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .sidebar-brand { text-align: center; margin-bottom: 35px; }
+        .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
+        .sidebar-brand h5 { color: #fff; letter-spacing: 1px; font-weight: 700; font-size: 16px; margin: 0; }
+        .sidebar-brand p { color: #6c757d; font-size: 11px; text-transform: uppercase; margin-top: 5px; letter-spacing: 0.5px; }
+
+        .nav-sidebar { list-style: none; padding: 0; margin: 0; }
+        .nav-sidebar li a {
+            display: flex; align-items: center; padding: 14px 25px;
+            color: #aeb4be; text-decoration: none; font-weight: 500; font-size: 13px;
+            transition: all 0.2s ease-in-out; border-left: 4px solid transparent;
+        }
+        .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
+        .nav-sidebar li a:hover, .nav-sidebar li.active a {
+            background-color: #1e2029; color: #fff; border-left-color: #D10024;
+        }
+        .nav-sidebar hr { border-color: #2c2e3e; margin: 20px 25px; opacity: 0.5; }
+
+        /* CONTENIDO PRINCIPAL */
+        main { margin-left: 240px; padding: 30px; transition: all 0.3s; }
+
+        /* HEADER */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .top-bar h2 { margin: 0; font-weight: 800; color: #15161D; font-size: 24px; }
+
+        /* CARD BLANCA */
+        .card-custom {
+            background: white; border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
+            overflow: hidden; margin-bottom: 25px;
+        }
+        .card-body-custom { padding: 20px; }
+
+        /* FILTROS */
+        .search-box { position: relative; }
+        .search-box i { position: absolute; left: 15px; top: 12px; color: #aaa; }
+        .search-box input { padding-left: 40px; border-radius: 8px; border: 1px solid #e0e0e0; height: 40px; }
+        .filter-select { border-radius: 8px; border: 1px solid #e0e0e0; height: 40px; }
+
+        /* TABLA */
+        .table thead th { 
+            background-color: #f8f9fa; color: #495057; border-bottom: 2px solid #e9ecef; 
+            font-weight: 700; text-transform: uppercase; font-size: 11px; padding: 15px; 
+        }
+        .table tbody td { vertical-align: middle; padding: 15px; border-top: 1px solid #f0f0f0; }
+
+        /* BADGES DE TIPO */
+        .badge-tipo { font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .bg-pedido { background-color: #cce5ff; color: #004085; border: 1px solid #b8daff; }
+        .bg-restock { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .bg-stock { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .bg-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* TARJETAS DE ESTADÍSTICAS */
+        .stats-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.02);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+        }
+        .stats-icon {
+            font-size: 40px;
+            color: #4ea3f1;
+            margin-bottom: 10px;
+        }
+        .stats-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #15161D;
+        }
+        .stats-label {
+            color: #6c757d;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* GRÁFICAS */
+        .chart-container {
+            padding: 15px;
+            height: 300px;
+        }
+
+        /* ANIMACIONES */
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+
+<body>
+
+<nav id="sidebar">
+    <div class="sidebar-brand">
+        <img src="../img/logo6.png">
+        <h5>Pet Palace</h5>
+        <p id="rolDisplay">Administrador</p>
+    </div>
+    <ul class="nav-sidebar">
+        <li><a href="admin-panel.html"><i class="fa fa-chart-line"></i> Dashboard</a></li>
+        <li><a href="clients.html"><i class="fa fa-users"></i> Clientes</a></li>
+        <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
+        <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
+        <li><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
+        <li class="active"><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
+        <hr>
+        <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
+        <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<div class="d-flex justify-content-between align-items-center mb-4 fade-in">
+    <div>
+        <h2 class="fw-bold m-0">Movimientos de Inventario</h2>
+        <small class="text-muted">Historial de cambios y estadísticas de productos</small>
+    </div>
+</div>
+
+<!-- TARJETAS DE ESTADÍSTICAS -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-icon"><i class="fa fa-boxes"></i></div>
+            <div class="stats-number" id="totalMovimientos">0</div>
+            <div class="stats-label">Total Movimientos</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-icon"><i class="fa fa-arrow-up"></i></div>
+            <div class="stats-number" id="totalRestocks">0</div>
+            <div class="stats-label">Restocks</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-icon"><i class="fa fa-arrow-down"></i></div>
+            <div class="stats-number" id="totalVentas">0</div>
+            <div class="stats-label">Ventas</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-icon"><i class="fa fa-exclamation-triangle"></i></div>
+            <div class="stats-number" id="stockCritico">0</div>
+            <div class="stats-label">Ajustes</div>
+        </div>
+    </div>
+</div>
+
+<!-- GRÁFICAS -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card-custom">
+            <div class="card-body-custom">
+                <h5 class="font-weight-bold mb-3"><i class="fa fa-chart-bar text-primary"></i> Productos Más Vendidos</h5>
+                <div class="chart-container">
+                    <canvas id="chartMasVendidos"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-custom">
+            <div class="card-body-custom">
+                <h5 class="font-weight-bold mb-3"><i class="fa fa-chart-bar text-danger"></i> Productos Menos Vendidos</h5>
+                <div class="chart-container">
+                    <canvas id="chartMenosVendidos"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GRÁFICA DE ESTRATEGIAS -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card-custom">
+            <div class="card-body-custom">
+                <h5 class="font-weight-bold mb-3"><i class="fa fa-chart-pie text-success"></i> Estrategias Logísticas</h5>
+                <div class="chart-container">
+                    <canvas id="chartEstrategias"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-custom">
+            <div class="card-body-custom">
+                <h5 class="font-weight-bold mb-3"><i class="fa fa-chart-line text-info"></i> Productos con Stock Bajo</h5>
+                <div class="table-responsive" style="max-height: 300px;">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Stock</th>
+                                <th>Mínimo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockCriticoTable">
+                            <tr><td colspan="4" class="text-center">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FILTROS -->
+<div class="card-custom fade-in">
+    <div class="card-body-custom">
+        <div class="row">
+            <div class="col-md-4 mb-2">
+                <div class="search-box">
+                    <i class="fa fa-search"></i>
+                    <input type="text" id="filterSearch" class="form-control" placeholder="Buscar por producto o motivo..." onkeyup="filterTable()">
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <select id="filterTipo" class="form-control filter-select" onchange="filterTable()">
+                    <option value="">Todos los Tipos</option>
+                    <option value="pedido_proveedor">Pedido a Proveedor</option>
+                    <option value="restock">Restock</option>
+                    <option value="stock_critico">Stock Crítico</option>
+                    <option value="recepcion_pedido">Recepción</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-2">
+                <input type="date" id="filterFecha" class="form-control" onchange="filterTable()">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TABLA DE MOVIMIENTOS -->
+<div class="card-custom fade-in">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                    <th>Motivo</th>
+                    <th>Referencia</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody id="movimientosTableBody">
+                <tr><td colspan="7" class="text-center py-5"><i class="fa fa-spinner fa-spin text-primary"></i> Cargando movimientos...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</main>
+
+<!-- MODAL DE DETALLE (Solo ver) -->
+<div class="modal fade" id="detalleModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 12px; border:none;">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, #15161D, #2c3e50); border-radius: 12px 12px 0 0;">
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><i class="fa fa-info-circle"></i> Detalle del Movimiento</h4>
+            </div>
+            
+            <div class="modal-body" style="background: #f8f9fa; padding: 25px;">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small">ID Movimiento</label>
+                        <div class="font-weight-bold" id="detalleId">-</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small">Fecha</label>
+                        <div class="font-weight-bold" id="detalleFecha">-</div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="text-muted small">Producto</label>
+                        <div class="font-weight-bold" id="detalleProducto">-</div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small">Tipo</label>
+                        <div><span class="badge-tipo" id="detalleTipo"></span></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small">Cantidad</label>
+                        <div class="font-weight-bold" id="detalleCantidad">-</div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="text-muted small">Motivo</label>
+                        <div class="p-3 bg-white rounded" id="detalleMotivo">-</div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="text-muted small">Referencia ID</label>
+                        <div class="font-weight-bold" id="detalleReferencia">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="border-top: 1px solid #eee;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const API_MOVIMIENTOS = '../api/movimientos.php';
+const API_PRODUCTOS = '../api/products.php';
+const API_PEDIDOS = '../api/orders.php';
+
+let movimientosData = [];
+let productosData = [];
+let pedidosData = [];
+let userRole = '';
+
+// Gráficas
+let chartMasVendidos, chartMenosVendidos, chartEstrategias;
+
+$(document).ready(function(){
+    verificarPermisos();
+    loadProductos();
+    loadPedidos();
+    loadMovimientos();
+});
+
+function verificarPermisos() {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user) { window.location.href = '../login.html'; return; }
+    userRole = user.rol;
+    $('#rolDisplay').text(userRole === 'admin' ? 'Administrador' : 'Vendedor Autorizado');
+}
+
+function loadProductos() {
+    $.getJSON(API_PRODUCTOS, function(data) {
+        productosData = data;
+        actualizarStockCritico();
+        actualizarGraficaEstrategias();
+    }).fail(function() {
+        console.error('Error cargando productos');
+    });
+}
+
+function loadPedidos() {
+    $.getJSON(API_PEDIDOS, function(data) {
+        pedidosData = data;
+        calcularVentas();
+    }).fail(function() {
+        console.error('Error cargando pedidos');
+    });
+}
+
+function loadMovimientos() {
+    $.getJSON(API_MOVIMIENTOS, function(data) {
+        movimientosData = Array.isArray(data) ? data : [];
+        renderTable(movimientosData);
+        actualizarEstadisticas();
+    }).fail(function(xhr) {
+        console.error('Error cargando movimientos:', xhr.responseText);
+        $('#movimientosTableBody').html('<tr><td colspan="7" class="text-center text-danger">Error al cargar movimientos</td></tr>');
+    });
+}
+
+function renderTable(data) {
+    const $tbody = $('#movimientosTableBody');
+    $tbody.empty();
+
+    if(!data || data.length === 0) {
+        $tbody.html('<tr><td colspan="7" class="text-center text-muted p-5">No hay movimientos registrados.</td></tr>');
+        return;
+    }
+
+    data.forEach(m => {
+        let badgeClass = '';
+        let tipoDisplay = m.tipo || 'N/A';
+        
+        switch(m.tipo) {
+            case 'pedido_proveedor':
+            case 'pedido_push':
+                badgeClass = 'bg-pedido';
+                tipoDisplay = 'Pedido';
+                break;
+            case 'restock':
+                badgeClass = 'bg-restock';
+                tipoDisplay = 'Restock';
+                break;
+            case 'stock_critico':
+                badgeClass = 'bg-stock';
+                tipoDisplay = 'Alerta Crítica';
+                break;
+            case 'recepcion_pedido':
+                badgeClass = 'bg-restock';
+                tipoDisplay = 'Recepción';
+                break;
+            default:
+                badgeClass = 'bg-secondary';
+        }
+
+        let fecha = m.fecha ? m.fecha.split(' ')[0] : '-';
+        let productoNombre = obtenerNombreProducto(m.producto_id);
+
+        const row = `
+            <tr style="cursor: pointer;" onclick='verDetalle(${JSON.stringify(m).replace(/'/g, "&#39;")})'>
+                <td class="font-weight-bold">#${m.id}</td>
+                <td>${productoNombre}</td>
+                <td><span class="badge-tipo ${badgeClass}">${tipoDisplay}</span></td>
+                <td class="text-center font-weight-bold">${m.cantidad || 0}</td>
+                <td>${m.motivo ? m.motivo.substring(0, 50) + '...' : '-'}</td>
+                <td>${m.referencia_id || '-'}</td>
+                <td>${fecha}</td>
+            </tr>
+        `;
+
+        $tbody.append(row);
+    });
+}
+
+function obtenerNombreProducto(productoId) {
+    if (!productoId) return 'N/A';
+    const producto = productosData.find(p => p.id == productoId);
+    return producto ? producto.nombre : `ID: ${productoId}`;
+}
+
+function verDetalle(movimiento) {
+    $('#detalleId').text(`#${movimiento.id}`);
+    $('#detalleFecha').text(movimiento.fecha || '-');
+    $('#detalleProducto').text(obtenerNombreProducto(movimiento.producto_id));
+    $('#detalleCantidad').text(movimiento.cantidad || 0);
+    $('#detalleMotivo').text(movimiento.motivo || '-');
+    $('#detalleReferencia').text(movimiento.referencia_id || '-');
+    
+    let badgeClass = '';
+    let tipoDisplay = movimiento.tipo || 'N/A';
+    
+    switch(movimiento.tipo) {
+        case 'pedido_proveedor':
+        case 'pedido_push':
+            badgeClass = 'bg-pedido';
+            tipoDisplay = 'Pedido a Proveedor';
+            break;
+        case 'restock':
+            badgeClass = 'bg-restock';
+            tipoDisplay = 'Restock';
+            break;
+        case 'stock_critico':
+            badgeClass = 'bg-stock';
+            tipoDisplay = 'Ajustes';
+            break;
+        case 'recepcion_pedido':
+            badgeClass = 'bg-restock';
+            tipoDisplay = 'Recepción de Pedido';
+            break;
+        default:
+            badgeClass = 'bg-secondary';
+    }
+    
+    $('#detalleTipo').attr('class', `badge-tipo ${badgeClass}`).text(tipoDisplay);
+    
+    $('#detalleModal').modal('show');
+}
+
+function actualizarEstadisticas() {
+    $('#totalMovimientos').text(movimientosData.length);
+    
+    const restocks = movimientosData.filter(m => m.tipo === 'entrada' || m.tipo === 'recepcion_pedido').length;
+    $('#totalRestocks').text(restocks);
+    
+    const ventas = movimientosData.filter(m => m.tipo === 'salida' || m.motivo?.toLowerCase().includes('venta')).length;
+    $('#totalVentas').text(ventas);
+    
+    const alertas = movimientosData.filter(m => m.tipo === 'ajuste').length;
+    $('#stockCritico').text(alertas);
+}
+
+function actualizarStockCritico() {
+    const productosCriticos = productosData.filter(p => p.stock <= (p.stock_minimo || 5));
+    let html = '';
+    
+    if (productosCriticos.length === 0) {
+        html = '<tr><td colspan="4" class="text-center text-success">No hay productos con stock crítico</td></tr>';
+    } else {
+        productosCriticos.slice(0, 5).forEach(p => {
+            const porcentaje = ((p.stock / (p.stock_minimo || 5)) * 100).toFixed(0);
+            html += `
+                <tr>
+                    <td>${p.nombre}</td>
+                    <td class="font-weight-bold text-danger">${p.stock}</td>
+                    <td>${p.stock_minimo || 5}</td>
+                </tr>
+            `;
+        });
+    }
+    
+    $('#stockCriticoTable').html(html);
+}
+
+function calcularVentas() {
+    // Calcular productos más vendidos basado en movimientos de tipo 'venta' o 'salida'
+    const ventasPorProducto = {};
+    
+    // Filtrar solo movimientos que representen ventas/salidas
+    const movimientosVentas = movimientosData.filter(m => {
+        return m.tipo === 'venta' || 
+               m.tipo === 'salida' || 
+               m.tipo?.toLowerCase().includes('venta') ||
+               m.motivo?.toLowerCase().includes('venta');
+    });
+    
+    console.log('Movimientos de ventas encontrados:', movimientosVentas.length);
+    
+    // Procesar cada movimiento de venta
+    movimientosVentas.forEach(m => {
+        const prodId = m.producto_id;
+        const producto = productosData.find(p => p.id == prodId);
+        
+        if (!ventasPorProducto[prodId]) {
+            ventasPorProducto[prodId] = {
+                id: prodId,
+                nombre: producto ? producto.nombre : `Producto ID: ${prodId}`,
+                cantidad: 0,
+                stock_actual: producto ? producto.stock : 0
+            };
+        }
+        
+        // Sumar la cantidad vendida (positiva o negativa según cómo se guarde)
+        let cantidadVendida = Math.abs(parseInt(m.cantidad) || 0);
+        ventasPorProducto[prodId].cantidad += cantidadVendida;
+    });
+    
+    // Convertir a array y ordenar
+    const ventasArray = Object.values(ventasPorProducto)
+        .filter(v => v.cantidad > 0)
+        .sort((a, b) => b.cantidad - a.cantidad);
+    
+    console.log('Ventas por producto:', ventasArray);
+    
+    // Top 5 más vendidos
+    const masVendidos = ventasArray.slice(0, 5);
+    
+    // Top 5 menos vendidos (los que tienen ventas pero en menor cantidad)
+    const menosVendidos = ventasArray.slice(-5).reverse();
+    
+    // Si hay menos de 5 productos con ventas, completar con productos sin ventas
+    if (menosVendidos.length < 5) {
+        const productosSinVentas = productosData
+            .filter(p => !ventasPorProducto[p.id])
+            .slice(0, 5 - menosVendidos.length)
+            .map(p => ({
+                id: p.id,
+                nombre: p.nombre,
+                cantidad: 0,
+                stock_actual: p.stock
+            }));
+        
+        menosVendidos.push(...productosSinVentas);
+    }
+    
+    actualizarGraficaMasVendidos(masVendidos);
+    actualizarGraficaMenosVendidos(menosVendidos);
+    
+    // También actualizar tabla de productos con stock crítico
+    actualizarStockCritico();
+}
+
+function actualizarGraficaMasVendidos(datos) {
+    const ctx = document.getElementById('chartMasVendidos').getContext('2d');
+    
+    if (chartMasVendidos) chartMasVendidos.destroy();
+    
+    if (datos.length === 0) {
+        // Mostrar gráfica vacía o mensaje
+        chartMasVendidos = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Sin datos'],
+                datasets: [{
+                    label: 'Cantidad Vendida',
+                    data: [0],
+                    backgroundColor: '#4ea3f1',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'No hay ventas registradas'
+                    }
+                }
+            }
+        });
+        return;
+    }
+    
+    chartMasVendidos = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: datos.map(d => d.nombre.length > 15 ? d.nombre.substring(0, 15) + '...' : d.nombre),
+            datasets: [{
+                label: 'Unidades Vendidas',
+                data: datos.map(d => d.cantidad),
+                backgroundColor: '#4ea3f1',
+                borderColor: '#2b7ac9',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { 
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Unidades'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const producto = datos[context.dataIndex];
+                            return [
+                                `Vendidas: ${context.raw} unidades`,
+                                `Stock actual: ${producto.stock_actual || 'N/A'}`
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function actualizarGraficaMenosVendidos(datos) {
+    const ctx = document.getElementById('chartMenosVendidos').getContext('2d');
+    
+    if (chartMenosVendidos) chartMenosVendidos.destroy();
+    
+    if (datos.length === 0 || (datos.length === 1 && datos[0].cantidad === 0)) {
+        chartMenosVendidos = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Sin ventas'],
+                datasets: [{
+                    label: 'Unidades Vendidas',
+                    data: [0],
+                    backgroundColor: '#ff6b6b',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Productos sin ventas'
+                    }
+                }
+            }
+        });
+        return;
+    }
+    
+    chartMenosVendidos = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: datos.map(d => d.nombre.length > 15 ? d.nombre.substring(0, 15) + '...' : d.nombre),
+            datasets: [{
+                label: 'Unidades Vendidas',
+                data: datos.map(d => d.cantidad),
+                backgroundColor: '#ff6b6b',
+                borderColor: '#e03a3a',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { 
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Unidades'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const producto = datos[context.dataIndex];
+                            return [
+                                `Vendidas: ${context.raw} unidades`,
+                                `Stock actual: ${producto.stock_actual || 'N/A'}`
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// También actualizar la función loadMovimientos para que recalcule ventas cuando cambien los datos
+function loadMovimientos() {
+    $.getJSON(API_MOVIMIENTOS, function(data) {
+        movimientosData = Array.isArray(data) ? data : [];
+        renderTable(movimientosData);
+        actualizarEstadisticas();
+        calcularVentas(); // Recalcular ventas cuando cambien los movimientos
+    }).fail(function(xhr) {
+        console.error('Error cargando movimientos:', xhr.responseText);
+        $('#movimientosTableBody').html('<tr><td colspan="7" class="text-center text-danger">Error al cargar movimientos</td></tr>');
+    });
+}
+function actualizarGraficaEstrategias() {
+    const push = productosData.filter(p => p.estrategia_logistica === 'PUSH').length;
+    const pull = productosData.filter(p => p.estrategia_logistica === 'PULL').length;
+    
+    const ctx = document.getElementById('chartEstrategias').getContext('2d');
+    
+    if (chartEstrategias) chartEstrategias.destroy();
+    
+    chartEstrategias = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['PUSH', 'PULL'],
+            datasets: [{
+                data: [push, pull],
+                backgroundColor: ['#28a745', '#ffc107'],
+                borderColor: ['#1e7e34', '#d39e00'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
+
+function filterTable() {
+    const search = $('#filterSearch').val().toLowerCase();
+    const tipo = $('#filterTipo').val().toLowerCase();
+    const fecha = $('#filterFecha').val();
+
+    const filtered = movimientosData.filter(m => {
+        const productoNombre = obtenerNombreProducto(m.producto_id).toLowerCase();
+        const matchesSearch = search === '' || 
+            productoNombre.includes(search) ||
+            (m.motivo && m.motivo.toLowerCase().includes(search));
+        
+        const matchesTipo = tipo === '' || (m.tipo && m.tipo.toLowerCase() === tipo);
+        
+        let matchesFecha = true;
+        if (fecha && m.fecha) {
+            matchesFecha = m.fecha.split(' ')[0] === fecha;
+        }
+        
+        return matchesSearch && matchesTipo && matchesFecha;
+    });
+
+    renderTable(filtered);
+}
+
+function cerrarSesion() {
+    localStorage.removeItem('currentUser');
+    window.location.href = '../login.html';
+}
+</script>
+
+</body>
+</html>

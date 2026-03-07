@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pedidos | Pet Palace Admin</title>
+    <title>Pedidos Proveedores | Pet Palace Admin</title>
     
     <link rel="stylesheet" href="../css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
     <style>
-        /* ESTILOS GENERALES (Mismo tema que Clients) */
+        /* ESTILOS GENERALES */
         body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
 
         /* SIDEBAR */
@@ -60,14 +60,14 @@
         .search-box input { padding-left: 40px; border-radius: 8px; border: 1px solid #e0e0e0; height: 40px; }
         .filter-select { border-radius: 8px; border: 1px solid #e0e0e0; height: 40px; }
 
-        /* TABLA DE PEDIDOS */
+        /* TABLA */
         .table thead th { 
             background-color: #f8f9fa; color: #495057; border-bottom: 2px solid #e9ecef; 
             font-weight: 700; text-transform: uppercase; font-size: 11px; padding: 15px; 
         }
         .table tbody td { vertical-align: middle; padding: 15px; border-top: 1px solid #f0f0f0; }
 
-        /* BADGES DE ESTADO (Colores Modernos) */
+        /* BADGES DE ESTADO */
         .badge-status { font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .bg-pendiente { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
         .bg-enviado { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
@@ -83,6 +83,7 @@
         .btn-action:hover { transform: translateY(-2px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .btn-edit { background: #4ea3f1; }
         .btn-delete { background: #ff4b5c; }
+        .btn-view { background: #28a745; }
         
         .btn-add { background: #6610f2; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; color: white; display: flex; align-items: center; gap: 8px; }
         .btn-add:hover { background: #520dc2; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(102,16,242,0.3); color: white; text-decoration: none; }
@@ -103,9 +104,11 @@
         </div>
         <ul class="nav-sidebar">
             <li><a href="admin-panel.html"><i class="fa fa-chart-line"></i> Dashboard</a></li>
-            <li id="menu-clients"><a href="clients.html"><i class="fa fa-users"></i> Clientes</a></li>
+            <li><a href="clients.html"><i class="fa fa-users"></i> Clientes</a></li>
             <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
-            <li class="active"><a href="#"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
+            <li class="active"><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
+            <li><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
+            <li><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
             <hr>
             <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
             <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
@@ -116,8 +119,8 @@
         
         <div class="top-bar fade-in">
             <div>
-                <h2 class="fw-bold m-0" style="color: #15161D;">Gestión de Pedidos</h2>
-                <small class="text-muted">Administra las ventas y envíos</small>
+                <h2 class="fw-bold m-0" style="color: #15161D;">Pedidos a Proveedores</h2>
+                <small class="text-muted">Administra las compras y reposiciones</small>
             </div>
             <button class="btn btn-add shadow-sm" onclick="openAddModal()">
                 <i class="fa fa-plus-circle"></i> Nuevo Pedido
@@ -127,19 +130,18 @@
         <div class="card-custom fade-in">
             <div class="card-body-custom">
                 <div class="row">
-                    <div class="col-md-8 mb-2">
+                    <div class="col-md-6 mb-2">
                         <div class="search-box">
                             <i class="fa fa-search"></i>
-                            <input type="text" id="filterSearch" class="form-control" placeholder="Buscar por Cliente, Producto o ID..." onkeyup="filterTable()">
+                            <input type="text" id="filterSearch" class="form-control" placeholder="Buscar por Producto, Proveedor o ID..." onkeyup="filterTable()">
                         </div>
                     </div>
-                    <div class="col-md-4 mb-2">
+                    <div class="col-md-6 mb-2">
                         <select id="filterStatus" class="form-control filter-select" onchange="filterTable()">
                             <option value="">Todos los Estados</option>
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Enviado">Enviado</option>
-                            <option value="Entregado">Entregado</option>
-                            <option value="Cancelado">Cancelado</option>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="completado">Completado</option>
+                            <option value="cancelado">Cancelado</option>
                         </select>
                     </div>
                 </div>
@@ -152,16 +154,17 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Cliente</th>
                             <th>Producto</th>
-                            <th>Total</th>
+                            <th>Proveedor</th>
+                            <th>Cantidad</th>
+                            <th>Costo Total</th>
                             <th>Fecha</th>
                             <th class="text-center">Estado</th>
                             <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="ordersTableBody">
-                        <tr><td colspan="7" class="text-center py-5"><i class="fa fa-spinner fa-spin text-primary"></i> Cargando pedidos...</td></tr>
+                        <tr><td colspan="8" class="text-center py-5"><i class="fa fa-spinner fa-spin text-primary"></i> Cargando pedidos...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -169,59 +172,57 @@
 
     </main>
 
+    <!-- MODAL PARA CREAR/EDITAR -->
     <div class="modal fade" id="orderModal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content" style="border-radius: 12px; border:none;">
                 <form id="orderForm">
-                    <div class="modal-header text-white" style="background: linear-gradient(135deg, #6610f2, #5e72e4); border-radius: 12px 12px 0 0;">
+                    <div class="modal-header text-white" style="background: linear-gradient(135deg, #15161D, #2c3e50); border-radius: 12px 12px 0 0;">
                         <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title" id="modalTitle"><i class="fa fa-shopping-cart"></i> Pedido</h4>
+                        <h4 class="modal-title" id="modalTitle"><i class="fa fa-clipboard-list"></i> Pedido a Proveedor</h4>
                     </div>
                     
                     <div class="modal-body" style="background: #f8f9fa; padding: 25px;">
                         <input type="hidden" id="orderId">
                         
                         <div class="form-group">
-                            <label class="font-weight-bold text-dark">Cliente</label>
-                            <input type="text" class="form-control" id="orderClient" required placeholder="Nombre del cliente" style="border-radius:8px;">
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-xs-8 form-group">
-                                <label class="font-weight-bold text-dark">Producto</label>
-                                <input type="text" class="form-control" id="orderProduct" required style="border-radius:8px;">
-                            </div>
-                            <div class="col-xs-4 form-group">
-                                <label class="font-weight-bold text-dark">Cant.</label>
-                                <input type="number" class="form-control" id="orderQty" required min="1" value="1" style="border-radius:8px;">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-xs-6 form-group">
-                                <label class="font-weight-bold text-dark">Total ($)</label>
-                                <input type="number" class="form-control" id="orderTotal" required step="0.01" style="border-radius:8px;">
-                            </div>
-                            <div class="col-xs-6 form-group">
-                                <label class="font-weight-bold text-dark">Estado</label>
-                                <select class="form-control" id="orderStatus" style="border-radius:8px;">
-                                    <option value="Pendiente">Pendiente</option>
-                                    <option value="Enviado">Enviado</option>
-                                    <option value="Entregado">Entregado</option>
-                                    <option value="Cancelado">Cancelado</option>
-                                </select>
-                            </div>
+                            <label class="font-weight-bold text-dark">Proveedor</label>
+                            <select class="form-control" id="orderProvider" required style="border-radius:8px;">
+                                <option value="">Seleccionar proveedor</option>
+                            </select>
                         </div>
                         
                         <div class="form-group">
-                            <label class="font-weight-bold text-dark">Dirección de Envío</label>
-                            <textarea class="form-control" id="orderAddress" rows="2" placeholder="Calle, Número, Colonia..." style="border-radius:8px;"></textarea>
+                            <label class="font-weight-bold text-dark">Producto</label>
+                            <select class="form-control" id="orderProduct" required style="border-radius:8px;">
+                                <option value="">Seleccionar producto</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold text-dark">Cantidad</label>
+                                <input type="number" class="form-control" id="orderQty" required min="1" value="1" style="border-radius:8px;">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold text-dark">Costo Total</label>
+                                <input type="number" class="form-control" id="orderTotal" readonly step="0.01" style="border-radius:8px; background-color:#e9ecef;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="font-weight-bold text-dark">Estado</label>
+                            <select class="form-control" id="orderStatus" style="border-radius:8px;">
+                                <option value="pendiente">Pendiente</option>
+                                <option value="completado">Completado</option>
+                                <option value="cancelado">Cancelado</option>
+                            </select>
                         </div>
                     </div>
 
                     <div class="modal-footer" style="border-top: 1px solid #eee;">
-                        <button type="button" class="btn btn-link text-secondary" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary" style="background: #6610f2; border:none; border-radius:8px; padding: 8px 20px;">Guardar Pedido</button>
+                        <button type="button" class="btn btn-link text-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" style="background: #4ea3f1; border:none; border-radius:8px; padding: 8px 20px;">Guardar</button>
                     </div>
                 </form>
             </div>
@@ -233,90 +234,151 @@
 
     <script>
         const API_URL = '../api/orders.php';
+        const PRODUCTS_API = '../api/products.php';
+        const PROVIDERS_API = '../api/providers.php';
+        
         let ordersData = [];
+        let productsData = [];
+        let providersData = [];
         let userRole = '';
         let isEditing = false;
 
         $(document).ready(function() {
-            verificarPermisos(); 
-            loadOrders();        
+            verificarPermisos();
+            loadProviders();
+            loadProducts();
+            loadOrders();
         });
 
         function verificarPermisos() {
             const user = JSON.parse(localStorage.getItem('currentUser'));
             if (!user) { window.location.href = '../login.html'; return; }
-            userRole = user.rol; 
+            userRole = user.rol;
             $('#rolDisplay').text(userRole === 'admin' ? 'Administrador' : 'Vendedor Autorizado');
         }
 
-        function loadOrders() {
-            const $tbody = $('#ordersTableBody');
-            $.getJSON(API_URL, function(data) {
-                ordersData = data;
-                renderTable(data);
+        function loadProviders() {
+            $.getJSON(PROVIDERS_API, function(data){
+                providersData = data;
+                let select = $('#orderProvider');
+                select.empty();
+                select.append('<option value="">Seleccionar proveedor</option>');
+                data.forEach(p => {
+                    select.append(`<option value="${p.id}">${p.nombre}</option>`);
+                });
             }).fail(function() {
-                $tbody.html('<tr><td colspan="7" class="text-center text-danger">Error de conexión</td></tr>');
+                console.error('Error cargando proveedores');
+            });
+        }
+
+        function loadProducts() {
+            $.getJSON(PRODUCTS_API, function(data){
+                productsData = data;
+                updateProductSelect();
+            }).fail(function() {
+                console.error('Error cargando productos');
+            });
+        }
+
+        function updateProductSelect(selectedProviderId = null) {
+            let select = $('#orderProduct');
+            select.empty();
+            select.append('<option value="">Seleccionar producto</option>');
+            
+            let filteredProducts = productsData;
+            if (selectedProviderId) {
+                filteredProducts = productsData.filter(p => p.proveedor_id == selectedProviderId);
+            }
+            
+            filteredProducts.forEach(p => {
+                select.append(`<option value="${p.id}" data-price="${p.precio}">${p.nombre}</option>`);
+            });
+        }
+
+        $('#orderProvider').on('change', function() {
+            let providerId = $(this).val();
+            updateProductSelect(providerId);
+            $('#orderTotal').val('');
+        });
+
+        $('#orderProduct, #orderQty').on('change keyup', function() {
+            const selectedOption = $('#orderProduct option:selected');
+            const price = selectedOption.data('price');
+            const qty = parseInt($('#orderQty').val());
+            
+            if(price && qty) {
+                const total = (price * qty).toFixed(2);
+                $('#orderTotal').val(total);
+            } else {
+                $('#orderTotal').val('');
+            }
+        });
+
+        function loadOrders() {
+            $.getJSON(API_URL, function(data) {
+                console.log('Pedidos cargados:', data);
+                ordersData = Array.isArray(data) ? data : [];
+                renderTable(ordersData);
+            }).fail(function(xhr, status, error) {
+                console.error('Error cargando pedidos:', error);
+                console.error('Respuesta:', xhr.responseText);
+                $('#ordersTableBody').html('<tr><td colspan="8" class="text-center text-danger">Error al cargar pedidos</td></tr>');
             });
         }
 
         function renderTable(data) {
             const $tbody = $('#ordersTableBody');
             $tbody.empty();
-            
-            if(data.length === 0) {
-                $tbody.html('<tr><td colspan="7" class="text-center text-muted p-5">No hay pedidos registrados.</td></tr>');
+
+            if(!data || data.length === 0) {
+                $tbody.html('<tr><td colspan="8" class="text-center text-muted p-5">No hay pedidos a proveedores.</td></tr>');
                 return;
             }
 
             data.forEach(o => {
                 let badgeClass = '';
-                switch(o.estado) {
-                    case 'Pendiente': badgeClass = 'bg-pendiente'; break;
-                    case 'Enviado': badgeClass = 'bg-enviado'; break;
-                    case 'Entregado': badgeClass = 'bg-entregado'; break;
-                    case 'Cancelado': badgeClass = 'bg-cancelado'; break;
-                }
-
-                // Permisos de botones
-                let actions = `<button class="btn-action btn-edit" onclick="openEditModal(${o.id})" title="Gestionar"><i class="fa fa-edit"></i></button>`;
+                let estadoDisplay = o.estado ? o.estado.charAt(0).toUpperCase() + o.estado.slice(1) : 'Pendiente';
                 
-                if (userRole === 'admin') {
-                    actions += ` <button class="btn-action btn-delete" onclick="deleteOrder(${o.id})" title="Eliminar"><i class="fa fa-trash-alt"></i></button>`;
+                switch(o.estado) {
+                    case 'pendiente': badgeClass = 'bg-pendiente'; break;
+                    case 'enviado': badgeClass = 'bg-enviado'; break;
+                    case 'entregado': badgeClass = 'bg-entregado'; break;
+                    case 'cancelado': badgeClass = 'bg-cancelado'; break;
+                    default: badgeClass = 'bg-pendiente';
                 }
 
-                const row = `<tr>
-                    <td class="font-weight-bold">#${o.id}</td>
-                    <td><span class="d-block font-weight-bold text-dark">${o.cliente}</span></td>
-                    <td>${o.producto} <span class="text-muted small">x${o.cantidad}</span></td>
-                    <td class="font-weight-bold text-primary">$${parseFloat(o.total).toFixed(2)}</td>
-                    <td><small class="text-muted">${o.fecha}</small></td>
-                    <td class="text-center"><span class="badge-status ${badgeClass}">${o.estado}</span></td>
-                    <td class="text-center">${actions}</td>
-                </tr>`;
+                let fecha = o.fecha_pedido ? o.fecha_pedido.split(' ')[0] : '-';
+
+                let deleteBtn = userRole === 'admin' ? 
+                    `<button class="btn-action btn-delete" onclick="deleteOrder(${o.id})" title="Eliminar"><i class="fa fa-trash-alt"></i></button>` : '';
+
+                const row = `
+                    <tr>
+                        <td class="font-weight-bold">#${o.id}</td>
+                        <td>${o.producto || 'N/A'}</td>
+                        <td>${o.proveedor || 'N/A'}</td>
+                        <td class="text-center">${o.cantidad}</td>
+                        <td class="font-weight-bold text-primary">$${parseFloat(o.costo_total).toFixed(2)}</td>
+                        <td>${fecha}</td>
+                        <td class="text-center"><span class="badge-status ${badgeClass}">${estadoDisplay}</span></td>
+                        <td class="text-center">
+                            <button class="btn-action btn-edit" onclick="openEditModal(${o.id})" title="Editar"><i class="fa fa-pencil-alt"></i></button>
+                            ${deleteBtn}
+                        </td>
+                    </tr>
+                `;
+
                 $tbody.append(row);
             });
-        }
-
-        function filterTable() {
-            const search = $('#filterSearch').val().toLowerCase();
-            const status = $('#filterStatus').val();
-
-            const filtered = ordersData.filter(o => {
-                const matchesSearch = o.cliente.toLowerCase().includes(search) || 
-                                      o.producto.toLowerCase().includes(search) || 
-                                      o.id.toString().includes(search);
-                const matchesStatus = status === "" || o.estado === status;
-                return matchesSearch && matchesStatus;
-            });
-            renderTable(filtered);
         }
 
         function openAddModal() {
             isEditing = false;
             $('#orderForm')[0].reset();
             $('#orderId').val('');
-            $('#orderStatus').val('Pendiente');
             $('#modalTitle').html('<i class="fa fa-plus-circle"></i> Nuevo Pedido');
+            $('#orderProvider').val('');
+            updateProductSelect();
             $('#orderModal').modal('show');
         }
 
@@ -326,54 +388,90 @@
             if(!o) return;
 
             $('#orderId').val(o.id);
-            $('#orderClient').val(o.cliente);
-            $('#orderProduct').val(o.producto);
-            $('#orderQty').val(o.cantidad);
-            $('#orderTotal').val(o.total);
-            $('#orderStatus').val(o.estado);
-            $('#orderAddress').val(o.direccion || '');
+            $('#orderProvider').val(o.proveedor_id);
+            updateProductSelect(o.proveedor_id);
             
-            $('#modalTitle').html('<i class="fa fa-edit"></i> Gestionar Pedido #' + o.id);
+            setTimeout(() => {
+                $('#orderProduct').val(o.producto_id);
+                $('#orderQty').val(o.cantidad);
+                $('#orderTotal').val(o.costo_total);
+                $('#orderStatus').val(o.estado);
+            }, 300);
+
+            $('#modalTitle').html('<i class="fa fa-edit"></i> Editar Pedido #' + o.id);
             $('#orderModal').modal('show');
         }
 
         $('#orderForm').on('submit', function(e) {
             e.preventDefault();
-            
+
             const data = {
-                id: $('#orderId').val(),
-                cliente: $('#orderClient').val(),
-                producto: $('#orderProduct').val(),
-                cantidad: $('#orderQty').val(),
-                total: $('#orderTotal').val(),
-                estado: $('#orderStatus').val(),
-                direccion: $('#orderAddress').val(),
-                fecha: new Date().toISOString().split('T')[0]
+                producto_id: parseInt($('#orderProduct').val()),
+                proveedor_id: parseInt($('#orderProvider').val()),
+                cantidad: parseInt($('#orderQty').val()),
+                estado: $('#orderStatus').val()
             };
+
+            if (isEditing) {
+                data.id = parseInt($('#orderId').val());
+            }
 
             const method = isEditing ? 'PUT' : 'POST';
 
             $.ajax({
-                url: API_URL, type: method, contentType: 'application/json',
+                url: API_URL,
+                type: method,
+                contentType: 'application/json',
                 data: JSON.stringify(data),
                 success: function(res) {
                     if(res.status === 'success') {
                         $('#orderModal').modal('hide');
-                        loadOrders(); 
+                        loadOrders();
+                    } else {
+                        alert('Error: ' + res.message);
                     }
+                },
+                error: function(xhr) {
+                    alert('Error de conexión ..');
+                    console.error(xhr.responseText);
                 }
             });
         });
 
         function deleteOrder(id) {
-            if (userRole !== 'admin') return;
-            if(!confirm('¿Eliminar este pedido permanentemente?')) return;
-            
+            if(!confirm('¿Estás seguro de eliminar este pedido?')) return;
+
             $.ajax({
-                url: API_URL, type: 'DELETE', contentType: 'application/json',
+                url: API_URL,
+                type: 'DELETE',
+                contentType: 'application/json',
                 data: JSON.stringify({ id: id }),
-                success: () => loadOrders()
+                success: function(res) {
+                    if(res.status === 'success') {
+                        loadOrders();
+                    } else {
+                        alert('Error al eliminar');
+                    }
+                }
             });
+        }
+
+        function filterTable() {
+            const search = $('#filterSearch').val().toLowerCase();
+            const status = $('#filterStatus').val().toLowerCase();
+
+            const filtered = ordersData.filter(o => {
+                const matchesSearch = 
+                    (o.producto && o.producto.toLowerCase().includes(search)) ||
+                    (o.proveedor && o.proveedor.toLowerCase().includes(search)) ||
+                    o.id.toString().includes(search);
+                    
+                const matchesStatus = status === '' || (o.estado && o.estado.toLowerCase() === status);
+                
+                return matchesSearch && matchesStatus;
+            });
+
+            renderTable(filtered);
         }
 
         function cerrarSesion() {
