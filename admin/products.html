@@ -74,10 +74,16 @@
 
         /* Labels de Stock y Categoria */
         .badge-cat { background: #e3f2fd; color: #4ea3f1; padding: 5px 10px; border-radius: 15px; font-weight: 600; font-size: 11px; text-transform: uppercase; }
+        .badge-cat-oferta { background: #fbe9eb; color: #D10024; padding: 5px 10px; border-radius: 15px; font-weight: 600; font-size: 11px; text-transform: uppercase; }
+        
         .badge-stock { padding: 5px 10px; border-radius: 4px; font-weight: 700; font-size: 11px; }
         .stock-high { background-color: #e8f5e9; color: #28a745; }
         .stock-low { background-color: #fff3cd; color: #ffc107; }
         .stock-critical { background-color: #fbe9eb; color: #D10024; }
+
+        /* Descuento Price */
+        .price-original { text-decoration: line-through; color: #9aa5b4; font-size: 11px; margin-right: 5px; }
+        .discount-badge { background: #D10024; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 5px; font-weight: bold; }
 
         /* BOTONES DE ACCIÓN */
         .btn-action { 
@@ -122,9 +128,9 @@
             <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
             <li><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
             <li><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
-    <li class="active"><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
-    <li><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
-    <li class="active"><a href="erp-roles.html"><i class="fa fa-building"></i> Roles ERP</a></li>
+            <li><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
+            <li><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
+            <li><a href="erp-roles.html"><i class="fa fa-building"></i> Roles ERP</a></li>
             <hr>
             <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
             <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
@@ -136,7 +142,7 @@
         <div class="top-bar fade-in">
             <div>
                 <h2 class="fw-bold m-0" style="color: #15161D;">Inventario de Productos</h2>
-                <small class="text-muted">Administra el catálogo de la tienda</small>
+                <small class="text-muted">Administra el catálogo de la tienda y las ofertas</small>
             </div>
             <button class="btn btn-primary btn-add shadow-sm" onclick="openAddModal()">
                 <i class="fa fa-plus"></i> Nuevo Producto
@@ -184,7 +190,7 @@
                         </tr>
                     </thead>
                     <tbody id="productsTableBody">
-                        <tr><td colspan="7" class="text-center py-5"><i class="fa fa-spinner fa-spin text-primary"></i> Cargando inventario...</td></tr>
+                        <tr><td colspan="8" class="text-center py-5"><i class="fa fa-spinner fa-spin text-primary"></i> Cargando inventario...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -219,38 +225,48 @@
                                 <input type="number" class="form-control" id="productStock" name="stock" required style="border-radius:8px;">
                             </div>
                         </div>
+
                         <div class="row">
-    <div class="col-xs-6 form-group">
-        <label class="font-weight-bold text-dark">Stock Mínimo</label>
-        <input type="number" class="form-control" id="productStockMin" name="stock_minimo" value="5" style="border-radius:8px;">
-    </div>
-    <div class="col-xs-6 form-group">
-        <label class="font-weight-bold text-dark">Estrategia Logística</label>
-        <select class="form-control" id="productStrategy" name="estrategia_logistica" style="border-radius:8px;">
-            <option value="PULL">PULL (Bajo pedido)</option>
-            <option value="PUSH">PUSH (Reposición automática)</option>
-        </select>
-    </div>
-</div>
+                            <div class="col-xs-6 form-group">
+                                <label class="font-weight-bold text-dark">Stock Mínimo</label>
+                                <input type="number" class="form-control" id="productStockMin" name="stock_minimo" value="5" style="border-radius:8px;">
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label class="font-weight-bold text-dark">Estrategia Logística</label>
+                                <select class="form-control" id="productStrategy" name="estrategia_logistica" style="border-radius:8px;">
+                                    <option value="PULL">PULL (Bajo pedido)</option>
+                                    <option value="PUSH">PUSH (Reposición automática)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-6 form-group">
+                                <label class="font-weight-bold text-dark">Categoría</label>
+                                <select class="form-control" id="productCategory" name="categoria" required style="border-radius:8px;" onchange="toggleDiscountField()">
+                                    <option value="Perros">Perros</option>
+                                    <option value="Gatos">Gatos</option>
+                                    <option value="Peces">Peces</option>
+                                    <option value="Roedores">Roedores</option>
+                                    <option value="Aves">Aves</option>
+                                    <option value="Accesorios">Accesorios</option>
+                                    <option value="Ofertas">Ofertas</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-xs-6 form-group" id="discountContainer" style="display: none;">
+                                <label class="font-weight-bold text-danger"><i class="fa fa-tag"></i> Descuento (%)</label>
+                                <input type="number" class="form-control" id="productDiscount" name="descuento" min="1" max="99" placeholder="Ej. 20" style="border-radius:8px; border-color: #D10024;">
+                                <small class="text-muted">Descuento aplicado al precio original.</small>
+                            </div>
+                        </div>
 
                         <div class="form-group">
-                            <label class="font-weight-bold text-dark">Categoría</label>
-                            <select class="form-control" id="productCategory" name="categoria" required style="border-radius:8px;">
-                                <option value="Perros">Perros</option>
-                                <option value="Gatos">Gatos</option>
-                                <option value="Peces">Peces</option>
-                                <option value="Roedores">Roedores</option>
-                                <option value="Aves">Aves</option>
-                                <option value="Accesorios">Accesorios</option>
-                                <option value="Ofertas">Ofertas</option>
+                            <label class="font-weight-bold text-dark">Proveedor</label>
+                            <select class="form-control" id="productProvider" name="proveedor_id" style="border-radius:8px;">
+                                <option value="">Seleccionar proveedor</option>
                             </select>
                         </div>
-                        <div class="form-group">
-    <label class="font-weight-bold text-dark">Proveedor</label>
-    <select class="form-control" id="productProvider" name="proveedor_id" style="border-radius:8px;">
-        <option value="">Seleccionar proveedor</option>
-    </select>
-</div>
 
                         <div class="form-group">
                             <label class="font-weight-bold text-dark">Imagen del Producto</label>
@@ -303,30 +319,39 @@
             
             userRole = user.rol;
             $('#rolDisplay').text(userRole === 'admin' ? 'Administrador' : 'Vendedor Autorizado');
-            
-            // El vendedor PUEDE ver clientes ahora (según corrección anterior)
         }
+
+        // Mostrar/Ocultar input de descuento si se selecciona Ofertas
+        function toggleDiscountField() {
+            if ($('#productCategory').val() === 'Ofertas') {
+                $('#discountContainer').slideDown();
+                // Si está vacío, ponerle 10% por defecto
+                if(!$('#productDiscount').val()) $('#productDiscount').val(10);
+            } else {
+                $('#discountContainer').slideUp();
+                $('#productDiscount').val(''); // Limpiar descuento si cambia categoría
+            }
+        }
+
         function loadProviders() {
-    $.getJSON(PROVIDERS_API, function(data) {
-        const $select = $('#productProvider');
-        $select.empty();
-        $select.append('<option value="">Seleccionar proveedor</option>');
+            $.getJSON(PROVIDERS_API, function(data) {
+                const $select = $('#productProvider');
+                $select.empty();
+                $select.append('<option value="">Seleccionar proveedor</option>');
 
-        if (!Array.isArray(data) || data.length === 0) {
-            $select.append('<option value="">No hay proveedores</option>');
-            return;
+                if (!Array.isArray(data) || data.length === 0) {
+                    $select.append('<option value="">No hay proveedores</option>');
+                    return;
+                }
+
+                data.forEach(p => {
+                    $select.append(`<option value="${p.id}">${p.nombre}</option>`);
+                });
+
+            }).fail(function() {
+                console.error("Error cargando proveedores");
+            });
         }
-
-        data.forEach(p => {
-            $select.append(
-                `<option value="${p.id}">${p.nombre}</option>`
-            );
-        });
-
-    }).fail(function() {
-        console.error("Error cargando proveedores");
-    });
-}
 
         function loadProducts() {
             const $tbody = $('#productsTableBody');
@@ -334,222 +359,184 @@
                 productosCargados = data;
                 renderTable(data);
             }).fail(function() {
-                $tbody.html('<tr><td colspan="7" class="text-center text-danger">Error de conexión con la API</td></tr>');
+                $tbody.html('<tr><td colspan="8" class="text-center text-danger">Error de conexión con la API</td></tr>');
             });
         }
+
+        // Objeto para guardar los timeouts activos
+        const restockTimeouts = {};
+
         function restock(product) {
-    console.log(`Proceso PUSH para: ${product.nombre} (ID: ${product.id})`);
-    
-    // Enviar correo al proveedor
-    sendStockAlert(product.id, function(success) {
-        if (success) {
-            // Si el correo se envió, programar el restock
-            scheduleRestock(product);
+            console.log(`Proceso PUSH para: ${product.nombre} (ID: ${product.id})`);
+            sendStockAlert(product.id, function(success) {
+                if (success) scheduleRestock(product);
+            });
         }
-    });
-    
-    
-}
 
-function sendStockAlert(productId, callback) {
-    $.ajax({
-        url: '../api/sendStockAlert.php',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ 
-            producto_id: productId,
-            estrategia: 'PUSH'
-        }),
-        success: function(response) {
-            console.log('Correo:', response.message);
-            callback(true);
-        },
-        error: function() {
-            console.error('Error al enviar correo');
-            callback(false);
+        function sendStockAlert(productId, callback) {
+            $.ajax({
+                url: '../api/sendStockAlert.php',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ 
+                    producto_id: productId,
+                    estrategia: 'PUSH'
+                }),
+                success: function(response) {
+                    console.log('Correo:', response.message);
+                    callback(true);
+                },
+                error: function() {
+                    console.error('Error al enviar correo');
+                    callback(false);
+                }
+            });
         }
-    });
-}
 
-// Objeto para guardar los timeouts activos
-const restockTimeouts = {};
+        function scheduleRestock(product) {
+            const productId = product.id;
+            const nuevaCantidad = 50; 
+            
+            cambiarColorProveedor(productId, 'amarillo');
+            
+            if (restockTimeouts[productId]) clearTimeout(restockTimeouts[productId]);
+            
+            restockTimeouts[productId] = setTimeout(function() {
+                ejecutarRestock(productId, nuevaCantidad);
+            }, 30000); 
+        }
 
-function scheduleRestock(product) {
-    const productId = product.id;
-    const nuevaCantidad = 50; // Cantidad fija de restock
-    
-    console.log(`Restock programado para ${product.nombre}`);
-    
-    // CAMBIAR PROVEEDOR A AMARILLO AL INICIAR LA ESPERA
-    cambiarColorProveedor(productId, 'amarillo');
-    
-    // Limpiar timeout anterior si existe
-    if (restockTimeouts[productId]) {
-        clearTimeout(restockTimeouts[productId]);
-    }
-    
-    // Guardar el nuevo timeout
-    restockTimeouts[productId] = setTimeout(function() {
-        ejecutarRestock(productId, nuevaCantidad);
-    }, 30000); // 2 minutos
-}
+        function ejecutarRestock(productId, nuevaCantidad) {
+            cambiarColorProveedor(productId, 'verde');
+            
+            $.ajax({
+                url: '../api/updateStock.php',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ producto_id: productId, nuevo_stock: nuevaCantidad }),
+                success: function(response) {
+                    if (response.success) {
+                        cambiarColorProveedor(productId, 'normal');
+                        delete restockTimeouts[productId];
+                        loadProducts();
+                    } else {
+                        cambiarColorProveedor(productId, 'normal');
+                    }
+                },
+                error: function() {
+                    cambiarColorProveedor(productId, 'normal');
+                }
+            });
+        }
 
-function ejecutarRestock(productId, nuevaCantidad) {
-    console.log(`Ejecutando restock para producto ID: ${productId}`);
-    
-    // CAMBIAR PROVEEDOR A VERDE MIENTRAS SE EJECUTA (opcional)
-    cambiarColorProveedor(productId, 'verde');
-    
-    // Llamar a la API para actualizar el stock
-    $.ajax({
-        url: '../api/updateStock.php',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            producto_id: productId,
-            nuevo_stock: nuevaCantidad
-        }),
-        success: function(response) {
-            if (response.success) {
-                console.log(`✅ Stock actualizado a ${nuevaCantidad} unidades`);
+        function cambiarColorProveedor(productId, color) {
+            const $fila = $(`#productsTableBody tr`).filter(function() {
+                const idTexto = $(this).find('td:first').text().trim();
+                return idTexto === `#${productId}` || idTexto === `${productId}`;
+            });
+            
+            if ($fila.length) {
+                const $proveedorCell = $fila.find('td:eq(6) span.badge-cat'); 
                 
-                // RESTAURAR COLOR NORMAL DEL PROVEEDOR
-                cambiarColorProveedor(productId, 'normal');
+                if (!$proveedorCell.data('original-class')) {
+                    $proveedorCell.data('original-class', $proveedorCell.attr('class'));
+                    $proveedorCell.data('original-text', $proveedorCell.text());
+                }
                 
-                // Eliminar el timeout del registro
-                delete restockTimeouts[productId];
+                $proveedorCell.removeClass('stock-low stock-high stock-critical');
                 
-                // Recargar la tabla
-                loadProducts();
-            } else {
-                console.error('Error al actualizar stock:', response.message);
-                // Si hay error, restaurar color normal igual
-                cambiarColorProveedor(productId, 'normal');
-            }
-        },
-        error: function() {
-            console.error('Error de conexión al actualizar stock');
-            // Si hay error, restaurar color normal
-            cambiarColorProveedor(productId, 'normal');
-        }
-    });
-}
-
-// NUEVA FUNCIÓN: Cambiar color del proveedor
-function cambiarColorProveedor(productId, color) {
-    // Buscar la fila del producto
-    const $fila = $(`#productsTableBody tr`).filter(function() {
-        const idTexto = $(this).find('td:first').text().trim();
-        return idTexto === `#${productId}` || idTexto === `${productId}`;
-    });
-    
-    if ($fila.length) {
-        const $proveedorCell = $fila.find('td:eq(6) span.badge-cat'); // Celda del proveedor
-        
-        // Guardar el color original si no lo hemos guardado
-        if (!$proveedorCell.data('original-class')) {
-            $proveedorCell.data('original-class', $proveedorCell.attr('class'));
-            $proveedorCell.data('original-text', $proveedorCell.text());
-        }
-        
-        // Quitar clases de color anteriores
-        $proveedorCell.removeClass('stock-low stock-high stock-critical');
-        
-        switch(color) {
-            case 'amarillo':
-                $proveedorCell.addClass('stock-low');
-                $proveedorCell.html(`${$proveedorCell.data('original-text')} <small>(Restock en 2min)</small>`);
-                break;
-                
-            case 'verde':
-                $proveedorCell.addClass('stock-high');
-                $proveedorCell.html(`${$proveedorCell.data('original-text')} <small>(Actualizando...)</small>`);
-                break;
-                
-            case 'normal':
-            default:
-                // Restaurar clase y texto original
-                $proveedorCell.attr('class', $proveedorCell.data('original-class') || 'badge-cat');
-                $proveedorCell.html($proveedorCell.data('original-text'));
-                break;
-        }
-    }
-}
-
-// También necesitas modificar renderTable para mantener el color si hay recarga
-function renderTable(data) {
-    const $tbody = $('#productsTableBody');
-    $tbody.empty();
-    
-    if(data.length === 0) {
-        $tbody.html('<tr><td colspan="7" class="text-center text-muted p-5">No hay productos en inventario.</td></tr>');
-        return;
-    }
-
-    data.forEach(p => {
-        const stockVal = parseInt(p.stock);
-        
-        // Lógica de colores de stock
-        let stockClass = 'stock-high';
-        let stockText = 'Disponible';
-        const minStock = parseInt(p.stock_minimo || 5);
-
-        if (stockVal === 0) { 
-            stockClass = 'stock-critical'; 
-            stockText = 'Agotado'; 
-        }
-        else if (stockVal <= minStock) { 
-            stockClass = 'stock-critical'; 
-            stockText = 'Crítico'; 
-            if(p.estrategia_logistica == 'PUSH') {
-                // Verificar si ya está en proceso de restock
-                if (!restockTimeouts[p.id]) {
-                    restock(p);
+                switch(color) {
+                    case 'amarillo':
+                        $proveedorCell.addClass('stock-low');
+                        $proveedorCell.html(`${$proveedorCell.data('original-text')} <small>(Restock 30s)</small>`);
+                        break;
+                    case 'verde':
+                        $proveedorCell.addClass('stock-high');
+                        $proveedorCell.html(`${$proveedorCell.data('original-text')} <small>(Actualizando...)</small>`);
+                        break;
+                    case 'normal':
+                    default:
+                        $proveedorCell.attr('class', $proveedorCell.data('original-class') || 'badge-cat');
+                        $proveedorCell.html($proveedorCell.data('original-text'));
+                        break;
                 }
             }
         }
-        else if (stockVal <= minStock + 5) { 
-            stockClass = 'stock-low'; 
-            stockText = 'Bajo'; 
+
+        function renderTable(data) {
+            const $tbody = $('#productsTableBody');
+            $tbody.empty();
+            
+            if(data.length === 0) {
+                $tbody.html('<tr><td colspan="8" class="text-center text-muted p-5">No hay productos en inventario.</td></tr>');
+                return;
+            }
+
+            data.forEach(p => {
+                const stockVal = parseInt(p.stock);
+                
+                // Lógica de colores de stock
+                let stockClass = 'stock-high';
+                let stockText = 'Disponible';
+                const minStock = parseInt(p.stock_minimo || 5);
+
+                if (stockVal === 0) { 
+                    stockClass = 'stock-critical'; stockText = 'Agotado'; 
+                }
+                else if (stockVal <= minStock) { 
+                    stockClass = 'stock-critical'; stockText = 'Crítico'; 
+                    if(p.estrategia_logistica == 'PUSH' && !restockTimeouts[p.id]) {
+                        restock(p);
+                    }
+                }
+                else if (stockVal <= minStock + 5) { 
+                    stockClass = 'stock-low'; stockText = 'Bajo'; 
+                }
+
+                let imgSrc = p.imagen ? (p.imagen.startsWith('http') ? p.imagen : '../' + p.imagen) : '../img/logo6.png';
+                let deleteBtn = userRole === 'admin' ? `<button class="btn-action btn-delete" onclick="deleteProduct(${p.id})" title="Eliminar"><i class="fa fa-trash-alt"></i></button>` : '';
+
+                // LÓGICA VISUAL DE OFERTAS
+                let precioDisplay = `$${parseFloat(p.precio).toFixed(2)}`;
+                let catBadgeClass = "badge-cat";
+
+                if(p.categoria === 'Ofertas' && p.descuento && p.descuento > 0) {
+                    catBadgeClass = "badge-cat-oferta";
+                    let precioOriginal = parseFloat(p.precio);
+                    let descuento = parseFloat(p.descuento);
+                    let precioFinal = precioOriginal - (precioOriginal * (descuento / 100));
+                    
+                    precioDisplay = `
+                        <span class="price-original">$${precioOriginal.toFixed(2)}</span>
+                        <br>
+                        <span class="font-weight-bold text-danger">$${precioFinal.toFixed(2)}</span>
+                        <span class="discount-badge">-${descuento}%</span>
+                    `;
+                }
+
+                const row = `
+                    <tr>
+                        <td class="font-weight-bold">#${p.id}</td>
+                        <td><img src="${imgSrc}" class="product-thumb" onerror="this.src='../img/logo6.png'"></td>
+                        <td><span class="d-block font-weight-bold text-dark">${p.nombre}</span></td>
+                        <td class="text-primary">${precioDisplay}</td>
+                        <td><span class="${catBadgeClass}">${p.categoria}</span></td>
+                        <td><span class="badge-stock ${stockClass}">${p.stock} <small>(${stockText})</small></span></td>
+                        <td><span class="badge-cat">${p.proveedor_nombre || '-'}</span></td>
+                        <td class="text-center">
+                            <button class="btn-action btn-edit" onclick="openEditModal(${p.id})" title="Editar"><i class="fa fa-pencil-alt"></i></button>
+                            ${deleteBtn}
+                        </td>
+                    </tr>
+                `;
+                $tbody.append(row);
+            });
+            
+            Object.keys(restockTimeouts).forEach(productId => {
+                cambiarColorProveedor(parseInt(productId), 'amarillo');
+            });
         }
 
-        let imgSrc = p.imagen ? (p.imagen.startsWith('http') ? p.imagen : '../' + p.imagen) : '../img/logo6.png';
-
-        // Permisos: Botón Eliminar solo Admin
-        let deleteBtn = userRole === 'admin' ? 
-            `<button class="btn-action btn-delete" onclick="deleteProduct(${p.id})" title="Eliminar"><i class="fa fa-trash-alt"></i></button>` : '';
-
-        const row = `
-            <tr>
-                <td class="font-weight-bold">#${p.id}</td>
-                <td>
-                    <img src="${imgSrc}" class="product-thumb" onerror="this.src='../img/logo6.png'">
-                </td>
-                <td>
-                    <span class="d-block font-weight-bold text-dark">${p.nombre}</span>
-                </td>
-                <td class="font-weight-bold text-primary">$${parseFloat(p.precio).toFixed(2)}</td>
-                <td><span class="badge-cat">${p.categoria}</span></td>
-                <td>
-                    <span class="badge-stock ${stockClass}">
-                        ${p.stock} <small>(${stockText})</small>
-                    </span>
-                </td>
-                <td><span class="badge-cat">${p.proveedor_nombre || '-'}</span></td>
-                <td class="text-center">
-                    <button class="btn-action btn-edit" onclick="openEditModal(${p.id})" title="Editar"><i class="fa fa-pencil-alt"></i></button>
-                    ${deleteBtn}
-                </td>
-            </tr>
-        `;
-        $tbody.append(row);
-    });
-    
-    // Restaurar colores de productos en proceso de restock
-    Object.keys(restockTimeouts).forEach(productId => {
-        cambiarColorProveedor(parseInt(productId), 'amarillo');
-    });
-}
         // PREVIEW IMAGEN
         function previewImage(input) {
             if (input.files && input.files[0]) {
@@ -569,6 +556,11 @@ function renderTable(data) {
             $('#productStockMin').val(5);
             $('#productStrategy').val('PULL');
             $('#productProvider').val('');
+            
+            // Ocultar descuento por defecto
+            $('#discountContainer').hide();
+            $('#productDiscount').val('');
+
             $('#modalTitle').html('<i class="fa fa-plus-circle"></i> Nuevo Producto');
             $('#imagePreview').hide().attr('src', '');
             $('#placeholder').show();
@@ -590,6 +582,15 @@ function renderTable(data) {
             $('#productDescription').val(p.descripcion);
             $('#currentImage').val(p.imagen);
 
+            // Mostrar descuento si es oferta
+            if(p.categoria === 'Ofertas') {
+                $('#discountContainer').show();
+                $('#productDiscount').val(p.descuento || '');
+            } else {
+                $('#discountContainer').hide();
+                $('#productDiscount').val('');
+            }
+
             let imgUrl = p.imagen ? '../' + p.imagen : '';
             if(p.imagen) {
                 $('#imagePreview').attr('src', imgUrl).show();
@@ -607,6 +608,12 @@ function renderTable(data) {
         $('#productForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
+
+            // Validación de seguridad para ofertas
+            if ($('#productCategory').val() === 'Ofertas' && !$('#productDiscount').val()) {
+                alert("Debes ingresar un porcentaje de descuento para la Oferta.");
+                return;
+            }
 
             $.ajax({
                 url: API_URL, type: 'POST', data: formData,

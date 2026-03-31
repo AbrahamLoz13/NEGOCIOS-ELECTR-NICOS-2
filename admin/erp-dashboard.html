@@ -33,6 +33,8 @@
   .nav-sidebar li a:hover,
   .nav-sidebar li.active a { background-color: #1e2029; color: #fff; border-left-color: #D10024; }
   .nav-sidebar hr { border-color: #2c2e3e; margin: 20px 25px; opacity: 0.5; }
+  .nav-sidebar li a.locked { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+  .nav-sidebar li a.locked::after { content: '\f023'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-left: auto; font-size: 11px; }
 
   main { margin-left: 240px; padding: 30px; }
 
@@ -100,9 +102,9 @@
     font-weight: 700; text-transform: uppercase; font-size: 10px; padding: 12px 14px;
   }
   .table tbody td { vertical-align: middle; padding: 12px 14px; border-top: 1px solid #f0f0f0; font-size: 13px; }
-  .badge-salida  { background: #f8d7da; color: #721c24; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; }
-  .badge-entrada { background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; }
-  .badge-ajuste  { background: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; }
+  .badge-salida  { background: #f8d7da; color: #721c24; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; text-transform: uppercase;}
+  .badge-entrada { background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; text-transform: uppercase;}
+  .badge-ajuste  { background: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; text-transform: uppercase;}
 
   /* STOCK CRÍTICO */
   .stock-critico-badge { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700; }
@@ -126,33 +128,18 @@
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <nav id="sidebar">
   <div class="sidebar-brand">
     <img src="../img/logo6.png" onerror="this.src='https://via.placeholder.com/60/15161D/ffffff?text=PP'">
     <h5>Pet Palace</h5>
     <p id="rolDisplay">Administrador</p>
   </div>
-  <ul class="nav-sidebar">
-    <li><a href="admin-panel.html"><i class="fa fa-chart-line"></i> Dashboard</a></li>
-    <li><a href="#"><i class="fa fa-users"></i> Clientes</a></li>
-    <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
-    <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
-    <li><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
-    <li><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
-    <li class="active"><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
-    <li><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
-    <li class="active"><a href="erp-roles.html"><i class="fa fa-building"></i> Roles ERP</a></li>
-
-    <hr>
-    <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
-    <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
-  </ul>
+  <ul class="nav-sidebar" id="sidebarMenu">
+    </ul>
 </nav>
 
 <main>
 
-  <!-- HEADER -->
   <div class="d-flex justify-content-between align-items-center mb-4 fade-in">
     <div>
       <h2 style="font-weight:800; color:#15161D; font-size:24px; margin:0;">Dashboard ERP</h2>
@@ -163,13 +150,12 @@
     </div>
   </div>
 
-  <!-- ══ SECCIÓN 3.4: KPIs ══════════════════════════════════ -->
   <div class="section-divider"><span>3.4</span> Métricas Empresariales</div>
 
   <div class="kpi-grid fade-in">
     <div class="kpi-card purple">
       <div class="kpi-icon purple"><i class="fa fa-dollar-sign"></i></div>
-      <div><div class="kpi-label">Ventas Totales ERP</div><div class="kpi-value" id="kpi-ventas">$0</div></div>
+      <div><div class="kpi-label">Ventas Totales ERP</div><div class="kpi-value" id="kpi-ventas">$0.00</div></div>
     </div>
     <div class="kpi-card green">
       <div class="kpi-icon green"><i class="fa fa-check-circle"></i></div>
@@ -193,23 +179,27 @@
     </div>
   </div>
 
-  <!-- GRÁFICAS -->
   <div class="two-col fade-in">
     <div class="card-custom">
       <div class="card-body-custom">
         <div class="card-title"><i class="fa fa-chart-bar"></i> Ventas por Mes</div>
-        <div class="chart-container"><canvas id="chartVentas"></canvas></div>
+        <div class="chart-container">
+          <canvas id="chartVentas"></canvas>
+          <div id="vacio-chartVentas" style="display:none; align-items:center; justify-content:center; height:220px; color:#9aa5b4; font-size:13px;"></div>
+        </div>
       </div>
     </div>
     <div class="card-custom">
       <div class="card-body-custom">
         <div class="card-title"><i class="fa fa-chart-pie"></i> Top Productos Vendidos</div>
-        <div class="chart-container"><canvas id="chartProductos"></canvas></div>
+        <div class="chart-container">
+          <canvas id="chartProductos"></canvas>
+          <div id="vacio-chartProductos" style="display:none; align-items:center; justify-content:center; height:220px; color:#9aa5b4; font-size:13px;"></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- MOVIMIENTOS RECIENTES -->
   <div class="card-custom fade-in">
     <div class="card-body-custom">
       <div class="card-title"><i class="fa fa-history"></i> Movimientos de Inventario Recientes</div>
@@ -219,21 +209,19 @@
             <tr><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Motivo</th><th>Fecha</th></tr>
           </thead>
           <tbody id="tablaMovimientos">
-            <tr><td colspan="5" class="text-center text-muted py-3">Cargando...</td></tr>
+            <tr><td colspan="5" class="text-center text-muted py-3"><i class="fa fa-spinner fa-spin"></i> Cargando...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- ══ SECCIÓN 3.3: NIVEL ERP ════════════════════════════ -->
   <div class="section-divider"><span>3.3</span> Nivel de Madurez ERP</div>
 
   <div class="card-custom fade-in">
     <div class="card-body-custom">
       <div class="card-title"><i class="fa fa-layer-group"></i> Etapa de Adopción ERP — <span id="nivelActualTexto" style="color:#6610f2;">Cargando...</span></div>
 
-      <!-- Barra de progreso -->
       <div class="erp-progress-wrap">
         <div class="erp-progress-bar" id="erp-bar" style="width:0%"></div>
       </div>
@@ -241,29 +229,27 @@
         <span>Básico</span><span>Integrado</span><span>Automatizado</span><span>Optimizado</span>
       </div>
 
-      <!-- Descripción del nivel actual -->
       <div id="nivelDescripcion" style="background:#f8f9fa; border-radius:8px; padding:14px; margin-top:16px; font-size:13px; color:#495057; line-height:1.6;">
         Cargando descripción...
       </div>
 
-      <!-- Botones de nivel -->
       <div class="nivel-grid mt-3">
-        <div class="nivel-btn" id="nivel-Básico" onclick="cambiarNivel('Básico')">
+        <div class="nivel-btn" id="nivel-btn-Basico" onclick="cambiarNivel('Básico')">
           <div class="nivel-icon">🌱</div>
           <div class="nivel-name">Básico</div>
           <div class="nivel-desc">Digitalización inicial</div>
         </div>
-        <div class="nivel-btn" id="nivel-Integrado" onclick="cambiarNivel('Integrado')">
+        <div class="nivel-btn" id="nivel-btn-Integrado" onclick="cambiarNivel('Integrado')">
           <div class="nivel-icon">🔗</div>
           <div class="nivel-name">Integrado</div>
           <div class="nivel-desc">Módulos conectados</div>
         </div>
-        <div class="nivel-btn" id="nivel-Automatizado" onclick="cambiarNivel('Automatizado')">
+        <div class="nivel-btn" id="nivel-btn-Automatizado" onclick="cambiarNivel('Automatizado')">
           <div class="nivel-icon">⚙️</div>
           <div class="nivel-name">Automatizado</div>
           <div class="nivel-desc">Procesos automáticos</div>
         </div>
-        <div class="nivel-btn" id="nivel-Optimizado" onclick="cambiarNivel('Optimizado')">
+        <div class="nivel-btn" id="nivel-btn-Optimizado" onclick="cambiarNivel('Optimizado')">
           <div class="nivel-icon">🚀</div>
           <div class="nivel-name">Optimizado</div>
           <div class="nivel-desc">BI y toma de decisiones</div>
@@ -279,95 +265,186 @@
 
 <script>
 const API = '../api/erp/';
+let chartVentasObj = null;
+let chartProdObj = null;
+
+// LÓGICA DEL MENÚ DINÁMICO POR ROL - CORREGIDA
+const MENUS = {
+  admin: [
+    { href: 'admin-panel.html',   icon: 'fa-chart-line',  label: 'Dashboard' },
+    { href: 'clients.html',       icon: 'fa-users',       label: 'Clientes' },
+    { href: 'products.html',      icon: 'fa-box-open',    label: 'Inventario' },
+    { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
+    { href: 'providers.html',     icon: 'fa-truck',       label: 'Proveedores' },
+    { href: 'movimientos.html',   icon: 'fa-history',     label: 'Movimientos' },
+    { href: 'erp-dashboard.html', icon: 'fa-building',    label: 'Dashboard ERP', active: true },
+    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
+    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
+    { divider: true },
+    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
+    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
+  ],
+  vendedor: [
+    { href: 'erp-dashboard.html', icon: 'fa-building',  label: 'Dashboard ERP', active: true },
+    { href: 'clients.html',       icon: 'fa-users',       label: 'Clientes' },
+    { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
+    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
+    { href: 'products.html',      icon: 'fa-box-open',    label: 'Inventario', locked: true },
+    { href: 'providers.html',     icon: 'fa-truck',       label: 'Proveedores', locked: true },
+    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
+    { divider: true },
+    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
+    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
+  ],
+  logistica: [
+    { href: 'erp-dashboard.html', icon: 'fa-building',    label: 'Dashboard ERP', active: true },
+    { href: 'erp-logistica.html', icon: 'fa-truck-loading', label: 'Panel Logístico' },
+    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP', locked: true },
+    { href: 'erp-procesos.html',  icon: 'fa-cogs',        label: 'Procesos' },
+    { href: 'erp-recursos.html',  icon: 'fa-users-cog',   label: 'Recursos' },
+    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
+    { divider: true },
+    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
+    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
+  ],
+  usuario: [
+    { href: '../index.html',       icon: 'fa-store', label: 'Tienda' },
+    { href: '../userprofile.html', icon: 'fa-user',  label: 'Mi Perfil' },
+    { divider: true },
+    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
+  ],
+};
+
+function renderSidebar(rol) {
+  const menu = MENUS[rol] || MENUS['admin'];
+  const ul = $('#sidebarMenu');
+  ul.empty();
+  menu.forEach(item => {
+    if (item.divider) { ul.append('<hr>'); return; }
+    const lockClass   = item.locked ? 'locked' : '';
+    const activeClass = item.active ? 'active' : '';
+    const onclick     = item.onclick ? `onclick="${item.onclick}"` : '';
+    ul.append(`<li class="${activeClass}"><a href="${item.href}" class="${lockClass}" ${onclick}><i class="fa ${item.icon}"></i> ${item.label}</a></li>`);
+  });
+}
 
 const NIVEL_INFO = {
-  'Básico':       { pct: 25, desc: '🌱 <strong>Etapa Básica:</strong> La empresa ha comenzado a digitalizar sus procesos. Se cuenta con módulos individuales para gestión de clientes, inventario y pedidos, pero aún operan de forma separada.' },
-  'Integrado':    { pct: 50, desc: '🔗 <strong>Etapa Integrada:</strong> Los módulos CRM, SCM y ERP están conectados. La información fluye entre ellos sin duplicación. Pet Palace opera como una sola plataforma digital.' },
-  'Automatizado': { pct: 75, desc: '⚙️ <strong>Etapa Automatizada:</strong> Los procesos clave ocurren sin intervención manual. Al procesar una orden, el stock se descuenta y los movimientos se registran automáticamente en tiempo real.' },
-  'Optimizado':   { pct: 100, desc: '🚀 <strong>Etapa Optimizada:</strong> El ERP genera métricas, KPIs y reportes que apoyan la toma de decisiones estratégicas. La empresa opera con inteligencia de negocio integrada.' },
+  'Básico':       { pct: 25, idBtn: 'Basico', desc: '🌱 <strong>Etapa Básica:</strong> La empresa ha comenzado a digitalizar sus procesos. Se cuenta con módulos individuales para gestión de clientes, inventario y pedidos, pero aún operan de forma separada.' },
+  'Integrado':    { pct: 50, idBtn: 'Integrado', desc: '🔗 <strong>Etapa Integrada:</strong> Los módulos CRM, SCM y ERP están conectados. La información fluye entre ellos sin duplicación. Pet Palace opera como una sola plataforma digital.' },
+  'Automatizado': { pct: 75, idBtn: 'Automatizado', desc: '⚙️ <strong>Etapa Automatizada:</strong> Los procesos clave ocurren sin intervención manual. Al procesar una orden, el stock se descuenta y los movimientos se registran automáticamente en tiempo real.' },
+  'Optimizado':   { pct: 100, idBtn: 'Optimizado', desc: '🚀 <strong>Etapa Optimizada:</strong> El ERP genera métricas, KPIs y reportes que apoyan la toma de decisiones estratégicas. La empresa opera con inteligencia de negocio integrada.' },
 };
 
 $(document).ready(function () {
   const rol = localStorage.getItem('rol') || 'admin';
   $('#rolDisplay').text(rol.charAt(0).toUpperCase() + rol.slice(1));
+  
+  // Renderizamos el menú lateral basado en el rol actual
+  renderSidebar(rol);
+
   cargarMetricas();
   cargarNivel();
 });
 
-// ─── MÉTRICAS ─────────────────────────────────────────────
+// ─── MÉTRICAS (AHORA A PRUEBA DE FALLOS) ───────────────────
 function cargarMetricas() {
-  $.getJSON(API + 'metricas.php', function (d) {
-    // KPIs
-    $('#kpi-ventas').text('$' + parseFloat(d.ventas_totales).toFixed(2));
-    $('#kpi-ordenes').text(d.ordenes_procesadas);
-    $('#kpi-productos').text(d.productos_vendidos);
-    $('#kpi-clientes').text(d.clientes_activos);
-    $('#kpi-inventario').text(d.inventario_disponible);
-    $('#kpi-critico').text(d.stock_critico);
+  $.ajax({
+    url: API + 'metricas.php',
+    dataType: 'json',
+    success: function(d) {
+      $('#kpi-ventas').text('$' + parseFloat(d.ventas_totales || 0).toLocaleString('en-US', { minimumFractionDigits: 2 }));
+      $('#kpi-ordenes').text(d.ordenes_procesadas || 0);
+      $('#kpi-productos').text(d.productos_vendidos || 0);
+      $('#kpi-clientes').text(d.clientes_activos || 0);
+      $('#kpi-inventario').text(d.inventario_disponible || 0);
+      $('#kpi-critico').text(d.stock_critico || 0);
 
-    // Movimientos recientes
-    const tbody = $('#tablaMovimientos');
-    tbody.empty();
-    if (d.movimientos_recientes && d.movimientos_recientes.length) {
-      d.movimientos_recientes.forEach(m => {
-        const fecha = m.fecha ? new Date(m.fecha).toLocaleDateString('es-MX') : '—';
-        const badge = `<span class="badge-${m.tipo}">${m.tipo}</span>`;
-        tbody.append(`<tr>
-          <td>${m.producto}</td><td>${badge}</td>
-          <td>${m.cantidad}</td><td>${m.motivo || '—'}</td><td>${fecha}</td>
-        </tr>`);
-      });
-    } else {
-      tbody.html('<tr><td colspan="5" class="text-center text-muted py-3">Sin movimientos aún</td></tr>');
+      const tbody = $('#tablaMovimientos');
+      tbody.empty();
+      if (d.movimientos_recientes && d.movimientos_recientes.length > 0) {
+        d.movimientos_recientes.forEach(m => {
+          let fechaFormat = '—';
+          if (m.fecha) {
+              const safeDate = m.fecha.replace(' ', 'T'); 
+              fechaFormat = new Date(safeDate).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+          }
+          const tipoClase = m.tipo ? m.tipo.toLowerCase() : 'ajuste';
+          const badge = `<span class="badge-${tipoClase}">${m.tipo}</span>`;
+          
+          tbody.append(`<tr>
+            <td><strong>${m.producto}</strong></td><td>${badge}</td>
+            <td>${m.cantidad}</td><td><span class="text-muted" style="font-size:11px;">${m.motivo || '—'}</span></td><td>${fechaFormat}</td>
+          </tr>`);
+        });
+      } else {
+        tbody.html('<tr><td colspan="5" class="text-center text-muted py-4">Sin movimientos recientes</td></tr>');
+      }
+
+      if (d.ventas_por_mes && d.ventas_por_mes.length > 0) {
+        const labels = d.ventas_por_mes.map(v => v.mes);
+        const values = d.ventas_por_mes.map(v => parseFloat(v.total || 0));
+        
+        $('#chartVentas').show();
+        $('#vacio-chartVentas').hide();
+        if (chartVentasObj) chartVentasObj.destroy();
+        
+        chartVentasObj = new Chart(document.getElementById('chartVentas'), {
+          type: 'bar',
+          data: { labels, datasets: [{ label: 'Ventas ($)', data: values, backgroundColor: '#6610f2', borderRadius: 6 }] },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+      } else {
+        renderChartVacio('chartVentas', 'No hay registros de ventas mensuales');
+      }
+
+      if (d.top_productos && d.top_productos.length > 0) {
+        const labels = d.top_productos.map(p => p.nombre);
+        const values = d.top_productos.map(p => parseInt(p.vendidos || 0));
+        
+        $('#chartProductos').show();
+        $('#vacio-chartProductos').hide();
+        if (chartProdObj) chartProdObj.destroy();
+
+        chartProdObj = new Chart(document.getElementById('chartProductos'), {
+          type: 'doughnut',
+          data: { labels, datasets: [{ data: values, backgroundColor: ['#6610f2','#28a745','#4ea3f1','#fd7e14','#D10024'], borderWidth: 2, borderColor: '#fff' }] },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels:{font:{size:11}} } } }
+        });
+      } else {
+        renderChartVacio('chartProductos', 'No hay productos vendidos aún');
+      }
+    },
+    error: function(xhr, status, error) {
+      console.error("API Error (metricas.php):", error);
+      
+      $('#kpi-ventas').text('$0.00');
+      $('#kpi-ordenes, #kpi-productos, #kpi-clientes, #kpi-inventario, #kpi-critico').text('0');
+      
+      $('#tablaMovimientos').html(`
+        <tr>
+          <td colspan="5" class="text-center text-danger py-4" style="background:#f8d7da;">
+            <i class="fa fa-exclamation-triangle"></i> ¡Aviso! La API falló. Revisa que exista la tabla <b>estado_erp</b> en la Base de Datos.
+          </td>
+        </tr>
+      `);
+      
+      renderChartVacio('chartVentas', 'Error de conexión con la BD');
+      renderChartVacio('chartProductos', 'Error de conexión con la BD');
     }
-
-    // Gráfica ventas por mes
-    if (d.ventas_por_mes && d.ventas_por_mes.length) {
-      const labels = d.ventas_por_mes.map(v => v.mes);
-      const values = d.ventas_por_mes.map(v => parseFloat(v.total));
-      new Chart(document.getElementById('chartVentas'), {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [{ label: 'Ventas ($)', data: values, backgroundColor: '#6610f2', borderRadius: 6 }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-      });
-    } else {
-      renderChartVacio('chartVentas', 'Sin datos de ventas aún');
-    }
-
-    // Gráfica top productos
-    if (d.top_productos && d.top_productos.length) {
-      const labels = d.top_productos.map(p => p.nombre);
-      const values = d.top_productos.map(p => parseInt(p.vendidos));
-      const colors = ['#6610f2','#28a745','#4ea3f1','#fd7e14','#D10024'];
-      new Chart(document.getElementById('chartProductos'), {
-        type: 'doughnut',
-        data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } } }
-      });
-    } else {
-      renderChartVacio('chartProductos', 'Sin datos de productos aún');
-    }
-
-  }).fail(function () {
-    console.warn('No se pudo cargar metricas.php');
   });
 }
 
 function renderChartVacio(id, msg) {
-  const ctx = document.getElementById(id);
-  if (!ctx) return;
-  ctx.parentElement.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:220px;color:#9aa5b4;font-size:13px;">${msg}</div>`;
+  $('#' + id).hide();
+  $('#vacio-' + id).text(msg).css('display', 'flex');
 }
 
-// ─── NIVEL ERP ────────────────────────────────────────────
 function cargarNivel() {
-  $.getJSON(API + 'estado.php', function (d) {
-    aplicarNivel(d.nivel || 'Básico');
-  }).fail(function () {
-    aplicarNivel('Básico');
+  $.ajax({
+    url: API + 'estado.php',
+    dataType: 'json',
+    success: function(d) { aplicarNivel(d.nivel || 'Básico'); },
+    error: function() { aplicarNivel('Básico'); } 
   });
 }
 
@@ -377,9 +454,9 @@ function aplicarNivel(nivel) {
   $('#erp-bar').css('width', info.pct + '%');
   $('#nivelDescripcion').html(info.desc);
 
-  // Marcar botón activo
   $('.nivel-btn').removeClass('active');
-  $('#nivel-' + nivel).addClass('active');
+  const boton = document.getElementById('nivel-btn-' + info.idBtn);
+  if (boton) boton.classList.add('active');
 }
 
 function cambiarNivel(nivel) {
@@ -396,7 +473,7 @@ function cambiarNivel(nivel) {
 }
 
 function cerrarSesion() {
-  localStorage.clear();
+  localStorage.removeItem('currentUser');
   window.location.href = '../login.html';
 }
 </script>

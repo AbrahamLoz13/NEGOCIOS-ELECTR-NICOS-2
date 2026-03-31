@@ -568,23 +568,59 @@
             });
         }
 
+        // ==========================================
+        // FUNCIÓN CORREGIDA PARA ENVIAR MENSAJE
+        // ==========================================
         function enviarMensajeChat() {
             const txt = $('#chatInputMain').val().trim();
             if(!txt) return;
+            
+            // 1. Limpiar el input inmediatamente
             $('#chatInputMain').val('').focus(); 
+            
+            // 2. Mostrar el mensaje localmente de inmediato
+            const tiempoActual = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const tempMsg = `
+                <div class="message-row outgoing">
+                    <div class="message-content-wrapper">
+                        <div class="message-bubble" style="opacity:0.7;">
+                            ${txt}
+                            <span class="msg-time">${tiempoActual}</span>
+                        </div>
+                    </div>
+                </div>`;
+            $('#chatBody').append(tempMsg);
+            $('#chatBody').scrollTop($('#chatBody')[0].scrollHeight);
 
+            // 3. Enviar a la base de datos
             $.ajax({
-                url: 'api/notifications.php', type: 'POST', contentType: 'application/json',
+                url: 'api/notifications.php', 
+                type: 'POST', 
+                contentType: 'application/json',
                 data: JSON.stringify({
-                    user_id: currentUser.id,
+                    user_id: currentUser.id, 
+                    sender_id: currentUser.id, 
                     message: txt,
                     origen: 'cliente' 
                 }),
-                success: function() { cargarConversacion(true); }
+                success: function(res) { 
+                    console.log("Mensaje enviado:", res);
+                    cargarConversacion(true); 
+                },
+                error: function(err) {
+                    console.error("Error al enviar mensaje:", err);
+                    alert("No se pudo enviar el mensaje.");
+                }
             });
         }
 
-        $('#chatInputMain').on('keypress', function(e) { if(e.which === 13) enviarMensajeChat(); });
+        // Evento para enviar con la tecla Enter corregido
+        $('#chatInputMain').on('keypress', function(e) { 
+            if(e.which === 13) {
+                e.preventDefault(); // Evita que haga saltos de línea raros
+                enviarMensajeChat(); 
+            }
+        });
 
         function verificarBadge() {
             if(!currentUser) return;

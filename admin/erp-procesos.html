@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Procesos Internos | Pet Palace ERP</title>
+
+<link rel="stylesheet" href="../css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700,800" rel="stylesheet">
+
+<style>
+  body { 
+    font-family: 'Montserrat', sans-serif; 
+    background-color: #0b0f19; 
+    color: #e2e8f0; 
+  }
+
+  /* SIDEBAR */
+  #sidebar {
+    position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
+    padding-top: 25px; background-color: #06080f;
+    width: 240px; border-right: 1px solid #1a233a;
+  }
+  .sidebar-brand { text-align: center; margin-bottom: 35px; }
+  .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 5px; }
+  .sidebar-brand h5 { color: #fff; font-weight: 800; margin: 0; }
+  .sidebar-brand p  { color: #3b82f6; font-size: 11px; text-transform: uppercase; font-weight: 700; margin-top: 5px; }
+  
+  .nav-sidebar { list-style: none; padding: 0; margin: 0; }
+  .nav-sidebar li a {
+    display: flex; align-items: center; padding: 15px 25px;
+    color: #94a3b8; text-decoration: none; font-weight: 500; font-size: 13px;
+    transition: 0.3s; border-left: 4px solid transparent;
+  }
+  .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
+  .nav-sidebar li a:hover, .nav-sidebar li.active a { 
+    background-color: #111827; color: #fff; border-left-color: #3b82f6; 
+  }
+  .nav-sidebar hr { border-color: #1e293b; margin: 20px 25px; opacity: 0.5; }
+  .nav-sidebar li a.locked { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+  .nav-sidebar li a.locked::after { content: '\f023'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-left: auto; font-size: 11px; }
+
+  main { margin-left: 240px; padding: 40px; }
+
+  /* HEADER */
+  .page-title { font-weight: 800; color: #fff; font-size: 28px; margin: 0 0 8px 0; letter-spacing: -0.5px; }
+  .page-subtitle { color: #64748b; font-size: 14px; margin-bottom: 35px; display: block; font-weight: 500; }
+
+  /* GRID DE PROCESOS */
+  .procesos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+  
+  .proceso-card {
+    background: linear-gradient(145deg, #111827, #0d131f);
+    border: 1px solid #1e293b; border-radius: 16px;
+    padding: 25px; transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    position: relative; overflow: hidden;
+  }
+  .proceso-card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 15px 40px rgba(59, 130, 246, 0.15); 
+    border-color: #334155;
+  }
+
+  .proceso-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .proceso-card:hover::before { opacity: 1; }
+
+  .proceso-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .proceso-id { color: #475569; font-weight: 800; font-size: 13px; letter-spacing: 1px; }
+  
+  .proceso-title { font-size: 16px; font-weight: 700; color: #f8fafc; margin-bottom: 8px; line-height: 1.3; }
+  .proceso-desc { font-size: 12px; color: #94a3b8; margin-bottom: 25px; line-height: 1.5; }
+  
+  /* BARRAS DE PROGRESO */
+  .prog-info { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #cbd5e1; margin-bottom: 10px; }
+  .prog-bg { background: #1e293b; height: 8px; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+  .prog-bar { height: 100%; border-radius: 10px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+  
+  .prog-bar.blue   { background: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.8); }
+  .prog-bar.orange { background: #f59e0b; box-shadow: 0 0 10px rgba(245, 158, 11, 0.8); }
+  .prog-bar.green  { background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.8); }
+  
+  .proceso-footer { font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 8px; font-weight: 500; }
+  .proceso-footer i { color: #475569; }
+
+  /* BADGES */
+  .badge-estado { padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+  .bg-activo    { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+  .bg-pausado   { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+  .bg-completado{ background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sidebar-brand">
+    <img src="../img/logo6.png" onerror="this.src='https://via.placeholder.com/60/15161D/ffffff?text=PP'">
+    <h5>ERP System</h5>
+    <p id="rolDisplay">Logística</p>
+  </div>
+  <ul class="nav-sidebar" id="sidebarMenu">
+    </ul>
+</nav>
+
+<main>
+  <h2 class="page-title">Procesos Internos</h2>
+  <span class="page-subtitle">Automatización y seguimiento de operaciones en tiempo real</span>
+
+  <div class="procesos-grid">
+    
+    <div class="proceso-card">
+      <div class="proceso-header">
+        <span class="badge-estado bg-activo">Activo</span>
+        <span class="proceso-id">PRC-001</span>
+      </div>
+      <div class="proceso-title">Recepción Lote Croquetas Premium</div>
+      <div class="proceso-desc">Descarga, pesaje y registro en sistema del contenedor de alimento seco.</div>
+      <div class="prog-info"><span>Progreso</span><span>80%</span></div>
+      <div class="prog-bg"><div class="prog-bar blue" style="width: 0%;" data-width="80%"></div></div>
+      <div class="proceso-footer"><i class="fa fa-clock"></i> Inicio: Hoy 08:00 AM</div>
+    </div>
+    
+    <div class="proceso-card">
+      <div class="proceso-header">
+        <span class="badge-estado bg-activo">Activo</span>
+        <span class="proceso-id">PRC-002</span>
+      </div>
+      <div class="proceso-title">Embalaje Especial Acuarios 20L</div>
+      <div class="proceso-desc">Preparación de peceras con protección de burbuja y etiquetado frágil.</div>
+      <div class="prog-info"><span>Progreso</span><span>45%</span></div>
+      <div class="prog-bg"><div class="prog-bar orange" style="width: 0%;" data-width="45%"></div></div>
+      <div class="proceso-footer"><i class="fa fa-clock"></i> Inicio: Hoy 10:15 AM</div>
+    </div>
+
+    <div class="proceso-card">
+      <div class="proceso-header">
+        <span class="badge-estado bg-pausado">Pausado</span>
+        <span class="proceso-id">PRC-003</span>
+      </div>
+      <div class="proceso-title">Mantenimiento Impresoras de Etiquetas</div>
+      <div class="proceso-desc">Limpieza de cabezales térmicos y reemplazo de rollos en zona de despacho.</div>
+      <div class="prog-info"><span>Progreso</span><span>15%</span></div>
+      <div class="prog-bg"><div class="prog-bar orange" style="width: 0%;" data-width="15%"></div></div>
+      <div class="proceso-footer"><i class="fa fa-clock"></i> Inicio: Ayer 16:30 PM</div>
+    </div>
+
+    <div class="proceso-card">
+      <div class="proceso-header">
+        <span class="badge-estado bg-activo">Activo</span>
+        <span class="proceso-id">PRC-004</span>
+      </div>
+      <div class="proceso-title">Auditoría Inventario (Accesorios)</div>
+      <div class="proceso-desc">Revisión física de collares, correas y juguetes vs datos del sistema ERP.</div>
+      <div class="prog-info"><span>Progreso</span><span>60%</span></div>
+      <div class="prog-bg"><div class="prog-bar blue" style="width: 0%;" data-width="60%"></div></div>
+      <div class="proceso-footer"><i class="fa fa-clock"></i> Inicio: 2026-03-25</div>
+    </div>
+
+    <div class="proceso-card">
+      <div class="proceso-header">
+        <span class="badge-estado bg-completado">Completado</span>
+        <span class="proceso-id">PRC-005</span>
+      </div>
+      <div class="proceso-title">Control Temperatura Medicamentos</div>
+      <div class="proceso-desc">Calibración de refrigeradores para almacenamiento seguro de vacunas.</div>
+      <div class="prog-info"><span>Progreso</span><span>100%</span></div>
+      <div class="prog-bg"><div class="prog-bar green" style="width: 0%;" data-width="100%"></div></div>
+      <div class="proceso-footer"><i class="fa fa-clock"></i> Inicio: 2026-03-20</div>
+    </div>
+
+  </div>
+</main>
+
+<script src="../js/jquery.min.js"></script>
+<script>
+const MENUS = {
+  admin: [
+    { href: 'admin-panel.html',   icon: 'fa-chart-line',  label: 'Dashboard' },
+    { href: 'clients.html',       icon: 'fa-users',       label: 'Clientes' },
+    { href: 'products.html',      icon: 'fa-box-open',    label: 'Inventario' },
+    { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
+    { href: 'providers.html',     icon: 'fa-truck',       label: 'Proveedores' },
+    { href: 'movimientos.html',   icon: 'fa-history',     label: 'Movimientos' },
+    { href: 'erp-dashboard.html', icon: 'fa-building',    label: 'Dashboard ERP' },
+    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
+    { href: 'erp-procesos.html',  icon: 'fa-cogs',        label: 'Procesos', active: true },
+    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
+    { divider: true },
+    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
+    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
+  ],
+  logistica: [
+    { href: 'erp-dashboard.html', icon: 'fa-chart-line',  label: 'Dashboard ERP' },
+    { href: 'erp-logistica.html', icon: 'fa-truck-loading', label: 'Panel Logístico' },
+    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP', locked: true }, // Bloqueado
+    { href: 'erp-procesos.html',  icon: 'fa-cogs',        label: 'Procesos', active: true },
+    { href: 'erp-recursos.html',  icon: 'fa-users-cog',   label: 'Recursos' },
+    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
+    { divider: true },
+    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
+    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
+  ]
+};
+
+$(document).ready(function() {
+  const rolGuardado = localStorage.getItem('rol') || 'logistica'; // Fallback a logística para pruebas
+  renderSidebar(rolGuardado);
+
+  // Animación de carga para las barras de progreso
+  setTimeout(function() {
+    $('.prog-bar').each(function() {
+      var targetWidth = $(this).attr('data-width');
+      $(this).css('width', targetWidth);
+    });
+  }, 300);
+});
+
+function renderSidebar(rol) {
+  // Si no es admin ni logística, lo redirige por seguridad (Opcional)
+  const menu = MENUS[rol] || MENUS['logistica'];
+  const ul = $('#sidebarMenu');
+  
+  const nombres = { admin: 'Administrador', vendedor: 'Vendedor', logistica: 'Logística', usuario: 'Usuario' };
+  $('#rolDisplay').text(nombres[rol] || 'Logística');
+
+  ul.empty();
+  menu.forEach(item => {
+    if (item.divider) { ul.append('<hr style="border-color: #1e293b; margin: 20px 25px;">'); return; }
+    const lockClass   = item.locked ? 'locked' : '';
+    const activeClass = item.active ? 'active' : '';
+    const onclick     = item.onclick ? `onclick="${item.onclick}"` : '';
+    ul.append(`<li class="${activeClass}"><a href="${item.href}" class="${lockClass}" ${onclick}><i class="fa ${item.icon}"></i> ${item.label}</a></li>`);
+  });
+}
+
+function cerrarSesion() {
+  localStorage.removeItem('currentUser');
+  window.location.href = '../login.html';
+}
+</script>
+</body>
+</html>

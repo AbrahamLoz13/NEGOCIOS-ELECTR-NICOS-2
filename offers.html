@@ -176,7 +176,6 @@
                 <ul class="header-links pull-right">
                     <li id="auth-container">
                         <a href="login.html" style="font-weight: bold; color: #4ea3f1; margin-right: 10px;"><i class="fa fa-sign-in"></i> Iniciar sesión</a>
-                        <a href="login.html" style="font-weight: bold; color: #4ea3f1;"><i class="fa fa-user-plus"></i> Registrarse</a>
                     </li>
                 </ul>
             </div>
@@ -201,6 +200,8 @@
                                     <option value="Perros">Perros</option>
                                     <option value="Gatos">Gatos</option>
                                     <option value="Roedores">Roedores</option>
+                                    <option value="Aves">Aves</option>
+                                    <option value="Peces">Peces</option>
                                 </select>
                                 <input class="input" id="searchInput" placeholder="Buscar en ofertas...">
                                 <button class="search-btn" type="submit">Buscar</button>
@@ -215,14 +216,6 @@
                                     <i class="fa fa-envelope"></i>
                                     <span>Chat</span>
                                     <div class="qty-msg" id="msg-badge">0</div>
-                                </a>
-                            </div>
-
-                            <div>
-                                <a href="wishlist.html">
-                                    <i class="fa fa-heart-o"></i>
-                                    <span>Favoritos</span>
-                                    <div class="qty">0</div>
                                 </a>
                             </div>
 
@@ -287,8 +280,7 @@
             <i class="fa fa-times close-chat" onclick="toggleChatWidget(event)"></i>
         </div>
 
-        <div class="chat-body" id="chatBody">
-            </div>
+        <div class="chat-body" id="chatBody"></div>
 
         <div class="chat-footer" id="chatFooter">
             <div class="chat-input-wrapper">
@@ -334,16 +326,12 @@
 
                     <div class="row row-flex" id="products-container">
                         <div class="col-md-12 text-center" style="padding: 100px;">
-                            <h3><i class="fa fa-spinner fa-spin"></i> Cargando Ofertas...</h3>
+                            <h3><i class="fa fa-spinner fa-spin"></i> Cargando Ofertas Exclusivas...</h3>
                         </div>
                     </div>
 
                     <div class="store-filter clearfix">
                         <span class="store-qty" id="offer-count">Mostrando ofertas</span>
-                        <ul class="store-pagination">
-                            <li class="active">1</li>
-                            <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-                        </ul>
                     </div>
                 </div>
             </div>
@@ -424,21 +412,18 @@
         let chatPollInterval = null;
 
         $(document).ready(function() {
-            // 1. CARGAR USUARIO
+            // 1. CARGAR USUARIO Y AJUSTAR HEADER
             currentUser = JSON.parse(localStorage.getItem('currentUser'));
             
             if (currentUser) {
                 $('#auth-container').html(`
-                    <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1; margin-right: 15px;">
-                        <i class="fa fa-user"></i> ${currentUser.nombre}
+                    <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1; margin-right: 8px;">
+                        <i class="fa fa-user"></i> Mi Cuenta ${currentUser.nombre}
                     </a>
-                    <a href="#" onclick="cerrarSesionIndex()" style="font-size:12px; color:#D10024;">(Salir)</a>
+                    <a href="#" onclick="cerrarSesionIndex()" style="font-size:12px; color:#D10024; font-weight: bold;">(Salir)</a>
                 `);
 
-                // FIX ALINEACIÓN HEADER
                 $('#msg-wrapper').css('display', 'inline-block'); 
-                
-                // INICIAR POLLING DE BADGE
                 verificarBadge();
                 setInterval(verificarBadge, 5000); 
 
@@ -453,12 +438,12 @@
 
             if (localStorage.getItem('cookiesPetPalace') !== 'true') $('#cookieBanner').fadeIn();
             
-            // 2. CARGAR OFERTAS
+            // 2. CARGAR OFERTAS REALES
             cargarOfertas(); 
         });
 
         // =================================================================
-        // LÓGICA DEL CHAT PROFESIONAL
+        // LÓGICA DEL CHAT PROFESIONAL (Igual que en userprofile)
         // =================================================================
         function toggleChatWidget(e) {
             if(e) { e.preventDefault(); e.stopPropagation(); }
@@ -476,7 +461,6 @@
             }
         }
 
-        // VISTA 1: BANDEJA
         function mostrarBandeja() {
             currentView = 'inbox';
             $('#chatBackBtn').hide();
@@ -501,11 +485,9 @@
                     return;
                 }
 
-                // Filtrar mensajes de admin
                 const adminMsgs = data.filter(m => m.origen === 'admin');
                 const unreadCount = adminMsgs.filter(n => n.estado !== 'leido').length;
                 
-                // Buscar nombre del remitente
                 adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
                 let senderName = "Soporte Pet Palace"; 
                 if (adminMsgs.length > 0 && adminMsgs[0].remitente) {
@@ -537,7 +519,6 @@
             });
         }
 
-        // VISTA 2: CONVERSACIÓN
         function entrarAlChat() {
             currentView = 'chat';
             $('#chatBackBtn').show();
@@ -604,20 +585,39 @@
         function enviarMensajeChat() {
             const txt = $('#chatInputMain').val().trim();
             if(!txt) return;
+            
             $('#chatInputMain').val('').focus(); 
+            
+            const tiempoActual = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const tempMsg = `
+                <div class="message-row outgoing">
+                    <div class="message-content-wrapper">
+                        <div class="message-bubble" style="opacity:0.7;">
+                            ${txt}
+                            <span class="msg-time">${tiempoActual}</span>
+                        </div>
+                    </div>
+                </div>`;
+            $('#chatBody').append(tempMsg);
+            $('#chatBody').scrollTop($('#chatBody')[0].scrollHeight);
 
             $.ajax({
-                url: 'api/notifications.php', type: 'POST', contentType: 'application/json',
+                url: 'api/notifications.php', 
+                type: 'POST', 
+                contentType: 'application/json',
                 data: JSON.stringify({
-                    user_id: currentUser.id,
+                    user_id: currentUser.id, 
+                    sender_id: currentUser.id, 
                     message: txt,
                     origen: 'cliente' 
                 }),
-                success: function() { cargarConversacion(true); }
+                success: function(res) { cargarConversacion(true); },
             });
         }
 
-        $('#chatInputMain').on('keypress', function(e) { if(e.which === 13) enviarMensajeChat(); });
+        $('#chatInputMain').on('keypress', function(e) { 
+            if(e.which === 13) { e.preventDefault(); enviarMensajeChat(); }
+        });
 
         function verificarBadge() {
             if(!currentUser) return;
@@ -627,7 +627,7 @@
                 if(unread.length > 0) badge.text(unread.length).show(); else badge.hide();
             });
         }
-
+        
         function marcarTodoLeido() {
             if(!currentUser) return;
             $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
@@ -639,43 +639,104 @@
         }
 
         // =================================================================
-        // LÓGICA DE OFERTAS (ORIGINAL)
+        // LÓGICA DE OFERTAS (CONECTADA A BD Y DESCUENTOS REALES)
         // =================================================================
         function cargarOfertas() {
             $.getJSON('api/products.php', function(data) {
-                allOffers = data; renderizarOfertas(allOffers);
+                // Filtramos solo los que son categoría Ofertas o tienen descuento mayor a 0
+                allOffers = data.filter(p => p.categoria === 'Ofertas' || (p.descuento && p.descuento > 0));
+                renderizarOfertas(allOffers);
+            }).fail(function() {
+                $('#products-container').html('<div class="col-md-12 text-center text-danger py-5"><h4>Error al cargar ofertas desde el servidor.</h4></div>');
             });
         }
+
         function renderizarOfertas(p) {
-            const $c = $('#products-container'); $c.empty();
-            if(p.length===0){$c.html('Sin resultados');return;}
+            const $c = $('#products-container'); 
+            $c.empty();
+            
+            if(p.length === 0){
+                $c.html('<div class="col-md-12 text-center py-5 text-muted"><h4>No hay ofertas disponibles por el momento.</h4></div>');
+                $('#offer-count').text('0 ofertas encontradas');
+                return;
+            }
+
             p.forEach(x => {
-                const precioReal = parseFloat(x.precio);
-                const precioAntes = (precioReal * 1.3).toFixed(2);
+                const precioOriginal = parseFloat(x.precio);
+                let descuento = parseInt(x.descuento) || 0;
+                
+                // Si el producto está en categoría Ofertas pero no se le asignó % en el ERP, se le pone 10% por defecto
+                if (descuento === 0) descuento = 10; 
+                
+                const precioFinal = precioOriginal - (precioOriginal * (descuento / 100));
+                
                 $c.append(`
                     <div class="col-md-3 col-sm-6" style="display:flex;">
                         <div class="product">
                             <div class="product-img">
                                 <img src="${x.imagen}" onerror="this.src='img/logo6.png'">
-                                <div class="product-label"><span class="sale">-30%</span></div>
-                                <button class="add-btn-icon" onclick="agregarAlCarrito(${x.id},'${x.nombre.replace(/'/g,"\\'")}', ${x.precio}, '${x.imagen.replace(/'/g,"\\'")}')"><i class="fa fa-cart-plus"></i></button>
+                                <div class="product-label"><span class="sale">-${descuento}% OFF</span></div>
+                                <button class="add-btn-icon" onclick="agregarAlCarrito(${x.id},'${x.nombre.replace(/'/g,"\\'")}', ${precioFinal}, '${x.imagen.replace(/'/g,"\\'")}')"><i class="fa fa-cart-plus"></i></button>
                             </div>
                             <div class="product-body">
-                                <p class="product-category">${x.categoria}</p>
+                                <p class="product-category">${x.categoria === 'Ofertas' ? 'Promoción' : x.categoria}</p>
                                 <h3 class="product-name"><a href="#">${x.nombre}</a></h3>
-                                <h4 class="product-price">$${precioReal.toFixed(2)} <del class="product-old-price">$${precioAntes}</del></h4>
+                                <h4 class="product-price">$${precioFinal.toFixed(2)} <del class="product-old-price" style="font-size:12px; color:#999; margin-left:5px;">$${precioOriginal.toFixed(2)}</del></h4>
                             </div>
                         </div>
-                    </div>`);
+                    </div>
+                `);
             });
+            $('#offer-count').text(`Mostrando ${p.length} ofertas disponibles`);
         }
+
         function agregarAlCarrito(id,n,p,i){ 
             if(!currentUser) { window.location.href="login.html"; return; }
-            cart.push({id,nombre:n,precio:p,imagen:i,cantidad:1}); 
+            cart.push({id, nombre: n, precio: p, imagen: i, cantidad: 1}); 
+            localStorage.setItem(`cart_${currentUser.id}`, JSON.stringify(cart));
+            actualizarInterfazCarrito();
+            
+            // Efecto visual rápido para saber que se agregó
+            $('.cart-qty').addClass('popIn');
+            setTimeout(() => $('.cart-qty').removeClass('popIn'), 300);
+        }
+        
+        function actualizarInterfazCarrito(){ 
+            // Renderizamos los elementos en la lista desplegable (opcional, si lo prefieres)
+            const $dropdown = $('#cart-dropdown-list');
+            if(cart.length > 0) {
+                let html = '';
+                let total = 0;
+                cart.forEach((c, index) => {
+                    total += c.precio * c.cantidad;
+                    html += `
+                        <div class="product-widget">
+                            <div class="product-img"><img src="${c.imagen}" onerror="this.src='img/logo6.png'"></div>
+                            <div class="product-body">
+                                <h3 class="product-name" style="font-size:12px; margin:0;"><a href="#">${c.nombre}</a></h3>
+                                <h4 class="product-price" style="font-size:13px; color:#D10024;"><span class="qty">${c.cantidad}x</span>$${c.precio.toFixed(2)}</h4>
+                            </div>
+                            <button class="delete" onclick="eliminarDelCarrito(${index})"><i class="fa fa-close"></i></button>
+                        </div>
+                    `;
+                });
+                $dropdown.html(html);
+                $('#cart-subtotal').text('SUBTOTAL: $' + total.toFixed(2));
+            } else {
+                $dropdown.html('<div class="text-center py-3"><small>Tu carrito está vacío</small></div>');
+                $('#cart-subtotal').text('TOTAL: $0.00');
+            }
+            
+            $('.cart-qty').text(cart.length);
+            $('.cart-count-summary').text(cart.length);
+        }
+
+        function eliminarDelCarrito(index) {
+            cart.splice(index, 1);
             localStorage.setItem(`cart_${currentUser.id}`, JSON.stringify(cart));
             actualizarInterfazCarrito();
         }
-        function actualizarInterfazCarrito(){ $('.cart-qty').text(cart.length); }
+
         function validarLogin() { if(!currentUser) { window.location.href="login.html"; return false; } return true; }
         function abrirCarritoFlotante() { if(validarLogin()) { $('#cart-icon-btn').dropdown('toggle'); $('html,body').animate({scrollTop:0},'fast'); } }
         function verificarLoginParaCheckout() { return validarLogin(); }
@@ -693,15 +754,18 @@
             });
             renderizarOfertas(resultados);
         });
+        
         $('#searchInput').on('keyup', function() { $('#searchForm').submit(); });
         $('#searchCategory').on('change', function() { $('#searchForm').submit(); });
 
         function ordenarProductos(val) {
             let s = [...allOffers];
+            if(val==='0') s.sort((a,b)=> (b.descuento || 10) - (a.descuento || 10));
             if(val==='1') s.sort((a,b)=>a.precio-b.precio);
             if(val==='2') s.sort((a,b)=>b.precio-a.precio);
             renderizarOfertas(s);
         }
+        
         $(window).scroll(function() { if($(this).scrollTop()>150) $('#header').addClass('sticky-header'); else $('#header').removeClass('sticky-header'); });
     </script>
 </body>

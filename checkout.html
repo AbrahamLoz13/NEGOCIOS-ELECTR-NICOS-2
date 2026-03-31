@@ -4,569 +4,859 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pet Palace | Todo para tus Mascotas</title>
+    <title>Pet Palace | Checkout</title>
 
-    <!-- Custom stlylesheet -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <!-- Slick -->
-    <link rel="stylesheet" href="css/slick.css">
-    <link rel="stylesheet" href="css/slick-theme.css">
-    <!-- Google font -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <!-- nouislider -->
-    <link rel="stylesheet" href="css/nouislider.min.css">
-    <!-- Font Awesome Icon -->
     <link rel="stylesheet" href="css/font-awesome.min.css">
 
+    <style>
+        /* =========================================
+           ESTILOS GENERALES Y HEADER
+           ========================================= */
+        body { font-family: 'Montserrat', sans-serif; background-color: #fcfcfc; }
 
+        .sticky-header { position: fixed !important; top: 0; width: 100%; z-index: 9999; background: #15161D !important; box-shadow: 0 4px 15px rgba(0,0,0,0.5); animation: slideDown 0.4s ease; }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
+        .header-ctn > div > a { width: 70px !important; display: block; }
+        .header-ctn > div + div { margin-left: 5px !important; }
+
+        .qty-msg { position: absolute; top: -10px; right: 15px; width: 20px; height: 20px; line-height: 20px; text-align: center; border-radius: 50%; font-size: 10px; color: #FFF; background-color: #D10024; display: none; border: 2px solid #15161D; box-shadow: 0 2px 5px rgba(0,0,0,0.3); animation: popIn 0.3s ease; }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        /* WIDGET DE CHAT */
+        #chat-widget { position: fixed; bottom: 25px; right: 25px; width: 380px; height: 600px; background: #ffffff; border-radius: 20px; box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1); z-index: 10000; display: none; flex-direction: column; overflow: hidden; font-family: -apple-system, sans-serif; border: 1px solid rgba(0,0,0,0.05); transition: all 0.3s ease; }
+        .chat-header { background: #ffffff; padding: 15px 20px; height: 75px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f0f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); cursor: pointer; }
+        .chat-header-left { display: flex; align-items: center; gap: 15px; }
+        .chat-back-btn { font-size: 18px; color: #333; cursor: pointer; display: none; padding: 8px; border-radius: 50%; transition: 0.2s; }
+        .chat-back-btn:hover { background: #f5f5f5; }
+        .chat-avatar-wrapper { position: relative; }
+        .chat-avatar-header { width: 45px; height: 45px; background: linear-gradient(135deg, #D10024, #ff4d4d); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 2px 5px rgba(209, 0, 36, 0.3); }
+        .status-dot { position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: #31a24c; border: 2px solid #fff; border-radius: 50%; }
+        .chat-info h4 { margin: 0; color: #1c1e21; font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+        .chat-info small { font-size: 13px; color: #65676b; }
+        .close-chat { font-size: 24px; color: #bcc0c4; cursor: pointer; transition: 0.2s; padding: 5px; }
+        .close-chat:hover { color: #D10024; }
+        .chat-body { flex-grow: 1; background-color: #fff; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 2px; }
+        .message-row { display: flex; margin-bottom: 8px; width: 100%; }
+        .message-content-wrapper { max-width: 75%; display: flex; flex-direction: column; }
+        .message-row.incoming { justify-content: flex-start; }
+        .message-row.incoming .message-bubble { background-color: #f0f2f5; color: #050505; border-bottom-left-radius: 4px; }
+        .message-row.incoming .msg-name-label { display: block; font-size: 11px; color: #65676b; margin-left: 12px; margin-bottom: 2px; }
+        .message-row.outgoing { justify-content: flex-end; }
+        .message-row.outgoing .message-bubble { background-color: #D10024; color: #ffffff; border-bottom-right-radius: 4px; }
+        .message-bubble { padding: 8px 12px; border-radius: 18px; font-size: 15px; line-height: 1.4; position: relative; word-wrap: break-word; box-shadow: 0 1px 2px rgba(0,0,0,0.1); animation: fadeIn 0.3s ease; display: inline-block; min-width: 60px; }
+        .msg-time { font-size: 10px; margin-top: 5px; margin-left: 8px; float: right; white-space: nowrap; vertical-align: bottom; line-height: 1; }
+        .chat-footer { padding: 15px; background: #fff; border-top: 1px solid #f0f0f0; display: none; align-items: center; gap: 10px; }
+        .chat-input-wrapper { flex: 1; background: #f0f2f5; border-radius: 20px; padding: 8px 15px; display: flex; align-items: center; }
+        .chat-input { width: 100%; background: transparent; border: none; outline: none; font-size: 15px; color: #050505; }
+        .btn-chat-send { color: #D10024; background: none; border: none; font-size: 20px; cursor: pointer; transition: 0.2s; padding: 5px; }
+        .inbox-list { list-style: none; padding: 0; margin: 0; }
+        .inbox-item { padding: 15px; display: flex; align-items: center; cursor: pointer; border-radius: 10px; transition: 0.2s; }
+        .inbox-item:hover { background-color: #f2f2f2; }
+        .inbox-avatar { width: 50px; height: 50px; background: #D10024; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 15px; }
+        .inbox-details { flex: 1; overflow: hidden; }
+        .inbox-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .inbox-name { font-weight: 600; font-size: 16px; color: #050505; }
+        .inbox-time { font-size: 12px; color: #65676b; }
+        .inbox-msg { font-size: 14px; color: #65676b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .unread-dot { width: 10px; height: 10px; background: #D10024; border-radius: 50%; margin-left: 10px; }
+
+        /* ESTILOS CHECKOUT */
+        .billing-details { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #E4E7ED; margin-bottom: 30px; }
+        .order-details { background: #F8F9FA; padding: 30px; border-radius: 8px; border: 1px solid #E4E7ED; }
+        .order-summary { margin-bottom: 20px; }
+        .order-col { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #E4E7ED; font-size: 14px; }
+        .order-col strong { font-weight: 700; color: #2B2D42; }
+        .order-total { font-size: 24px; color: #D10024; font-weight: 800; }
+        
+        .payment-method { margin: 20px 0; }
+        .input-radio { margin-bottom: 10px; }
+        .input-radio input { margin-right: 10px; }
+        .input-radio label { font-weight: 500; cursor: pointer; color: #2B2D42; }
+        
+        .primary-btn.order-submit { width: 100%; display: block; text-align: center; font-size: 16px; padding: 15px; border-radius: 8px; transition: 0.3s; background-color: #D10024; color: white; border: none; text-transform: uppercase; font-weight: 700; margin-top: 20px; }
+        .primary-btn.order-submit:hover { background-color: #15161D; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .primary-btn.order-submit:disabled { background-color: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .location-btn { background: #e0eafe; color: #1A1F71; border: 1px solid #aeb4be; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-bottom: 15px; width: 100%; text-align: left; }
+        .location-btn i { margin-right: 8px; color: #D10024; }
+        .location-btn:hover { background: #d0e0fd; }
+
+        /* MODAL DE ALERTAS PERSONALIZADO */
+        .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        .custom-alert-overlay.show { opacity: 1; }
+        .custom-alert-box { background: #fff; padding: 35px 30px; border-radius: 16px; text-align: center; max-width: 400px; width: 90%; transform: scale(0.8); transition: transform 0.3s; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        .custom-alert-overlay.show .custom-alert-box { transform: scale(1); }
+        .custom-alert-icon { font-size: 60px; margin-bottom: 15px; }
+        .custom-alert-icon.success { color: #28a745; }
+        .custom-alert-icon.error { color: #D10024; }
+        .custom-alert-icon.info { color: #4ea3f1; }
+        .custom-alert-box h3 { margin-top: 0; margin-bottom: 10px; font-weight: 800; color: #15161D; font-size: 22px; }
+        .custom-alert-box p { color: #666; margin-bottom: 25px; font-size: 14px; line-height: 1.5; }
+        .custom-alert-box button { background: #D10024; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 100%; text-transform: uppercase; font-size: 14px; }
+        .custom-alert-box button:hover { background: #15161D; }
+
+        /* MODAL DE SIMULACIÓN DE PAYPAL */
+        .paypal-sim-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100005; display: none; align-items: center; justify-content: center; }
+        .paypal-sim-box { background: #fff; padding: 40px; border-radius: 12px; text-align: center; width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+        /* Estilo input de IVA */
+        .iva-input {
+            width: 60px;
+            padding: 2px 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            color: #D10024;
+        }
+
+    </style>
 </head>
 
 <body>
 
-    <!-- /HEADER -->
     <header>
-        <!-- TOP HEADER -->
         <div id="top-header">
             <div class="container">
                 <ul class="header-links pull-left">
                     <li><a><i class="fa fa-phone"></i> +52 449 928 9336</a></li>
-                    <li><a href="https://mail.google.com/"><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a>
-                    </li>
-                    <li><a href="maps.google.com"><i class="fa fa-map-marker"></i> Av. Adolfo López Mateos </a></li>
+                    <li><a href="https://mail.google.com/"><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a></li>
+                    <li><a href="#"><i class="fa fa-map-marker"></i> Av. Adolfo López Mateos </a></li>
                 </ul>
                 <ul class="header-links pull-right">
-                    <li><a><i class="fa fa-dollar"></i> MXN</a></li>
-                    <li><a href="userprofile.html"><i class="fa fa-user-o"></i> My Account</a></li>
+                    <li id="auth-container">
+                        <a href="login.html" style="font-weight: bold; color: #4ea3f1; margin-right: 10px;"><i class="fa fa-sign-in"></i> Iniciar sesión</a>
+                    </li>
                 </ul>
             </div>
         </div>
-        <!-- /TOP HEADER -->
 
-        <!-- MAIN HEADER -->
         <div id="header">
-            <!-- container -->
             <div class="container">
-                <!-- row -->
                 <div class="row">
-                    <!-- LOGO -->
                     <div class="col-md-3">
                         <div class="header-logo">
-                            <a href="index.html" class="logo">
-                                <img src="img/logo6.png" alt="">
-                            </a>
+                            <a href="index.html" class="logo"><img src="img/logo6.png" alt="Logo Pet Palace"></a>
                         </div>
                     </div>
-                    <!-- /LOGO -->
 
-                    <!-- SEARCH BAR -->
-                    <div class="col-md-6">
-                        <div class="header-search">
-                            <form>
-                                <select class="input-select">
-                                    <option value="0">Category</option>
-                                    <option value="1">Accessories</option>
-                                    <option value="1">Clothes</option>
-                                    <option value="1">Health & Care</option>
-                                    <option value="1">Home</option>
-                                    <option value="1">Transport</option>
-                                </select>
-                                <input class="input" placeholder="Search here">
-                                <button class="search-btn">Search</button>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- /SEARCH BAR -->
+                    <div class="col-md-6"></div>
 
-                    <!-- ACCOUNT -->
                     <div class="col-md-3 clearfix">
                         <div class="header-ctn">
-                            <!-- Wishlist -->
+                            <div id="msg-wrapper" style="display:none; position: relative;">
+                                <a href="#" onclick="toggleChatWidget(event)">
+                                    <i class="fa fa-envelope"></i>
+                                    <span>Mensajes</span>
+                                    <div class="qty-msg" id="msg-badge">0</div>
+                                </a>
+                            </div>
                             <div>
                                 <a href="wishlist.html">
                                     <i class="fa fa-heart-o"></i>
-                                    <span>Wishlist</span>
-                                    <div class="qty wishlist-qty">0</div>
+                                    <span>Favoritos</span>
+                                    <div class="qty">0</div>
                                 </a>
                             </div>
-                            <!-- /Wishlist -->
-
-                            <!-- Cart -->
                             <div class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                <a href="api/carrito.php" style="cursor: pointer;">
                                     <i class="fa fa-shopping-cart"></i>
-                                    <span>Your Cart</span>
-                                    <div class="qty cart-qty">0</div> <!-- CAMBIO: clase única -->
-                                </a>
-                                <div class="cart-dropdown">
-                                    <div class="cart-list">
-                                        <!-- Los productos se agregarán aquí con JavaScript -->
-                                    </div>
-                                    <div class="cart-summary">
-                                        <small>0 Item(s) selected</small>
-                                        <h5>SUBTOTAL: $0.00</h5>
-                                    </div>
-                                    <div class="cart-btns">
-                                        <a href="#">View Cart</a>
-                                        <a href="checkout.html">Checkout <i class="fa fa-arrow-circle-right"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /Cart -->
-
-
-                            <!-- Menu Toogle -->
-                            <div class="menu-toggle">
-                                <a href="#">
-                                    <i class="fa fa-bars"></i>
-                                    <span>Menu</span>
+                                    <span>Tu Carrito</span>
+                                    <div class="qty cart-qty">0</div>
                                 </a>
                             </div>
-                            <!-- /Menu Toogle -->
+                            <div class="menu-toggle"><a href="#"><i class="fa fa-bars"></i><span>Menú</span></a></div>
                         </div>
                     </div>
-                    <!-- /ACCOUNT -->
                 </div>
-                <!-- row -->
             </div>
-            <!-- container -->
         </div>
-        <!-- /MAIN HEADER -->
     </header>
-    <!-- /HEADER -->
 
-    <!-- Barra de Search Fija -->
-    <div class="sticky-space"></div>
-
-    <!-- NAVIGATION -->
-    <!-- <nav id="navigation"> -->
-    <!-- container -->
-    <div class="container">
-        <!-- responsive-nav -->
-        <div id="responsive-nav">
-            <!-- NAV -->
-            <ul class="main-nav nav navbar-nav">
-                <li class="active"><a href="index.html">Home</a></li>
-                <li><a href="general.html">General</a></li>
-                <li><a href="offers.html">Offers</a></li>
-                <li><a href="dogs.html">Dogs</a></li>
-                <li><a href="cats.html">Cats</a></li>
-                <li><a href="rodents.html">Rodents</a></li>
-                <li><a href="fishes.html">Fishes</a></li>
-                <li><a href="birds.html">Birds</a></li>
-            </ul>
-            <!-- /NAV -->
+    <nav id="navigation">
+        <div class="container">
+            <div id="responsive-nav">
+                <ul class="main-nav nav navbar-nav">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="general.html">General</a></li>
+                    <li><a href="offers.html">Ofertas</a></li>
+                    <li><a href="dogs.html">Perros</a></li>
+                    <li><a href="cats.html">Gatos</a></li>
+                    <li><a href="rodents.html">Roedores</a></li>
+                    <li><a href="fishes.html">Peces</a></li>
+                    <li><a href="birds.html">Aves</a></li>
+                </ul>
+            </div>
         </div>
-        <!-- /responsive-nav -->
-    </div>
-    <!-- /container -->
     </nav>
-    <!-- /NAVIGATION -->
 
-    <!-- BREADCRUMB -->
     <div id="breadcrumb" class="section">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="breadcrumb-header">Order</h3>
                     <ul class="breadcrumb-tree">
-                        <li><a href="index.html">Home</a></li>
-                        <li class="active">Orders</li>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li class="active">Checkout Seguro</li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
-    <!-- /BREADCRUMB -->
 
-    <!-- SECTION -->
-    <div class="section">
+    <div class="section" style="min-height: 50vh;">
         <div class="container">
-            <div class="row">
-                <!-- Shipping Form -->
-                <div class="col-md-7">
-                    <div class="billing-details">
-                        <div class="section-title">
-                            <h3 class="title">Shipping address</h3>
+            <form id="checkoutForm">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="billing-details">
+                            <div class="section-title">
+                                <h3 class="title">Dirección de Envío</h3>
+                            </div>
+
+                            <button type="button" class="location-btn" onclick="autoFillLocation()">
+                                <i class="fa fa-map-marker"></i> Usar mi ubicación actual
+                            </button>
+
+                            <div class="form-group">
+                                <label style="font-size:12px; font-weight:600; color:#8D99AE;">Nombre de quien recibe</label>
+                                <input class="input" type="text" id="chkName" placeholder="Nombre completo" required>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:12px; font-weight:600; color:#8D99AE;">Correo electrónico para recibo</label>
+                                <input class="input" type="email" id="chkEmail" placeholder="Correo electrónico" required>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:12px; font-weight:600; color:#8D99AE;">Teléfono de contacto</label>
+                                <input class="input" type="tel" id="chkPhone" placeholder="Teléfono" required>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label style="font-size:12px; font-weight:600; color:#8D99AE;">Calle y Número</label>
+                                    <input class="input" type="text" id="chkStreet" placeholder="Ej. Av. Universidad 123" required>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label style="font-size:12px; font-weight:600; color:#8D99AE;">Colonia / Barrio</label>
+                                    <input class="input" type="text" id="chkSuburb" placeholder="Ej. Centro" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label style="font-size:12px; font-weight:600; color:#8D99AE;">Ciudad</label>
+                                    <input class="input" type="text" id="chkCity" placeholder="Ciudad" required>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label style="font-size:12px; font-weight:600; color:#8D99AE;">Código Postal</label>
+                                    <input class="input" type="text" id="chkZip" placeholder="C.P." required>
+                                </div>
+                            </div>
+                            <div class="order-notes mt-3">
+                                <textarea class="input" id="chkNotes" placeholder="Instrucciones especiales para la entrega (Opcional)"></textarea>
+                            </div>
                         </div>
-                        <div class="form-group"><input class="input" type="text" placeholder="First Name"></div>
-                        <div class="form-group"><input class="input" type="text" placeholder="Last Name"></div>
-                        <div class="form-group"><input class="input" type="email" placeholder="Email"></div>
-                        <div class="form-group"><input class="input" type="text" placeholder="Address"></div>
-                        <div class="form-group"><input class="input" type="text" placeholder="City"></div>
-                        <div class="form-group"><input class="input" type="text" placeholder="Country"></div>
-                        <div class="form-group"><input class="input" type="tel" placeholder="Phone"></div>
                     </div>
 
-                    <div class="shiping-details">
-                        <div class="section-title">
-                            <h3 class="title">Shipping Address</h3>
+                    <div class="col-md-5 order-details">
+                        <div class="section-title text-center">
+                            <h3 class="title">Resumen de tu Orden</h3>
                         </div>
-                        <div class="input-checkbox">
-                            <input type="checkbox" id="shiping-address">
-                            <label for="shiping-address">
-                                <span></span>
-                                Send to a different address?
+                        <div class="order-summary">
+                            <div class="order-col">
+                                <div><strong>PRODUCTO</strong></div>
+                                <div><strong>TOTAL</strong></div>
+                            </div>
+                            
+                            <div id="checkout-products-container">
+                                <div class="text-center py-3"><i class="fa fa-spinner fa-spin"></i></div>
+                            </div>
+
+                            <div class="order-col" style="margin-top: 15px; border-top: 2px dashed #E4E7ED; padding-top: 15px;">
+                                <div><strong>SUBTOTAL</strong></div>
+                                <div><strong id="checkout-subtotal">$0.00</strong></div>
+                            </div>
+
+                            <div class="order-col" style="align-items: center;">
+                                <div>
+                                    <strong>IVA </strong>
+                                    <input type="number" id="iva-percentage" class="iva-input" value="16" min="0" max="100" step="1">%
+                                </div>
+                                <div><strong id="checkout-iva-amount">$0.00</strong></div>
+                            </div>
+
+                            <div class="order-col">
+                                <div>Envío Estándar</div>
+                                <div style="color:#28a745;"><strong>GRATIS</strong></div>
+                            </div>
+                            <div class="order-col">
+                                <div><strong>TOTAL A PAGAR</strong></div>
+                                <div><strong class="order-total" id="checkout-total">$0.00</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="payment-method">
+                            <h5 style="margin-bottom:15px; font-size:14px; font-weight:700;">Método de Pago Seguro</h5>
+                            <div class="input-radio">
+                                <input type="radio" name="payment" id="payment-1" value="tarjeta" checked>
+                                <label for="payment-1"><span></span>Tarjeta de Crédito / Débito <i class="fa fa-cc-visa" style="color:#1A1F71;"></i> <i class="fa fa-cc-mastercard" style="color:#EB001B;"></i></label>
+                            </div>
+                            <div class="input-radio">
+                                <input type="radio" name="payment" id="payment-2" value="paypal">
+                                <label for="payment-2"><span></span>PayPal <i class="fa fa-paypal" style="color:#003087;"></i></label>
+                            </div>
+                            <div class="input-radio">
+                                <input type="radio" name="payment" id="payment-3" value="efectivo">
+                                <label for="payment-3"><span></span>Pago en Efectivo (Contra Entrega) <i class="fa fa-money" style="color:#28a745;"></i></label>
+                            </div>
+                        </div>
+
+                        <div class="input-checkbox mt-3">
+                            <input type="checkbox" id="terms" required>
+                            <label for="terms" style="font-size:12px; font-weight:500;">
+                                <span></span> He leído y acepto los <a href="#" style="color:#D10024;">Términos y Condiciones</a>
                             </label>
-                            <div class="caption">
-                                <div class="form-group"><input class="input" type="text" placeholder="First Name"></div>
-                                <div class="form-group"><input class="input" type="text" placeholder="Last Name"></div>
-                                <div class="form-group"><input class="input" type="email" placeholder="Email"></div>
-                                <div class="form-group"><input class="input" type="text" placeholder="Address"></div>
-                                <div class="form-group"><input class="input" type="text" placeholder="City"></div>
-                                <div class="form-group"><input class="input" type="text" placeholder="Country"></div>
-                                <div class="form-group"><input class="input" type="tel" placeholder="Phone"></div>
-                            </div>
                         </div>
-                    </div>
-
-                    <div class="order-notes">
-                        <textarea class="input" placeholder="Order Notes"></textarea>
+                        
+                        <button type="submit" class="primary-btn order-submit" id="btnPlaceOrder">Confirmar Pedido</button>
                     </div>
                 </div>
-                <!-- /Shipping Form -->
+            </form>
+        </div>
+    </div>
 
-                <!-- Order Summary -->
-                <div class="col-md-5 order-details">
-                    <div class="section-title text-center">
-                        <h3 class="title">Your Order</h3>
-                    </div>
-                    <div class="order-summary">
-                        <div class="order-col">
-                            <div><strong>PRODUCT</strong></div>
-                            <div><strong>TOTAL</strong></div>
-                        </div>
-                        <div class="order-products"></div>
-                        <div class="order-col">
-                            <div>Send</div>
-                            <div><strong>FREE</strong></div>
-                        </div>
-                        <div class="order-col">
-                            <div><strong>TOTAL</strong></div>
-                            <div><strong class="order-total">$0.00</strong></div>
-                        </div>
-                    </div>
-
-                    <div class="payment-method">
-                        <div class="input-radio">
-                            <input type="radio" name="payment" id="payment-1">
-                            <label for="payment-1"><span></span>Direct Bank Transfer</label>
-                            <div class="caption">
-                                <p>All your data is protected...</p>
-                            </div>
-                        </div>
-                        <div class="input-radio">
-                            <input type="radio" name="payment" id="payment-2">
-                            <label for="payment-2"><span></span>Check Payment</label>
-                            <div class="caption">
-                                <p>All your data is protected...</p>
-                            </div>
-                        </div>
-                        <div class="input-radio">
-                            <input type="radio" name="payment" id="payment-3">
-                            <label for="payment-3"><span></span>PayPal</label>
-                            <div class="caption">
-                                <p>All your data is protected...</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="input-checkbox">
-                        <input type="checkbox" id="terms">
-                    </div>
-                    <a href="#" class="primary-btn order-submit" id="btnCheckout">Order</a>
-                </div>
-                <!-- /Order Summary -->
+    <div id="paypalSimModal" class="paypal-sim-overlay">
+        <div class="paypal-sim-box">
+            <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal" style="height:40px; margin-bottom:20px;">
+            <div id="paypalSimStep1">
+                <i class="fa fa-spinner fa-spin" style="font-size: 40px; color: #003087;"></i>
+                <p style="margin-top: 15px; font-weight: 600;">Conectando de forma segura...</p>
+            </div>
+            <div id="paypalSimStep2" style="display:none;">
+                <i class="fa fa-check-circle" style="font-size: 50px; color: #28a745;"></i>
+                <p style="margin-top: 15px; font-weight: 600; color: #28a745;">Pago aprobado por PayPal</p>
             </div>
         </div>
     </div>
-    <!-- /SECTION -->
 
-    <!-- Modal del formulario de registro -->
-<div id="modalRegistro" class="modal">
-    <div class="modal-content registro-card">
-        <span class="close-btn" onclick="cerrarModal()">&times;</span>
-        <section class="registro">
-            <h2 class="titulo-modal">Regístrate en <span class="marca">Pet Palace</span></h2>
-            <form id="registroForm" class="formulario-registro">
-                <!-- Campos (ya no se validarán) -->
-                <label for="nombre">Nombre Usuario:</label>
-                <input type="text" id="nombre" name="nombre">
-
-                <label for="domicilio">Domicilio:</label>
-                <input type="text" id="domicilio" name="domicilio">
-
-                <label for="correo">Correo electrónico (Gmail):</label>
-                <input type="email" id="correo" name="correo">
-
-                <label for="telefono">Teléfono:</label>
-                <input type="tel" id="telefono" name="telefono">
-
-                <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password">
-
-                <label for="confirmPassword">Confirmar contraseña:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword">
-
-                <div class="terminos-condiciones">
-                    <input type="checkbox" id="aceptaTerminos">
-                    <label for="aceptaTerminos">
-                        Acepto los <a href="#" onclick="mostrarTexto('terminos')">términos y condiciones</a> y la
-                        <a href="#" onclick="mostrarTexto('privacidad')">política de privacidad</a>.
-                    </label>
-                </div>
-
-                <div id="textoLegal"
-                    style="display: none; background-color: #f5f5f5; padding: 10px; margin-top: 10px; border-radius: 8px;">
-                    <p id="contenidoLegal"></p>
-                    <button type="button" onclick="ocultarTexto()" style="margin-top: 10px;">Cerrar</button>
-                </div>
-
-                <button type="submit" class="btn-registrarse">Registrarse</button>
-                <p id="mensajeRegistro" class="mensaje-registrado"></p>
-
-                <p class="alternar-modal">
-                    ¿Ya tienes una cuenta? <a href="#" onclick="cambiarAlogin()">Inicia sesión aquí</a>
-                </p>
-            </form>
-        </section>
+    <div id="customAlert" class="custom-alert-overlay">
+        <div class="custom-alert-box">
+            <div class="custom-alert-icon" id="customAlertIcon"></div>
+            <h3 id="customAlertTitle">Mensaje</h3>
+            <p id="customAlertMessage">Detalle del mensaje</p>
+            <button onclick="closeCustomAlert()" id="customAlertBtn">Entendido</button>
+        </div>
     </div>
-</div>
 
-<!-- Modal de inicio de sesión -->
-<div id="modalLogin" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="cerrarLogin()">&times;</span>
-        <section class="registro">
-            <h2>Iniciar sesión</h2>
-            <form id="loginForm">
-                <label for="loginTelefono">Teléfono:</label>
-                <input type="tel" id="loginTelefono">
-
-                <label for="loginPassword">Contraseña:</label>
-                <input type="password" id="loginPassword">
-
-                <button type="submit">Ingresar</button>
-                <p id="mensajeLogin" class="mensaje-registrado"></p>
-
-                <p class="alternar-modal">
-                    ¿No tienes una cuenta? <a href="#" onclick="cambiarAregistro()">Regístrate aquí</a>
-                </p>
-            </form>
-        </section>
-    </div>
-</div>
-
-<script>
-    function mostrarTexto(tipo) {
-        const texto = {
-            terminos: `
-                <strong>Términos y condiciones:</strong><br>
-                Al registrarte en Pet Palace, aceptas que la información proporcionada es verídica. 
-                Consulta los <a href="terminos.html" style="color: blue; font-weight: bold; text-decoration: underline;">Términos y Condiciones</a> completos para más información.`,
-            privacidad: `
-                <strong>Política de privacidad:</strong><br>
-                En Pet Palace, protegemos tus datos personales de acuerdo con nuestras 
-                <a href="privacidad.html" style="color: blue; font-weight: bold; text-decoration: underline;">Políticas de Privacidad</a>.`
-        };
-
-        document.getElementById("contenidoLegal").innerHTML = texto[tipo];
-        document.getElementById("textoLegal").style.display = "block";
-    }
-
-    function ocultarTexto() {
-        document.getElementById("textoLegal").style.display = "none";
-    }
-</script>
-
-
-
-
-    <!-- NEWSLETTER -->
-    <div id="newsletter" class="section">
-        <!-- container -->
-        <div class="container">
-            <!-- row -->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="newsletter">
-                        <p>Send your comments to <strong>PetPalace</strong></p>
-                        <form>
-                            <input class="input" type="email" placeholder="Enter your email">
-                            <button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
-                        </form>
-                    </div>
+    <div id="chat-widget">
+        <div class="chat-header" onclick="if(currentView==='chat') mostrarBandeja();">
+            <div class="chat-header-left">
+                <i class="fa fa-arrow-left chat-back-btn" id="chatBackBtn"></i>
+                <div class="chat-avatar-wrapper">
+                    <div class="chat-avatar-header" id="headerAvatar"><i class="fa fa-headset"></i></div>
+                    <div class="status-dot"></div>
+                </div>
+                <div class="chat-info">
+                    <h4 id="chatTitle">Soporte</h4>
+                    <small id="chatSubtitle">Haga clic para ver bandeja</small>
                 </div>
             </div>
-            <!-- /row -->
+            <i class="fa fa-times close-chat" onclick="toggleChatWidget(event)"></i>
         </div>
-        <!-- /container -->
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-footer" id="chatFooter">
+            <div class="chat-input-wrapper">
+                <input type="text" class="chat-input" id="chatInputMain" placeholder="Escribe un mensaje..." autocomplete="off">
+            </div>
+            <button class="btn-chat-send" onclick="enviarMensajeChat()"><i class="fa fa-paper-plane"></i></button>
+        </div>
     </div>
-    <!-- /NEWSLETTER -->
 
-    <!-- FOOTER -->
     <footer id="footer">
-        <!-- top footer -->
         <div class="section">
             <div class="container">
                 <div class="row">
-                    <!-- About Us -->
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Sobre Nosotros</h3>
-                            <p>PetPalace es una tienda en línea para productos de mascotas, con directorio de
-                                veterinarios y estilistas para tus compañeros peludos.</p>
-                            <ul class="footer-links">
-                                <li><a href="#"><i class="fa fa-map-marker"></i> ITA, Aguascalientes, México</a></li>
-                                <li><a href="#"><i class="fa fa-phone"></i> +52 449 928 9336</a></li>
-                                <li><a href="#"><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Categorías -->
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Categorías</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">Accesorios</a></li>
-                                <li><a href="#">Ropa</a></li>
-                                <li><a href="#">Salud y Cuidado</a></li>
-                                <li><a href="#">Transporte</a></li>
-                                <li><a href="#">Hogar</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="clearfix visible-xs"></div>
-
-                    <!-- Información -->
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Información</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">Nosotros</a></li>
-                                <li><a href="#">Contacto</a></li>
-                                <li><a href="#">Política de Privacidad</a></li>
-                                <li><a href="#">Términos y Condiciones</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Servicios -->
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Servicio</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">Mi Cuenta</a></li>
-                                <li><a href="#">Carrito</a></li>
-                                <li><a href="#">Wishlist</a></li>
-                                <li><a href="#">Ayuda</a></li>
-                                <li><a href="https://maps.app.goo.gl/k5ZtDzjFcVZyq3sV6" target="_blank">
-                                        <i class="fas fa-map-marked-alt"></i> Ubicación</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- bottom footer -->
-        <div id="bottom-footer" class="section">
-            <div class="container">
-                <div class="row">
                     <div class="col-md-12 text-center">
-                        <!-- Iconos de métodos de pago -->
-                        <ul class="footer-payments">
-                            <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
-                            <li><a href="#"><i class="fa fa-credit-card"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
-                        </ul>
-                        <span class="copyright">
-                            &copy;
-                            <script>document.write(new Date().getFullYear());</script> Todos los derechos reservados |
-                            Hecho <i class="fa fa-heart-o" aria-hidden="true"></i> por
-                            <a href="https://aguascalientes.tecnm.mx/" target="_blank">TecNM</a>
-                        </span>
+                        <span class="copyright">© 2026 Pet Palace | Transacciones 100% Seguras <i class="fa fa-lock"></i></span>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
-    <!-- FOOTER -->
 
-    <!-- Redes sociales y soporte -->
-    <div class="social-floating">
-        <!-- Carrito -->
-        <a href="checkout.html" class="floating-cart" title="Ver carrito">
-            <i class="fa fa-shopping-cart"></i>
-            <span class="cart-count">2</span>
-        </a>
-
-        <!-- Facebook -->
-        <a href="https://www.facebook.com/profile.php?id=61578271885148
-" class="facebook" target="_blank" title="Facebook">
-            <i class="fa fa-facebook"></i>
-        </a>
-
-        <!-- WhatsApp -->
-        <a href="https://wa.me/524499289336" class="whatsapp" target="_blank" title="WhatsApp">
-            <i class="fa fa-whatsapp"></i>
-        </a>
-
-        <!-- Instagram -->
-        <a href="https://www.instagram.com/" class="instagram" target="_blank" title="Instagram">
-            <i class="fa fa-instagram"></i>
-        </a>
-
-        <!-- Maps -->
-        <a href="https://maps.google.com" class="maps" target="_blank" title="Ubicación">
-            <i class="fa fa-map-marker"></i>
-        </a>
-    </div>
-
-    <!-- Script de acciones -->
-    <script src="js/registroformulario.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/slick.min.js"></script>
-    <script src="js/nouislider.min.js"></script>
-    <script src="js/jquery.zoom.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/cart-handler.js"></script>
-
+    
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const orderProducts = document.querySelector(".order-products");
-            const orderTotal = document.querySelector(".order-total");
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        let currentUser = null;
+        let cart = [];
+        let currentView = 'inbox'; 
+        let chatPollInterval = null;
+        
+        // Variables de precio
+        let orderSubtotalAmount = 0;
+        let orderIvaAmount = 0;
+        let ivaPercentage = 16;
+        let orderTotalAmount = 0;
+        
+        let alertCallback = null; 
 
-            let total = 0;
-            orderProducts.innerHTML = "";
+        $(document).ready(function() {
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (currentUser) {
+                $('#auth-container').html(`
+                    <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1; margin-right: 15px;">
+                        <i class="fa fa-user"></i> ${currentUser.nombre}
+                    </a>
+                    <a href="#" onclick="cerrarSesionIndex()" style="font-size:12px; color:#D10024;">(Salir)</a>
+                `);
+
+                $('#msg-wrapper').css('display', 'inline-block'); 
+                
+                $('#chkName').val(currentUser.nombre);
+                $('#chkEmail').val(currentUser.correo);
+
+                verificarBadge();
+                setInterval(verificarBadge, 5000); 
+
+                const savedCart = localStorage.getItem(`cart_${currentUser.id}`);
+                if (savedCart) {
+                    cart = JSON.parse(savedCart);
+                    let count = cart.reduce((sum, item) => sum + item.cantidad, 0);
+                    $('.cart-qty').text(count);
+                    
+                    renderCheckoutProducts();
+                } else {
+                    window.location.href = "index.html"; 
+                }
+            } else {
+                showCustomAlert('error', 'Acceso Requerido', 'Debes iniciar sesión para realizar el pago de tus productos.', function() {
+                    window.location.href = "login.html";
+                });
+            }
+
+            // Escuchador de eventos para el IVA dinámico
+            $('#iva-percentage').on('input change', function() {
+                renderCheckoutProducts();
+            });
+        });
+
+        function showCustomAlert(type, title, message, callback = null) {
+            const overlay = $('#customAlert');
+            const icon = $('#customAlertIcon');
+            
+            icon.removeClass('success error info');
+            if(type === 'success') {
+                icon.addClass('success').html('<i class="fa fa-check-circle"></i>');
+            } else if(type === 'error') {
+                icon.addClass('error').html('<i class="fa fa-times-circle"></i>');
+            } else {
+                icon.addClass('info').html('<i class="fa fa-info-circle"></i>');
+            }
+            
+            $('#customAlertTitle').text(title);
+            $('#customAlertMessage').text(message);
+            alertCallback = callback;
+            
+            overlay.css('display', 'flex');
+            setTimeout(() => overlay.addClass('show'), 10);
+        }
+
+        function closeCustomAlert() {
+            const overlay = $('#customAlert');
+            overlay.removeClass('show');
+            setTimeout(() => {
+                overlay.hide();
+                if(alertCallback) alertCallback();
+            }, 300);
+        }
+
+        function autoFillLocation() {
+            const btn = $('.location-btn');
+            btn.html('<i class="fa fa-spinner fa-spin"></i> Obteniendo ubicación...');
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                        const data = await res.json();
+                        if (data && data.address) {
+                            const road = data.address.road || '';
+                            const suburb = data.address.suburb || data.address.neighbourhood || '';
+                            const city = data.address.city || data.address.town || data.address.village || data.address.state || '';
+                            const postcode = data.address.postcode || '';
+                            
+                            $('#chkStreet').val(road);
+                            $('#chkSuburb').val(suburb);
+                            $('#chkCity').val(city);
+                            $('#chkZip').val(postcode);
+                            btn.html('<i class="fa fa-check" style="color:green;"></i> Ubicación encontrada');
+                        }
+                    } catch (error) {
+                        btn.html('<i class="fa fa-map-marker"></i> Error. Ingresar manual.');
+                    }
+                }, (error) => {
+                    btn.html('<i class="fa fa-map-marker"></i> Permiso denegado. Ingresar manual.');
+                });
+            } else {
+                btn.html('<i class="fa fa-map-marker"></i> Tu navegador no soporta ubicación');
+            }
+        }
+
+        function renderCheckoutProducts() {
+            const $container = $('#checkout-products-container');
+            $container.empty();
+            let rawSubtotal = 0;
+
+            if(cart.length === 0) {
+                window.location.href = "index.html";
+                return;
+            }
 
             cart.forEach(item => {
-                const price = parseFloat(item.price);
-                const row = document.createElement("div");
-                row.classList.add("order-col");
-                row.innerHTML = `<div>1x ${item.name}</div><div>$${price.toFixed(2)}</div>`;
-                total += price;
-                orderProducts.appendChild(row);
+                const itemTotal = item.precio * item.cantidad;
+                rawSubtotal += itemTotal;
+
+                const html = `
+                    <div class="order-col" style="padding: 8px 0; font-size:13px; color:#666;">
+                        <div><strong style="color:#2B2D42;">${item.cantidad}x</strong> ${item.nombre}</div>
+                        <div style="font-weight:600; color:#2B2D42;">$${itemTotal.toFixed(2)}</div>
+                    </div>
+                `;
+                $container.append(html);
             });
 
+            // Lógica de cálculo del IVA
+            ivaPercentage = parseFloat($('#iva-percentage').val()) || 0;
+            orderSubtotalAmount = rawSubtotal;
+            orderIvaAmount = rawSubtotal * (ivaPercentage / 100);
+            orderTotalAmount = orderSubtotalAmount + orderIvaAmount;
 
-            orderTotal.textContent = `$${total.toFixed(2)}`;
+            // Actualización visual
+            $('#checkout-subtotal').text('$' + orderSubtotalAmount.toFixed(2));
+            $('#checkout-iva-amount').text('$' + orderIvaAmount.toFixed(2));
+            $('#checkout-total').text('$' + orderTotalAmount.toFixed(2));
+        }
 
+        $('input[name="payment"]').on('change', function() {
+            const btn = $('#btnPlaceOrder');
+            if ($('#payment-2').is(':checked')) {
+                btn.css({'background-color': '#ffc439', 'color': '#003087'}).html('<i class="fa fa-paypal"></i> Pagar con PayPal');
+            } else {
+                btn.css({'background-color': '#D10024', 'color': 'white'}).html('Confirmar Pedido');
+            }
         });
+
+        $('#checkoutForm').on('submit', function(e) {
+            e.preventDefault();
+            const btn = $('#btnPlaceOrder');
+            btn.attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Procesando...');
+
+            if ($('#payment-2').is(':checked')) {
+                // SIMULACIÓN DE PAYPAL
+                $('#paypalSimModal').css('display', 'flex');
+                
+                setTimeout(() => {
+                    $('#paypalSimStep1').hide();
+                    $('#paypalSimStep2').fadeIn();
+                    
+                    setTimeout(() => {
+                        $('#paypalSimModal').fadeOut(() => {
+                            $('#paypalSimStep2').hide();
+                            $('#paypalSimStep1').show();
+                            procesarPedidoBackend('PayPal');
+                        });
+                    }, 1500);
+                }, 2000);
+            } else {
+                // PAGO TRADICIONAL
+                let metodoPago = $('#payment-1').is(':checked') ? 'Tarjeta' : 'Efectivo';
+                procesarPedidoBackend(metodoPago);
+            }
+        });
+
+        function procesarPedidoBackend(metodoPago) {
+            const btn = $('#btnPlaceOrder');
+            const direccionCompleta = $('#chkStreet').val() + ', Col. ' + $('#chkSuburb').val() + ', ' + $('#chkCity').val() + ', C.P. ' + $('#chkZip').val();
+            
+            const orderData = {
+                user_id: currentUser.id,
+                nombre: $('#chkName').val(),
+                correo: $('#chkEmail').val(),
+                telefono: $('#chkPhone').val(),
+                direccion: direccionCompleta,
+                notas: $('#chkNotes').val(),
+                metodo_pago: metodoPago,
+                subtotal: orderSubtotalAmount,     // Añadido para la BD
+                iva_porcentaje: ivaPercentage,     // Añadido para la BD
+                iva_monto: orderIvaAmount,         // Añadido para la BD
+                total: orderTotalAmount,
+                cart: cart
+            };
+
+            $.ajax({
+                url: 'api/checkout.php',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(orderData),
+                success: function(res) {
+                    if (res.status === 'success') {
+                        // AQUÍ ESTÁ LA LÓGICA AÑADIDA PARA ENVIAR AL ERP
+                        sincronizarConERP(orderData, function() {
+                             localStorage.removeItem(`cart_${currentUser.id}`);
+                             showCustomAlert('success', '¡Pedido Exitoso!', 'Tu orden ha sido registrada y el inventario actualizado. Gracias por tu compra.', function() {
+                                 window.location.href = "userprofile.html"; 
+                             });
+                        });
+                    } else {
+                        showCustomAlert('error', 'Problema con la orden', res.message);
+                        resetButton();
+                    }
+                },
+                error: function(xhr) {
+                    showCustomAlert('error', 'Error de conexión', 'No pudimos conectar con el servidor para procesar el pedido.');
+                    resetButton();
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+        
+        // FUNCIÓN PARA ENVIAR UNA COPIA AL ERP (A la tabla ordenes)
+        function sincronizarConERP(orderData, callback) {
+            // Mapeamos los productos del carrito a la estructura que espera ordenes.php
+            const productosERP = orderData.cart.map(item => ({
+                producto_id: item.id,
+                cantidad: item.cantidad,
+                precio: item.precio
+            }));
+            
+            const dataERP = {
+                cliente_id: orderData.user_id,
+                usuario_id: orderData.user_id, // Usamos el mismo para registrar quien lo pidió
+                productos: productosERP
+            };
+
+            $.ajax({
+                url: 'api/erp/ordenes.php',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(dataERP),
+                success: function(res) {
+                    // Independientemente de si funciona o no, dejamos pasar al usuario a su perfil
+                    if(callback) callback();
+                },
+                error: function() {
+                    console.error("No se pudo sincronizar la compra web con la tabla ERP");
+                    if(callback) callback();
+                }
+            });
+        }
+
+        function resetButton() {
+            const btn = $('#btnPlaceOrder');
+            btn.attr('disabled', false);
+            if ($('#payment-2').is(':checked')) {
+                btn.html('<i class="fa fa-paypal"></i> Pagar con PayPal');
+            } else {
+                btn.html('Confirmar Pedido');
+            }
+        }
+
+        function toggleChatWidget(e) {
+            if(e) { e.preventDefault(); e.stopPropagation(); }
+            const widget = $('#chat-widget');
+            
+            if (widget.is(':visible')) {
+                widget.css('opacity', '0');
+                setTimeout(() => widget.hide(), 300);
+                if(chatPollInterval) clearInterval(chatPollInterval);
+            } else {
+                widget.show();
+                setTimeout(() => widget.css('opacity', '1'), 10);
+                widget.css('display', 'flex'); 
+                mostrarBandeja(); 
+            }
+        }
+
+        function mostrarBandeja() {
+            currentView = 'inbox';
+            $('#chatBackBtn').hide();
+            $('#headerAvatar').html('<i class="fa fa-comments"></i>');
+            $('#chatTitle').text('Mensajes');
+            $('#chatSubtitle').text('Bandeja de Entrada');
+            $('#chatFooter').hide();
+            
+            if(chatPollInterval) clearInterval(chatPollInterval);
+            cargarBandeja();
+            chatPollInterval = setInterval(cargarBandeja, 5000);
+        }
+
+        function cargarBandeja() {
+            if(!currentUser || currentView !== 'inbox') return;
+
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                const $box = $('#chatBody');
+                
+                if(data.length === 0) {
+                    $box.html('<div class="text-center py-5 text-muted" style="margin-top:50px;">Aún no tienes mensajes.<br><button class="btn btn-default btn-sm mt-3" onclick="entrarAlChat()">Contactar Soporte</button></div>');
+                    return;
+                }
+
+                const adminMsgs = data.filter(m => m.origen === 'admin');
+                const unreadCount = adminMsgs.filter(n => n.estado !== 'leido').length;
+                
+                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                let senderName = "Soporte Pet Palace"; 
+                if (adminMsgs.length > 0 && adminMsgs[0].remitente) {
+                    senderName = adminMsgs[0].remitente;
+                }
+
+                data.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                const lastMsg = data[0];
+                const time = lastMsg.fecha.substring(11, 16);
+                const preview = (lastMsg.origen === 'cliente' ? 'Tú: ' : '') + lastMsg.mensaje;
+                const unreadDot = unreadCount > 0 ? '<div class="unread-dot"></div>' : '';
+                const boldStyle = unreadCount > 0 ? 'font-weight:700; color:#000;' : '';
+
+                const html = `
+                    <ul class="inbox-list">
+                        <li class="inbox-item" onclick="entrarAlChat()">
+                            <div class="inbox-avatar"><i class="fa fa-headset"></i></div>
+                            <div class="inbox-details">
+                                <div class="inbox-top">
+                                    <span class="inbox-name">${senderName}</span>
+                                    <span class="inbox-time">${time}</span>
+                                </div>
+                                <div class="inbox-msg" style="${boldStyle}">${preview}</div>
+                            </div>
+                            ${unreadDot}
+                        </li>
+                    </ul>`;
+                $box.html(html);
+            });
+        }
+
+        function entrarAlChat() {
+            currentView = 'chat';
+            $('#chatBackBtn').show();
+            $('#chatFooter').css('display', 'flex'); 
+            
+            cargarConversacion(false);
+            if(chatPollInterval) clearInterval(chatPollInterval);
+            chatPollInterval = setInterval(() => cargarConversacion(true), 3000);
+            marcarTodoLeido();
+        }
+
+        function cargarConversacion(silent = false) {
+            if(!currentUser || currentView !== 'chat') return;
+            const $box = $('#chatBody');
+            const isAtBottom = ($box.scrollTop() + $box.innerHeight() >= $box[0].scrollHeight - 60);
+
+            if(!silent) $box.html('<div class="text-center py-5"><i class="fa fa-circle-o-notch fa-spin text-muted"></i></div>');
+
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                let finalTitle = "Soporte Pet Palace";
+                const adminMsgs = data.filter(m => m.origen === 'admin');
+                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                if (adminMsgs.length > 0 && adminMsgs[0].remitente) finalTitle = adminMsgs[0].remitente;
+                
+                $('#chatTitle').text(finalTitle);
+                $('#chatSubtitle').text('Activo ahora');
+
+                data.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+                let html = '<div style="margin-top:auto;">'; 
+                if(data.length === 0) html += '<div class="text-center text-muted small mt-3">¡Hola! ¿En qué podemos ayudarte?</div>';
+
+                data.forEach(n => {
+                    const isMe = (n.origen === 'cliente');
+                    const rowClass = isMe ? 'outgoing' : 'incoming';
+                    const nameLabel = !isMe ? `<span class="msg-name-label">${n.remitente || 'Soporte'}</span>` : '';
+
+                    html += `
+                        <div class="message-row ${rowClass}">
+                            <div class="message-content-wrapper">
+                                ${nameLabel}
+                                <div class="message-bubble">
+                                    ${n.mensaje}
+                                    <span class="msg-time">${n.fecha.substring(11, 16)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                if(silent) {
+                    if($box.html() !== html) {
+                        $box.html(html);
+                        if(isAtBottom) $box.scrollTop($box[0].scrollHeight);
+                    }
+                } else {
+                    $box.html(html);
+                    $box.scrollTop($box[0].scrollHeight); 
+                }
+            });
+        }
+
+        function enviarMensajeChat() {
+            const txt = $('#chatInputMain').val().trim();
+            if(!txt) return;
+            
+            $('#chatInputMain').val('').focus(); 
+            
+            const tiempoActual = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const tempMsg = `
+                <div class="message-row outgoing">
+                    <div class="message-content-wrapper">
+                        <div class="message-bubble" style="opacity:0.7;">
+                            ${txt}
+                            <span class="msg-time">${tiempoActual}</span>
+                        </div>
+                    </div>
+                </div>`;
+            $('#chatBody').append(tempMsg);
+            $('#chatBody').scrollTop($('#chatBody')[0].scrollHeight);
+
+            $.ajax({
+                url: 'api/notifications.php', 
+                type: 'POST', 
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    user_id: currentUser.id, 
+                    sender_id: currentUser.id, 
+                    message: txt,
+                    origen: 'cliente' 
+                }),
+                success: function(res) { cargarConversacion(true); },
+                error: function(err) { showCustomAlert('error', 'Fallo de conexión', 'No se pudo enviar el mensaje.'); }
+            });
+        }
+
+        $('#chatInputMain').on('keypress', function(e) { 
+            if(e.which === 13) { e.preventDefault(); enviarMensajeChat(); }
+        });
+
+        function verificarBadge() {
+            if(!currentUser) return;
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                const unread = data.filter(n => n.estado !== 'leido' && n.origen === 'admin');
+                const badge = $('#msg-badge');
+                if(unread.length > 0) badge.text(unread.length).show(); else badge.hide();
+            });
+        }
+
+        function cerrarSesionIndex() {
+            localStorage.removeItem('currentUser');
+            window.location.href = "login.html";
+        }
     </script>
-
-
 </body>
-
 </html>
