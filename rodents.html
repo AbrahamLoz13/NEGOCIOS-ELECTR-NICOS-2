@@ -217,12 +217,12 @@
 
                     <div class="col-md-6">
                         <div class="header-search">
-                            <form>
-                                <select class="input-select">
+                            <form action="general.html" method="GET">
+                                <select class="input-select" name="categoria">
                                     <option value="0">Categorías</option>
-                                    <option value="1">Roedores</option>
+                                    <option value="Roedores">Roedores</option>
                                 </select>
-                                <input class="input" placeholder="¿Qué necesita tu roedor?">
+                                <input class="input" name="q" placeholder="¿Qué necesita tu roedor?">
                                 <button class="search-btn">Buscar</button>
                             </form>
                         </div>
@@ -233,7 +233,7 @@
                             <div id="msg-wrapper" style="display:none; position: relative;">
                                 <a href="#" onclick="toggleChatWidget(event)">
                                     <i class="fa fa-envelope"></i>
-                                    <span>Chat</span>
+                                    <span>Mensajes</span>
                                     <div class="qty-msg" id="msg-badge">0</div>
                                 </a>
                             </div>
@@ -261,7 +261,7 @@
                                         <h5 id="cart-subtotal">SUBTOTAL: $0.00</h5>
                                     </div>
                                     <div class="cart-btns">
-                                        <a href="#">Ver Carrito</a>
+                                        <a href="api/carrito.php">Ver Carrito</a>
                                         <a href="checkout.html" onclick="return verificarLoginParaCheckout()">Pagar <i class="fa fa-arrow-circle-right"></i></a>
                                     </div>
                                 </div>
@@ -307,8 +307,7 @@
             <i class="fa fa-times close-chat" onclick="toggleChatWidget(event)"></i>
         </div>
 
-        <div class="chat-body" id="chatBody">
-            </div>
+        <div class="chat-body" id="chatBody"></div>
 
         <div class="chat-footer" id="chatFooter">
             <div class="chat-input-wrapper">
@@ -405,7 +404,7 @@
                             <ul class="footer-links">
                                 <li><a href="#"><i class="fa fa-map-marker"></i> ITA, Aguascalientes</a></li>
                                 <li><a><i class="fa fa-phone"></i> +52 449 928 9336</a></li>
-                                <li><a><i class="fa fa-envelope-o"></i> contacto@petpalace.com</a></li>
+                                <li><a><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a></li>
                             </ul>
                         </div>
                     </div>
@@ -449,7 +448,6 @@
     <script>
         let currentUser = null;
         let cart = [];
-        // Variables CHAT
         let currentView = 'inbox'; 
         let chatPollInterval = null;
 
@@ -465,10 +463,8 @@
                     <a href="#" onclick="cerrarSesionIndex()" style="font-size:12px; color:#D10024;">(Salir)</a>
                 `);
 
-                // FIX ALINEACIÓN HEADER
                 $('#msg-wrapper').css('display', 'inline-block'); 
                 
-                // INICIAR POLLING DE BADGE CHAT
                 verificarBadge();
                 setInterval(verificarBadge, 5000); 
 
@@ -488,197 +484,16 @@
         });
 
         // =================================================================
-        // LÓGICA DEL CHAT PROFESIONAL
-        // =================================================================
-        function toggleChatWidget(e) {
-            if(e) { e.preventDefault(); e.stopPropagation(); }
-            const widget = $('#chat-widget');
-            
-            if (widget.is(':visible')) {
-                widget.css('opacity', '0');
-                setTimeout(() => widget.hide(), 300);
-                if(chatPollInterval) clearInterval(chatPollInterval);
-            } else {
-                widget.show();
-                setTimeout(() => widget.css('opacity', '1'), 10);
-                widget.css('display', 'flex'); 
-                mostrarBandeja(); 
-            }
-        }
-
-        // VISTA 1: BANDEJA
-        function mostrarBandeja() {
-            currentView = 'inbox';
-            $('#chatBackBtn').hide();
-            $('#headerAvatar').html('<i class="fa fa-comments"></i>');
-            $('#chatTitle').text('Mensajes');
-            $('#chatSubtitle').text('Bandeja de Entrada');
-            $('#chatFooter').hide();
-            
-            if(chatPollInterval) clearInterval(chatPollInterval);
-            cargarBandeja();
-            chatPollInterval = setInterval(cargarBandeja, 5000);
-        }
-
-        function cargarBandeja() {
-            if(!currentUser || currentView !== 'inbox') return;
-
-            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
-                const $box = $('#chatBody');
-                
-                if(data.length === 0) {
-                    $box.html('<div class="text-center py-5 text-muted" style="margin-top:50px;">Aún no tienes mensajes.<br><button class="btn btn-default btn-sm mt-3" onclick="entrarAlChat()">Contactar Soporte</button></div>');
-                    return;
-                }
-
-                // Filtrar mensajes de admin
-                const adminMsgs = data.filter(m => m.origen === 'admin');
-                const unreadCount = adminMsgs.filter(n => n.estado !== 'leido').length;
-                
-                // Nombre Admin
-                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-                let senderName = "Soporte Pet Palace"; 
-                if (adminMsgs.length > 0 && adminMsgs[0].remitente) {
-                    senderName = adminMsgs[0].remitente;
-                }
-
-                data.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-                const lastMsg = data[0];
-                const time = lastMsg.fecha.substring(11, 16);
-                const preview = (lastMsg.origen === 'cliente' ? 'Tú: ' : '') + lastMsg.mensaje;
-                const unreadDot = unreadCount > 0 ? '<div class="unread-dot"></div>' : '';
-                const boldStyle = unreadCount > 0 ? 'font-weight:700; color:#000;' : '';
-
-                const html = `
-                    <ul class="inbox-list">
-                        <li class="inbox-item" onclick="entrarAlChat()">
-                            <div class="inbox-avatar"><i class="fa fa-headset"></i></div>
-                            <div class="inbox-details">
-                                <div class="inbox-top">
-                                    <span class="inbox-name">${senderName}</span>
-                                    <span class="inbox-time">${time}</span>
-                                </div>
-                                <div class="inbox-msg" style="${boldStyle}">${preview}</div>
-                            </div>
-                            ${unreadDot}
-                        </li>
-                    </ul>`;
-                $box.html(html);
-            });
-        }
-
-        // VISTA 2: CONVERSACIÓN
-        function entrarAlChat() {
-            currentView = 'chat';
-            $('#chatBackBtn').show();
-            $('#chatFooter').css('display', 'flex'); 
-            
-            cargarConversacion(false);
-            if(chatPollInterval) clearInterval(chatPollInterval);
-            chatPollInterval = setInterval(() => cargarConversacion(true), 3000);
-            marcarTodoLeido();
-        }
-
-        function cargarConversacion(silent = false) {
-            if(!currentUser || currentView !== 'chat') return;
-            const $box = $('#chatBody');
-            const isAtBottom = ($box.scrollTop() + $box.innerHeight() >= $box[0].scrollHeight - 60);
-
-            if(!silent) $box.html('<div class="text-center py-5"><i class="fa fa-circle-o-notch fa-spin text-muted"></i></div>');
-
-            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
-                let finalTitle = "Soporte Pet Palace";
-                const adminMsgs = data.filter(m => m.origen === 'admin');
-                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-                if (adminMsgs.length > 0 && adminMsgs[0].remitente) finalTitle = adminMsgs[0].remitente;
-                
-                $('#chatTitle').text(finalTitle);
-                $('#chatSubtitle').text('Activo ahora');
-
-                data.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-
-                let html = '<div style="margin-top:auto;">'; 
-                if(data.length === 0) html += '<div class="text-center text-muted small mt-3">¡Hola! ¿En qué podemos ayudarte?</div>';
-
-                data.forEach(n => {
-                    const isMe = (n.origen === 'cliente');
-                    const rowClass = isMe ? 'outgoing' : 'incoming';
-                    const nameLabel = !isMe ? `<span class="msg-name-label">${n.remitente || 'Soporte'}</span>` : '';
-
-                    html += `
-                        <div class="message-row ${rowClass}">
-                            <div class="message-content-wrapper">
-                                ${nameLabel}
-                                <div class="message-bubble">
-                                    ${n.mensaje}
-                                    <span class="msg-time">${n.fecha.substring(11, 16)}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                html += '</div>';
-                
-                if(silent) {
-                    if($box.html() !== html) {
-                        $box.html(html);
-                        if(isAtBottom) $box.scrollTop($box[0].scrollHeight);
-                    }
-                } else {
-                    $box.html(html);
-                    $box.scrollTop($box[0].scrollHeight); 
-                }
-            });
-        }
-
-        function enviarMensajeChat() {
-            const txt = $('#chatInputMain').val().trim();
-            if(!txt) return;
-            $('#chatInputMain').val('').focus(); 
-
-            $.ajax({
-                url: 'api/notifications.php', type: 'POST', contentType: 'application/json',
-                data: JSON.stringify({
-                    user_id: currentUser.id,
-                    message: txt,
-                    origen: 'cliente' 
-                }),
-                success: function() { cargarConversacion(true); }
-            });
-        }
-
-        $('#chatInputMain').on('keypress', function(e) { if(e.which === 13) enviarMensajeChat(); });
-
-        function verificarBadge() {
-            if(!currentUser) return;
-            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
-                const unread = data.filter(n => n.estado !== 'leido' && n.origen === 'admin');
-                const badge = $('#msg-badge');
-                if(unread.length > 0) badge.text(unread.length).show(); else badge.hide();
-            });
-        }
-
-        function marcarTodoLeido() {
-            if(!currentUser) return;
-            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
-                data.filter(n => n.estado !== 'leido' && n.origen === 'admin').forEach(m => {
-                    $.ajax({ url: 'api/notifications.php', type: 'PUT', contentType: 'application/json', data: JSON.stringify({ id: m.id, estado: 'leido' }) });
-                });
-                $('#msg-badge').hide();
-            });
-        }
-
-        // =================================================================
-        // LÓGICA DE PRODUCTOS ROEDORES
+        // LÓGICA DE PRODUCTOS (SOLO ROEDORES)
         // =================================================================
         function cargarProductos() {
-            let url = 'api/products.php?categoria=Roedores';
+            let url = 'api/products.php';
 
             $.getJSON(url, function(data) {
                 const $container = $('#products-container');
                 $container.empty();
                 
-                const roedores = data.filter(p => p.categoria.toLowerCase() === 'roedores');
+                const roedores = data.filter(p => p.categoria && p.categoria.toLowerCase() === 'roedores');
 
                 if(roedores.length === 0) {
                     $container.html('<div class="col-md-12 text-center" style="padding:50px;"><h3>No se encontraron productos para roedores.</h3></div>');
@@ -691,15 +506,13 @@
                     const imagenSafe = p.imagen.replace(/'/g, "\\'");
 
                     const html = `
-                        <div class="col-md-4 col-xs-6" style="display:flex;">
+                        <div class="col-md-4 col-sm-6" style="display:flex;">
                             <div class="product">
                                 <div class="product-img">
                                     <img src="${p.imagen}" onerror="this.src='img/logo6.png'" alt="${p.nombre}">
-                                    
                                     <button class="add-btn-icon" 
                                             onclick="agregarAlCarrito(${p.id}, '${nombreSafe}', ${p.precio}, '${imagenSafe}')" 
-                                            ${isAgotado ? 'disabled' : ''}
-                                            title="${isAgotado ? 'Agotado' : 'Añadir al Carrito'}">
+                                            ${isAgotado ? 'disabled' : ''} title="${isAgotado ? 'Agotado' : 'Añadir'}">
                                         <i class="fa ${isAgotado ? 'fa-ban' : 'fa-cart-plus'}"></i>
                                     </button>
                                 </div>
@@ -717,7 +530,9 @@
             });
         }
 
-        // 3. CARRITO FUNCIONAL
+        // =================================================================
+        // CARRITO SIMPLIFICADO
+        // =================================================================
         function agregarAlCarrito(id, nombre, precio, imagen) {
             if (!validarLogin()) return;
             const existente = cart.find(p => p.id === id);
@@ -784,6 +599,203 @@
         function cerrarSesionIndex() { localStorage.removeItem('currentUser'); location.reload(); }
 
         function aceptarCookies() { localStorage.setItem('cookiesPetPalace', 'true'); $('#cookieBanner').fadeOut(); }
+
+        // =================================================================
+        // LÓGICA DEL CHAT PROFESIONAL CORREGIDA
+        // =================================================================
+        function toggleChatWidget(e) {
+            if(e) { e.preventDefault(); e.stopPropagation(); }
+            const widget = $('#chat-widget');
+            
+            if (widget.is(':visible')) {
+                widget.css('opacity', '0');
+                setTimeout(() => widget.hide(), 300);
+                if(chatPollInterval) clearInterval(chatPollInterval);
+            } else {
+                widget.show();
+                setTimeout(() => widget.css('opacity', '1'), 10);
+                widget.css('display', 'flex'); 
+                mostrarBandeja(); 
+            }
+        }
+
+        function mostrarBandeja() {
+            currentView = 'inbox';
+            $('#chatBackBtn').hide();
+            $('#headerAvatar').html('<i class="fa fa-comments"></i>');
+            $('#chatTitle').text('Mensajes');
+            $('#chatSubtitle').text('Bandeja de Entrada');
+            $('#chatFooter').hide();
+            
+            if(chatPollInterval) clearInterval(chatPollInterval);
+            cargarBandeja();
+            chatPollInterval = setInterval(cargarBandeja, 5000);
+        }
+
+        function cargarBandeja() {
+            if(!currentUser || currentView !== 'inbox') return;
+
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                const $box = $('#chatBody');
+                
+                if(data.length === 0) {
+                    $box.html('<div class="text-center py-5 text-muted" style="margin-top:50px;">Aún no tienes mensajes.<br><button class="btn btn-default btn-sm mt-3" onclick="entrarAlChat()">Contactar Soporte</button></div>');
+                    return;
+                }
+
+                const adminMsgs = data.filter(m => m.origen === 'admin');
+                const unreadCount = adminMsgs.filter(n => n.estado !== 'leido').length;
+                
+                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                let senderName = "Soporte Pet Palace"; 
+                if (adminMsgs.length > 0 && adminMsgs[0].remitente) {
+                    senderName = adminMsgs[0].remitente;
+                }
+
+                data.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                const lastMsg = data[0];
+                const time = lastMsg.fecha.substring(11, 16);
+                const preview = (lastMsg.origen === 'cliente' ? 'Tú: ' : '') + lastMsg.mensaje;
+                const unreadDot = unreadCount > 0 ? '<div class="unread-dot"></div>' : '';
+                const boldStyle = unreadCount > 0 ? 'font-weight:700; color:#000;' : '';
+
+                const html = `
+                    <ul class="inbox-list">
+                        <li class="inbox-item" onclick="entrarAlChat()">
+                            <div class="inbox-avatar"><i class="fa fa-headset"></i></div>
+                            <div class="inbox-details">
+                                <div class="inbox-top">
+                                    <span class="inbox-name">${senderName}</span>
+                                    <span class="inbox-time">${time}</span>
+                                </div>
+                                <div class="inbox-msg" style="${boldStyle}">${preview}</div>
+                            </div>
+                            ${unreadDot}
+                        </li>
+                    </ul>`;
+                $box.html(html);
+            });
+        }
+
+        function entrarAlChat() {
+            currentView = 'chat';
+            $('#chatBackBtn').show();
+            $('#chatFooter').css('display', 'flex'); 
+            
+            cargarConversacion(false);
+            if(chatPollInterval) clearInterval(chatPollInterval);
+            chatPollInterval = setInterval(() => cargarConversacion(true), 3000);
+            marcarTodoLeido();
+        }
+
+        function cargarConversacion(silent = false) {
+            if(!currentUser || currentView !== 'chat') return;
+            const $box = $('#chatBody');
+            const isAtBottom = ($box.scrollTop() + $box.innerHeight() >= $box[0].scrollHeight - 60);
+
+            if(!silent) $box.html('<div class="text-center py-5"><i class="fa fa-circle-o-notch fa-spin text-muted"></i></div>');
+
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                let finalTitle = "Soporte Pet Palace";
+                const adminMsgs = data.filter(m => m.origen === 'admin');
+                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                if (adminMsgs.length > 0 && adminMsgs[0].remitente) finalTitle = adminMsgs[0].remitente;
+                
+                $('#chatTitle').text(finalTitle);
+                $('#chatSubtitle').text('Activo ahora');
+
+                data.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+                let html = '<div style="margin-top:auto;">'; 
+                if(data.length === 0) html += '<div class="text-center text-muted small mt-3">¡Hola! ¿En qué podemos ayudarte?</div>';
+
+                data.forEach(n => {
+                    const isMe = (n.origen === 'cliente');
+                    const rowClass = isMe ? 'outgoing' : 'incoming';
+                    const nameLabel = !isMe ? `<span class="msg-name-label">${n.remitente || 'Soporte'}</span>` : '';
+
+                    html += `
+                        <div class="message-row ${rowClass}">
+                            <div class="message-content-wrapper">
+                                ${nameLabel}
+                                <div class="message-bubble">
+                                    ${n.mensaje}
+                                    <span class="msg-time">${n.fecha.substring(11, 16)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                if(silent) {
+                    if($box.html() !== html) {
+                        $box.html(html);
+                        if(isAtBottom) $box.scrollTop($box[0].scrollHeight);
+                    }
+                } else {
+                    $box.html(html);
+                    $box.scrollTop($box[0].scrollHeight); 
+                }
+            });
+        }
+
+        function enviarMensajeChat() {
+            const txt = $('#chatInputMain').val().trim();
+            if(!txt) return;
+            
+            $('#chatInputMain').val('').focus(); 
+            
+            const tiempoActual = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const tempMsg = `
+                <div class="message-row outgoing">
+                    <div class="message-content-wrapper">
+                        <div class="message-bubble" style="opacity:0.7;">
+                            ${txt}
+                            <span class="msg-time">${tiempoActual}</span>
+                        </div>
+                    </div>
+                </div>`;
+            $('#chatBody').append(tempMsg);
+            $('#chatBody').scrollTop($('#chatBody')[0].scrollHeight);
+
+            $.ajax({
+                url: 'api/notifications.php', 
+                type: 'POST', 
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    user_id: currentUser.id, 
+                    sender_id: currentUser.id, 
+                    message: txt,
+                    origen: 'cliente' 
+                }),
+                success: function(res) { cargarConversacion(true); },
+                error: function(err) { alert("No se pudo enviar el mensaje."); }
+            });
+        }
+
+        $('#chatInputMain').on('keypress', function(e) { 
+            if(e.which === 13) { e.preventDefault(); enviarMensajeChat(); }
+        });
+
+        function verificarBadge() {
+            if(!currentUser) return;
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                const unread = data.filter(n => n.estado !== 'leido' && n.origen === 'admin');
+                const badge = $('#msg-badge');
+                if(unread.length > 0) badge.text(unread.length).show(); else badge.hide();
+            });
+        }
+
+        function marcarTodoLeido() {
+            if(!currentUser) return;
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                data.filter(n => n.estado !== 'leido' && n.origen === 'admin').forEach(m => {
+                    $.ajax({ url: 'api/notifications.php', type: 'PUT', contentType: 'application/json', data: JSON.stringify({ id: m.id, estado: 'leido' }) });
+                });
+                $('#msg-badge').hide();
+            });
+        }
 
         $(window).scroll(function() {
             if ($(this).scrollTop() > 150) $('#header').addClass('sticky-header');

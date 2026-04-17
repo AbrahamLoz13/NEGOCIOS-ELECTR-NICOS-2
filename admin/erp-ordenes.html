@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
 <style>
-  /* ===== BASE (igual que providers.html) ===== */
+  /* ===== BASE ===== */
   body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
 
   /* SIDEBAR */
@@ -58,6 +58,7 @@
   .badge-status { font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
   .bg-pendiente  { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
   .bg-procesada  { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+  .bg-enviado  { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
   .bg-cancelada  { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
   /* BOTONES ACCIÓN */
@@ -103,9 +104,25 @@
   .total-display { background: #f8f9fa; border-radius: 8px; padding: 10px 16px; font-weight: 700; font-size: 16px; color: #15161D; text-align: right; margin-top: 10px; }
   .total-display span { color: #6610f2; }
 
-  /* MODAL DETALLE */
+  /* MODAL DETALLE Y SEGUIMIENTO */
   .detalle-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
   .detalle-item:last-child { border-bottom: none; }
+
+  .track-container { margin: 20px 0 40px; padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #f0f2f5; }
+  .track { position: relative; background-color: #e9ecef; height: 6px; display: flex; margin-bottom: 30px; margin-top: 30px; border-radius: 5px; }
+  .track .step { flex-grow: 1; width: 25%; margin-top: -18px; text-align: center; position: relative; }
+  .track .step::before { height: 6px; position: absolute; content: ""; width: 100%; left: 0; top: 18px; transition: background-color 0.4s ease; }
+  .track .step.active::before { background-color: #28a745; }
+  
+  .track .icon { display: inline-block; width: 40px; height: 40px; line-height: 36px; position: relative; border-radius: 100%; background: #fff; color: #aeb4be; z-index: 5; font-size: 16px; border: 3px solid #e9ecef; transition: all 0.4s ease; }
+  .track .step.active .icon { background: #28a745; color: #fff; border-color: #28a745; }
+  
+  .track .text { display: block; margin-top: 10px; font-size: 12px; font-weight: 700; color: #8D99AE; text-transform: uppercase; }
+  .track .step.active .text { color: #15161D; }
+
+  .track.canceled .step::before { background-color: #D10024 !important; }
+  .track.canceled .step .icon { background: #D10024 !important; color: #fff !important; border-color: #D10024 !important; }
+  .track.canceled .step .text { color: #D10024 !important; }
 
   /* ANIMACIONES */
   .fade-in { animation: fadeIn 0.5s ease-out; }
@@ -118,7 +135,6 @@
 
 <body>
 
-<!-- SIDEBAR -->
 <nav id="sidebar">
   <div class="sidebar-brand">
     <img src="../img/logo6.png" onerror="this.src='https://via.placeholder.com/60/15161D/ffffff?text=PP'">
@@ -127,20 +143,20 @@
   </div>
   <ul class="nav-sidebar">
     <li><a href="admin-panel.html"><i class="fa fa-chart-line"></i> Dashboard</a></li>
-    <li><a href="#clients"><i class="fa fa-users"></i> Clientes</a></li>
+    <li><a href="clients.html"><i class="fa fa-users"></i> Clientes</a></li>
     <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
     <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
     <li><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
     <li><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
-    <li class="active"><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
-    <li><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
-    <li class="active"><a href="erp-roles.html"><i class="fa fa-building"></i> Roles ERP</a></li>    <hr>
+    <li><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
+    <li class="active"><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
+    <li><a href="erp-roles.html"><i class="fa fa-building"></i> Roles ERP</a></li>
+    <hr>
     <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
     <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
   </ul>
 </nav>
 
-<!-- MAIN -->
 <main>
 
   <div class="d-flex justify-content-between align-items-center mb-4 fade-in">
@@ -153,7 +169,6 @@
     </button>
   </div>
 
-  <!-- KPIs -->
   <div class="kpi-grid fade-in">
     <div class="kpi-card">
       <div class="kpi-icon purple"><i class="fa fa-file-invoice"></i></div>
@@ -179,13 +194,12 @@
     <div class="kpi-card">
       <div class="kpi-icon red"><i class="fa fa-dollar-sign"></i></div>
       <div>
-        <div class="kpi-label">Ventas ERP</div>
+        <div class="kpi-label">Ventas Totales</div>
         <div class="kpi-value" id="kpi-ventas">$0</div>
       </div>
     </div>
   </div>
 
-  <!-- TABLA -->
   <div class="card-custom fade-in">
     <div class="table-responsive">
       <table class="table table-hover mb-0">
@@ -194,7 +208,7 @@
             <th>ID</th>
             <th>Cliente</th>
             <th>Fecha</th>
-            <th>Total</th>
+            <th>Total General</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -208,7 +222,6 @@
 
 </main>
 
-<!-- ====== MODAL CREAR ORDEN ====== -->
 <div class="modal fade" id="ordenModal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -219,7 +232,6 @@
       <div class="modal-body">
         <input type="hidden" id="ordenId">
 
-        <!-- Cliente -->
         <div class="form-group">
           <label class="font-weight-bold">Cliente</label>
           <select class="form-control" id="selectCliente">
@@ -227,7 +239,6 @@
           </select>
         </div>
 
-        <!-- Productos -->
         <div class="form-group">
           <label class="font-weight-bold">Productos</label>
           <div id="productosContainer"></div>
@@ -236,9 +247,14 @@
           </button>
         </div>
 
-        <!-- Total -->
-        <div class="total-display">
-          Total: <span id="totalDisplay">$0.00</span>
+        <div class="form-group" style="width: 30%; float: right;">
+            <label class="font-weight-bold">IVA / Impuestos (%)</label>
+            <input type="number" class="form-control" id="taxPercentage" value="16" min="0" onchange="actualizarTotal()" oninput="actualizarTotal()">
+        </div>
+        <div style="clear:both;"></div>
+
+        <div class="total-display" id="displayModalAgregar">
+          Total General: <span>$0.00</span>
         </div>
       </div>
       <div class="modal-footer">
@@ -251,31 +267,50 @@
   </div>
 </div>
 
-<!-- ====== MODAL DETALLE ====== -->
 <div class="modal fade" id="detalleModal">
   <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header" style="background:#15161D; color:white;">
-        <h4 class="mb-0">Detalle de Orden <span id="detalleOrdenId"></span></h4>
+    <div class="modal-content" style="border-radius: 12px; border:none;">
+      <div class="modal-header" style="background:#15161D; color:white; border-radius: 12px 12px 0 0;">
         <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+        <h4 class="mb-0"><i class="fa fa-search"></i> Seguimiento de Orden #<span id="detalleOrdenId"></span></h4>
       </div>
-      <div class="modal-body">
-        <div id="detalleInfo" class="mb-3"></div>
-        <h6 class="font-weight-bold mb-2">Productos:</h6>
-        <div id="detalleProductos"></div>
-        <div class="total-display mt-2">Total: <span id="detalleTotalFinal">$0.00</span></div>
+      <div class="modal-body" style="background:#f9f9f9;">
+        
+        <div id="trackerAdmin"></div>
+
+        <div class="card-custom" style="box-shadow: none; border: 1px solid #eaeaea;">
+            <div class="card-body-custom" style="padding: 15px;">
+                <div id="detalleInfo" class="mb-3"></div>
+                <h6 class="font-weight-bold mb-2">Productos:</h6>
+                
+                <div id="detalleProductos">
+                    </div>
+
+                <div class="total-display mt-3" style="background:transparent; border-top: 1px dashed #ccc; border-radius:0; text-align: right;" id="detalleTotalContainer">
+                    </div>
+            </div>
+        </div>
+
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="border-top: none;">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="button" id="btnProcesar" class="btn btn-success" onclick="procesarOrden()">
-          <i class="fa fa-bolt"></i> Procesar Orden
+        
+        <button type="button" id="btnProcesar" class="btn btn-success" onclick="procesarOrden()" style="display:none;">
+          <i class="fa fa-box"></i> Procesar Orden
+        </button>
+        
+        <button type="button" id="btnEnviado" class="btn btn-info" onclick="actualizarEstadoOrden('enviado')" style="display:none;">
+          <i class="fa fa-truck"></i> Marcar como Enviado
+        </button>
+        
+        <button type="button" id="btnEntregado" class="btn btn-primary" onclick="actualizarEstadoOrden('entregado')" style="display:none;">
+          <i class="fa fa-home"></i> Marcar como Entregado
         </button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast" class="alert mb-0"></div>
 
 <script src="../js/jquery.min.js"></script>
@@ -288,9 +323,6 @@ let productos = [];
 let ordenes = [];
 let ordenActualId = null;
 
-// =====================
-// INIT
-// =====================
 $(document).ready(function() {
   cargarRol();
   cargarClientes();
@@ -298,21 +330,45 @@ $(document).ready(function() {
   cargarOrdenes();
 });
 
+// FUNCIÓN MAESTRA PARA CALCULAR TOTALES RESPETANDO LA BD
+function getOrderTotals(o) {
+    let subtotal = parseFloat(o.subtotal || o.total_sin_iva || o.total || 0);
+    let iva_val = parseFloat(o.iva || o.impuesto || o.impuestos || 0);
+    let pct = parseFloat(o.porcentaje_iva || o.porcentaje || 16); 
+    
+    // Si la DB no manda el IVA precalculado pero manda el porcentaje, lo calculamos
+    if (iva_val === 0 && pct > 0) {
+        iva_val = subtotal * (pct / 100);
+    }
+    
+    // Prioridad absoluta: Si la DB ya manda un Total Final/Gran Total/Total Real
+    let totalGeneral = parseFloat(o.total_final || o.gran_total || o.total_con_iva || o.total_real || 0);
+    
+    // Si la DB es floja y solo manda el subtotal en 'total' (ej. 240)
+    // El sistema se da cuenta que falta el IVA y se lo suma (240 + 38.40 = 278.40)
+    if (totalGeneral === 0 || totalGeneral === subtotal) {
+        totalGeneral = subtotal + iva_val;
+    }
+
+    return {
+        subtotal: subtotal,
+        iva: totalGeneral - subtotal, // La diferencia exacta, sin importar el porcentaje
+        total: totalGeneral,
+        pct: pct
+    };
+}
+
 function cargarRol() {
   const rol = localStorage.getItem('rol') || 'admin';
   $('#rolDisplay').text(rol.charAt(0).toUpperCase() + rol.slice(1));
 }
 
-// =====================
-// CARGAR DATOS
-// =====================
 function cargarClientes() {
-  $.getJSON('../api/usuarios.php?rol=cliente', function(data) {
+  $.getJSON('../api/usuarios.php', function(data) {
     clientes = data;
     const sel = $('#selectCliente');
-    data.forEach(c => sel.append(`<option value="${c.id}">${c.nombre} — ${c.correo}</option>`));
+    data.forEach(c => sel.append(`<option value="${c.id}">${c.nombre}</option>`));
   }).fail(function() {
-    // fallback si el endpoint devuelve todos los usuarios
     $.getJSON('../api/clients.php', function(data) {
       clientes = data;
       const sel = $('#selectCliente');
@@ -332,41 +388,54 @@ function cargarOrdenes() {
     ordenes = data;
     renderTabla();
     calcularKPIs();
-  }).fail(function() {
-    $('#ordenesTableBody').html('<tr><td colspan="6" class="text-center py-4 text-muted">No se pudo conectar con el servidor</td></tr>');
+  }).fail(function(xhr) {
+    $('#ordenesTableBody').html('<tr><td colspan="6" class="text-center py-4 text-danger">Error al conectar con la base de datos</td></tr>');
+    console.error(xhr.responseText);
   });
 }
 
-// =====================
-// RENDER TABLA
-// =====================
 function renderTabla() {
   const tbody = $('#ordenesTableBody');
   tbody.empty();
 
-  if (!ordenes.length) {
+  if (!ordenes || !ordenes.length) {
     tbody.html('<tr><td colspan="6" class="text-center py-4 text-muted">No hay órdenes registradas</td></tr>');
     return;
   }
 
   ordenes.forEach(o => {
-    const badgeClass = o.estado === 'procesada' ? 'bg-procesada' : o.estado === 'cancelada' ? 'bg-cancelada' : 'bg-pendiente';
+    const estado = o.estado ? o.estado.toLowerCase() : 'pendiente';
+    let badgeClass = 'bg-pendiente';
+    
+    if (estado === 'procesada' || estado === 'completado') badgeClass = 'bg-procesada';
+    else if (estado === 'enviado') badgeClass = 'bg-enviado';
+    else if (estado === 'entregado') badgeClass = 'bg-procesada'; // verde
+    else if (estado === 'cancelada' || estado === 'cancelado') badgeClass = 'bg-cancelada';
+
     const fecha = o.fecha ? new Date(o.fecha).toLocaleDateString('es-MX') : '—';
-    const btnProcesar = o.estado === 'pendiente'
-      ? `<button class="btn-action btn-process" title="Procesar" onclick="verDetalle(${o.id})"><i class="fa fa-bolt"></i></button>`
+    
+    // Usar nuestra función maestra para extraer el Total Real
+    let totals = getOrderTotals(o);
+    
+    const btnProcesar = (estado === 'pendiente')
+      ? `<button class="btn-action btn-process" title="Avanzar Tracker" onclick="verDetalle(${o.id})"><i class="fa fa-arrow-right"></i></button>`
+      : '';
+
+    const btnCancelar = (estado === 'pendiente')
+      ? `<button class="btn-action btn-delete" title="Cancelar" onclick="cancelarOrden(${o.id})"><i class="fa fa-times"></i></button>`
       : '';
 
     tbody.append(`
       <tr>
         <td><strong>#${o.id}</strong></td>
-        <td>${o.cliente || '—'}</td>
+        <td>${o.cliente || 'Desconocido'}</td>
         <td>${fecha}</td>
-        <td><strong>$${parseFloat(o.total).toFixed(2)}</strong></td>
-        <td><span class="badge-status ${badgeClass}">${o.estado}</span></td>
+        <td><strong style="color: #15161D;">$${totals.total.toFixed(2)}</strong></td>
+        <td><span class="badge-status ${badgeClass}">${estado}</span></td>
         <td>
-          <button class="btn-action btn-edit" title="Ver detalle" onclick="verDetalle(${o.id})"><i class="fa fa-eye"></i></button>
+          <button class="btn-action btn-edit" title="Ver detalle/Seguimiento" onclick="verDetalle(${o.id})"><i class="fa fa-map-marker"></i></button>
           ${btnProcesar}
-          <button class="btn-action btn-delete" title="Cancelar" onclick="cancelarOrden(${o.id})"><i class="fa fa-times"></i></button>
+          ${btnCancelar}
         </td>
       </tr>
     `);
@@ -375,11 +444,21 @@ function renderTabla() {
 
 function calcularKPIs() {
   const total = ordenes.length;
-  const procesadas = ordenes.filter(o => o.estado === 'procesada').length;
-  const pendientes = ordenes.filter(o => o.estado === 'pendiente').length;
-  const ventas = ordenes
-    .filter(o => o.estado === 'procesada')
-    .reduce((sum, o) => sum + parseFloat(o.total), 0);
+  let procesadas = 0;
+  let pendientes = 0;
+  let ventas = 0;
+
+  ordenes.forEach(o => {
+    const estado = o.estado ? o.estado.toLowerCase() : 'pendiente';
+    let totals = getOrderTotals(o);
+
+    if (estado === 'procesada' || estado === 'completado' || estado === 'entregado' || estado === 'enviado') {
+      procesadas++;
+      ventas += totals.total;
+    } else if (estado === 'pendiente') {
+      pendientes++;
+    }
+  });
 
   $('#kpi-total').text(total);
   $('#kpi-procesadas').text(procesadas);
@@ -387,13 +466,11 @@ function calcularKPIs() {
   $('#kpi-ventas').text('$' + ventas.toFixed(2));
 }
 
-// =====================
-// MODAL NUEVA ORDEN
-// =====================
 function openAddModal() {
   $('#ordenId').val('');
   $('#modalTitle').text('Nueva Orden Empresarial');
   $('#selectCliente').val('');
+  $('#taxPercentage').val('16'); // Porcentaje editable
   $('#productosContainer').empty();
   actualizarTotal();
   agregarProductoRow();
@@ -402,7 +479,7 @@ function openAddModal() {
 
 function agregarProductoRow() {
   const idx = Date.now();
-  const opts = productos.map(p => `<option value="${p.id}" data-precio="${p.precio}" data-stock="${p.stock}">${p.nombre} (Stock: ${p.stock})</option>`).join('');
+  const opts = productos.map(p => `<option value="${p.id}" data-precio="${p.precio}">${p.nombre} ($${p.precio})</option>`).join('');
   const row = `
     <div class="producto-row" id="row-${idx}">
       <select class="form-control prod-select" onchange="actualizarTotal()">
@@ -419,43 +496,66 @@ function agregarProductoRow() {
 }
 
 function actualizarTotal() {
-  let total = 0;
+  let subtotal = 0;
   $('.producto-row').each(function() {
     const sel = $(this).find('.prod-select');
     const cant = parseInt($(this).find('.prod-cantidad').val()) || 0;
     const precio = parseFloat(sel.find(':selected').data('precio')) || 0;
-    total += precio * cant;
+    subtotal += precio * cant;
   });
-  $('#totalDisplay').text('$' + total.toFixed(2));
+  
+  let taxRate = parseFloat($('#taxPercentage').val() || 0) / 100;
+  let iva = subtotal * taxRate;
+  let totalGeneral = subtotal + iva;
+  
+  $('#displayModalAgregar').html(`
+    <div style="font-size:13px; font-weight:normal; color:#888;">Subtotal: $${subtotal.toFixed(2)}</div>
+    <div style="font-size:13px; font-weight:normal; color:#888;">Impuestos: $${iva.toFixed(2)}</div>
+    <div style="margin-top:5px;">Total General: <span>$${totalGeneral.toFixed(2)}</span></div>
+  `);
 }
 
-// =====================
-// GUARDAR ORDEN
-// =====================
 function guardarOrden() {
-  const cliente_id = $('#selectCliente').val();
+  const cliente_id = parseInt($('#selectCliente').val());
   if (!cliente_id) { showToast('Selecciona un cliente', 'danger'); return; }
 
   const prods = [];
   let valido = true;
+  let subtotal = 0;
+
   $('.producto-row').each(function() {
-    const pid = $(this).find('.prod-select').val();
+    const pid = parseInt($(this).find('.prod-select').val());
     const cant = parseInt($(this).find('.prod-cantidad').val());
     const precio = parseFloat($(this).find('.prod-select').find(':selected').data('precio')) || 0;
     if (!pid || cant < 1) { valido = false; return false; }
-    prods.push({ producto_id: pid, cantidad: cant, precio });
+    
+    subtotal += precio * cant;
+    prods.push({ producto_id: pid, cantidad: cant, precio: precio });
   });
 
   if (!valido || !prods.length) { showToast('Agrega al menos un producto válido', 'danger'); return; }
 
-  const usuario_id = localStorage.getItem('usuario_id') || 1;
-  const total = prods.reduce((s, p) => s + p.cantidad * p.precio, 0);
+  let taxRate = parseFloat($('#taxPercentage').val() || 0);
+  let ivaCalculado = subtotal * (taxRate/100);
+  let totalCalculado = subtotal + ivaCalculado;
 
+  const userData = JSON.parse(localStorage.getItem('currentUser'));
+  const usuario_id = userData ? parseInt(userData.id) : 1; 
+
+  // Enviamos TODOS los datos al backend (si el backend los acepta, genial. Si no, la función getOrderTotals los salva igual)
   $.ajax({
     url: API + 'ordenes.php',
     type: 'POST',
     contentType: 'application/json',
-    data: JSON.stringify({ cliente_id, usuario_id, productos: prods, total }),
+    data: JSON.stringify({ 
+        cliente_id: cliente_id, 
+        usuario_id: usuario_id, 
+        productos: prods,
+        porcentaje_iva: taxRate,
+        iva: ivaCalculado,
+        total_final: totalCalculado,
+        total: totalCalculado 
+    }),
     success: function(res) {
       if (typeof res === 'string') res = JSON.parse(res);
       if (res.ok) {
@@ -463,63 +563,168 @@ function guardarOrden() {
         showToast('Orden creada correctamente', 'success');
         cargarOrdenes();
       } else {
-        showToast(res.error || 'Error al crear', 'danger');
+        showToast('Error al crear orden', 'danger');
       }
+    },
+    error: function(xhr) {
+        showToast('Error en el servidor al guardar la orden', 'danger');
     }
   });
 }
 
-// =====================
-// VER DETALLE
-// =====================
 function verDetalle(id) {
   const orden = ordenes.find(o => o.id == id);
   if (!orden) return;
   ordenActualId = id;
 
-  $('#detalleOrdenId').text('#' + id);
+  $('#detalleOrdenId').text(id);
   const fecha = orden.fecha ? new Date(orden.fecha).toLocaleDateString('es-MX') : '—';
-  $('#detalleInfo').html(`
-    <div class="detalle-item"><span><strong>Cliente:</strong></span><span>${orden.cliente || '—'}</span></div>
-    <div class="detalle-item"><span><strong>Fecha:</strong></span><span>${fecha}</span></div>
-    <div class="detalle-item"><span><strong>Estado:</strong></span><span>${orden.estado}</span></div>
-  `);
-
-  // Cargar detalle de productos
+  
   $.getJSON(API + 'ordenes.php?id=' + id, function(data) {
-    const container = $('#detalleProductos');
-    container.empty();
-    if (data.detalle && data.detalle.length) {
-      data.detalle.forEach(d => {
-        container.append(`
+      const estadoLimpio = (data.estado || orden.estado || 'pendiente').toLowerCase();
+      renderTrackerModal(estadoLimpio);
+
+      let itemsHTML = '';
+      let sumaItems = 0;
+
+      if (data.detalle && data.detalle.length > 0) {
+          data.detalle.forEach(item => {
+              const qty = parseInt(item.cantidad) || 1;
+              let pUnit = parseFloat(item.precio_unitario || item.precio || 0);
+              if (pUnit === 0 && item.subtotal) pUnit = parseFloat(item.subtotal) / qty;
+              
+              let itemTotal = pUnit * qty;
+              sumaItems += itemTotal;
+
+              // CRUCE DE NOMBRES CON EL CATÁLOGO
+              let nombreReal = item.nombre;
+              if(!nombreReal && item.producto_id) {
+                  const prodEncontrado = productos.find(px => px.id == item.producto_id);
+                  if(prodEncontrado) nombreReal = prodEncontrado.nombre;
+              }
+              nombreReal = nombreReal || 'Producto Web (#'+item.producto_id+')';
+
+              itemsHTML += `
+                  <div class="detalle-item">
+                      <span><strong style="color:#6610f2; margin-right: 5px;">${qty}x</strong> ${nombreReal}</span>
+                      <span style="font-weight: 700;">$${itemTotal.toFixed(2)}</span>
+                  </div>
+              `;
+          });
+      } else {
+          sumaItems = parseFloat(data.total || orden.total || 0);
+          itemsHTML = `
+              <div class="detalle-item">
+                  <span><strong style="color:#6610f2; margin-right: 5px;">1x</strong> Compra General (Sin Detalles)</span>
+                  <span style="font-weight: 700;">$${sumaItems.toFixed(2)}</span>
+              </div>
+          `;
+      }
+
+      // Usar nuestra función maestra para extraer el Total Real
+      let totals = getOrderTotals(orden);
+      
+      // Extra seguridad: Si la DB no guardó el total y la función nos devolvió lo mismo
+      if (totals.total === 0 || totals.total === sumaItems) {
+          let extraPct = parseFloat(orden.porcentaje_iva || 16);
+          totals.total = sumaItems + (sumaItems * (extraPct/100));
+      }
+      
+      let impuestosYExtras = totals.total - sumaItems;
+      if (impuestosYExtras < 0) impuestosYExtras = 0; 
+
+      $('#detalleInfo').html(`
+        <div class="detalle-item"><span><strong>Cliente:</strong></span><span>${data.cliente || orden.cliente || '—'}</span></div>
+        <div class="detalle-item"><span><strong>Fecha:</strong></span><span>${fecha}</span></div>
+        <div class="detalle-item"><span><strong>Estado Interno:</strong></span><span style="text-transform:uppercase; color:#D10024;"><b>${estadoLimpio}</b></span></div>
+      `);
+      
+      $('#detalleProductos').html(itemsHTML);
+      
+      $('#detalleTotalContainer').html(`
+          <div style="font-size:13px; font-weight:normal; color:#888;">Subtotal Productos: $${sumaItems.toFixed(2)}</div>
+          <div style="font-size:13px; font-weight:normal; color:#888; border-bottom:1px dashed #ccc; padding-bottom:8px; margin-bottom:8px;">Impuestos / Extras: $${impuestosYExtras.toFixed(2)}</div>
+          <div style="font-size:18px;">Total General: <span style="color:#6610f2;">$${totals.total.toFixed(2)}</span></div>
+      `);
+      
+      $('#btnProcesar, #btnEnviado, #btnEntregado').hide();
+      
+      if (estadoLimpio === 'pendiente') {
+        $('#btnProcesar').show();
+      } else if (estadoLimpio === 'procesada') {
+        $('#btnEnviado').show();
+      } else if (estadoLimpio === 'enviado') {
+        $('#btnEntregado').show();
+      }
+
+      $('#detalleModal').modal('show');
+  }).fail(function() {
+      // SI FALLA EL GET, DIBUJAMOS CON LA INFO MAESTRA
+      const estadoLimpio = (orden.estado || 'pendiente').toLowerCase();
+      renderTrackerModal(estadoLimpio);
+      
+      let totals = getOrderTotals(orden);
+
+      $('#detalleInfo').html(`
+        <div class="detalle-item"><span><strong>Cliente:</strong></span><span>${orden.cliente || '—'}</span></div>
+        <div class="detalle-item"><span><strong>Estado Interno:</strong></span><span style="text-transform:uppercase; color:#D10024;"><b>${estadoLimpio}</b></span></div>
+      `);
+      
+      $('#detalleProductos').html(`
           <div class="detalle-item">
-            <span>${d.nombre} × ${d.cantidad}</span>
-            <span>$${parseFloat(d.subtotal || d.precio_unitario * d.cantidad).toFixed(2)}</span>
+              <span><strong style="color:#6610f2; margin-right: 5px;">1x</strong> Compra General</span>
+              <span style="font-weight: 700;">$${totals.subtotal.toFixed(2)}</span>
           </div>
-        `);
-      });
-    } else {
-      container.html('<p class="text-muted">Sin detalle disponible</p>');
-    }
-    $('#detalleTotalFinal').text('$' + parseFloat(orden.total).toFixed(2));
+      `);
+
+      $('#detalleTotalContainer').html(`
+          <div style="font-size:13px; font-weight:normal; color:#888;">Subtotal Productos: $${totals.subtotal.toFixed(2)}</div>
+          <div style="font-size:13px; font-weight:normal; color:#888; border-bottom:1px dashed #ccc; padding-bottom:8px; margin-bottom:8px;">Impuestos y Extras: $${totals.iva.toFixed(2)}</div>
+          <div style="font-size:18px;">Total General: <span style="color:#6610f2;">$${totals.total.toFixed(2)}</span></div>
+      `);
+      
+      $('#btnProcesar, #btnEnviado, #btnEntregado').hide();
+      if (estadoLimpio === 'pendiente') $('#btnProcesar').show();
+      else if (estadoLimpio === 'procesada') $('#btnEnviado').show();
+      else if (estadoLimpio === 'enviado') $('#btnEntregado').show();
+
+      $('#detalleModal').modal('show');
   });
-
-  // Mostrar/ocultar botón procesar
-  if (orden.estado === 'pendiente') {
-    $('#btnProcesar').show();
-  } else {
-    $('#btnProcesar').hide();
-  }
-
-  $('#detalleModal').modal('show');
 }
 
-// =====================
-// PROCESAR ORDEN
-// =====================
+function renderTrackerModal(estado) {
+    let step1 = '', step2 = '', step3 = '', step4 = '';
+    let isCanceled = false;
+
+    if (estado === 'cancelada' || estado === 'cancelado') {
+        isCanceled = true;
+        step1 = step2 = step3 = step4 = 'cancel';
+    } else if (estado === 'pendiente') {
+        step1 = 'active';
+    } else if (estado === 'procesada' || estado === 'completado') {
+        step1 = 'active'; step2 = 'active';
+    } else if (estado === 'enviado') {
+        step1 = 'active'; step2 = 'active'; step3 = 'active';
+    } else if (estado === 'entregado') {
+        step1 = 'active'; step2 = 'active'; step3 = 'active'; step4 = 'active';
+    }
+
+    const trackingHTML = `
+        <div class="track-container">
+            <div class="track ${isCanceled ? 'canceled' : ''}">
+                <div class="step ${step1}"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Recibido</span> </div>
+                <div class="step ${step2}"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Preparando</span> </div>
+                <div class="step ${step3}"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text">En Camino</span> </div>
+                <div class="step ${step4}"> <span class="icon"> <i class="fa fa-home"></i> </span> <span class="text">Entregado</span> </div>
+            </div>
+        </div>
+    `;
+    $('#trackerAdmin').html(trackingHTML);
+}
+
 function procesarOrden() {
   if (!ordenActualId) return;
-  if (!confirm('¿Procesar la orden #' + ordenActualId + '? Esto descontará el stock automáticamente.')) return;
+  if (!confirm('¿Marcar como PROCESADA? Esto descontará el stock permanentemente del almacén.')) return;
 
   $.ajax({
     url: API + 'procesar.php',
@@ -530,52 +735,81 @@ function procesarOrden() {
       if (typeof res === 'string') res = JSON.parse(res);
       $('#detalleModal').modal('hide');
       if (res.ok) {
-        showToast('✔ Orden procesada. Stock actualizado.', 'success');
+        showToast('✔ Orden Procesada exitosamente.', 'success');
         cargarOrdenes();
       } else {
         showToast(res.error || 'Error al procesar', 'danger');
       }
+    },
+    error: function(xhr) {
+        showToast('Error al conectar con procesar.php', 'danger');
     }
   });
 }
 
-// =====================
-// CANCELAR
-// =====================
+function actualizarEstadoOrden(estadoNuevo) {
+  if (!ordenActualId) return;
+  if (!confirm(`¿Actualizar estado de la orden a ${estadoNuevo.toUpperCase()}?`)) return;
+
+  $.ajax({
+    url: API + 'ordenes.php?id=' + ordenActualId,
+    type: 'PUT',
+    contentType: 'application/json',
+    data: JSON.stringify({ estado: estadoNuevo }),
+    success: function(res) {
+      if (typeof res === 'string') res = JSON.parse(res);
+      $('#detalleModal').modal('hide');
+      if (res.ok) {
+        showToast(`✔ Orden marcada como ${estadoNuevo.toUpperCase()}`, 'success');
+        cargarOrdenes();
+      } else {
+        showToast('Error al intentar actualizar', 'danger');
+      }
+    },
+    error: function() {
+        showToast('Error de red al actualizar estado', 'danger');
+    }
+  });
+}
+
 function cancelarOrden(id) {
   const orden = ordenes.find(o => o.id == id);
-  if (!orden || orden.estado === 'procesada') {
-    showToast('No se puede cancelar una orden ya procesada', 'warning');
+  if (!orden) return;
+  const est = orden.estado ? orden.estado.toLowerCase() : '';
+  if (est === 'procesada' || est === 'completado' || est === 'entregado' || est === 'enviado') {
+    showToast('No se puede cancelar una orden que ya avanzó de Pendiente', 'warning');
     return;
   }
-  if (!confirm('¿Cancelar la orden #' + id + '?')) return;
+  if (!confirm('¿Estás seguro de cancelar la orden #' + id + '?')) return;
 
   $.ajax({
     url: API + 'ordenes.php?id=' + id,
     type: 'PUT',
     contentType: 'application/json',
     data: JSON.stringify({ estado: 'cancelada' }),
-    success: function() {
-      showToast('Orden cancelada', 'warning');
-      cargarOrdenes();
+    success: function(res) {
+      if (typeof res === 'string') res = JSON.parse(res);
+      if (res.ok) {
+        showToast('Orden cancelada correctamente', 'warning');
+        cargarOrdenes();
+      } else {
+        showToast('Error al intentar cancelar', 'danger');
+      }
+    },
+    error: function() {
+        showToast('Error al conectar con el servidor', 'danger');
     }
   });
 }
 
-// =====================
-// CERRAR SESIÓN
-// =====================
 function cerrarSesion() {
   localStorage.clear();
   window.location.href = '../login.html';
 }
 
-// =====================
-// TOAST
-// =====================
 function showToast(msg, type) {
   const t = $('#toast');
-  t.removeClass('alert-success alert-danger alert-warning')
+  t.removeClass('alert-success alert-danger alert-warning alert-info')
    .addClass('alert-' + type)
    .html(msg)
    .fadeIn(200);

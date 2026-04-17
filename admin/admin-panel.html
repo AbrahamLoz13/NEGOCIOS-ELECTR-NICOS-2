@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
     <style>
         /* --- ESTILOS MODERNOS (CLEAN UI) --- */
@@ -66,7 +67,7 @@
         }
         .kpi-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         
-        /* Estado Activo (Pestaña seleccionada) - ESTO ES LO QUE INDICA DÓNDE ESTÁS */
+        /* Estado Activo (Pestaña seleccionada) */
         .kpi-card.active-tab { 
             border: 2px solid #4ea3f1; background: #fbfdff; 
             box-shadow: 0 0 15px rgba(78, 163, 241, 0.2);
@@ -95,7 +96,7 @@
 
         /* PANELES DE GRÁFICAS (OCULTOS POR DEFECTO) */
         .dashboard-section { display: none; animation: fadeIn 0.4s ease-out; }
-        .dashboard-section.active { display: block; } /* Solo se muestra el que tenga esta clase */
+        .dashboard-section.active { display: block; }
 
         .chart-card {
             background: white; border-radius: 16px; padding: 25px;
@@ -112,6 +113,11 @@
         }
         .chart-select:hover { border-color: #D10024; }
 
+        .chart-empty-state {
+            display: flex; align-items: center; justify-content: center; 
+            height: 300px; color: #9aa5b4; font-size: 13px; font-weight: 500;
+        }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* RESPONSIVE */
@@ -126,26 +132,30 @@
 
     <nav id="sidebar">
         <div class="sidebar-brand">
-            <img src="../img/logo6.png" alt="Logo">
+            <img src="../img/logo6.png" alt="Logo" onerror="this.src='https://via.placeholder.com/60'">
             <h5>Pet Palace</h5>
             <p id="rolDisplay">Verificando...</p>
         </div>
         <ul class="nav-sidebar">
-            <li class="active"><a href="#"><i class="fa fa-chart-pie"></i> Dashboard</a></li>
-            <li><a href="clients.html"><i class="fa fa-users"></i> Clientes</a></li>
-            <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
-            <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
-            <li><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
-            <li><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
-                <li class="active"><a href="erp-ordenes.html"><i class="fa fa-building"></i> Órdenes ERP</a></li>
+            <li class="active admin-only vendor-only" style="display:none;"><a href="#"><i class="fa fa-chart-pie"></i> Dashboard</a></li>
+            
+            <li class="support-visible" style="display:none;"><a href="clients.html"><i class="fa fa-users"></i> Clientes</a></li>
+            
+            <li class="admin-only vendor-only logistica-only" style="display:none;"><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
+            <li class="admin-only vendor-only" style="display:none;"><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
+            <li class="admin-only logistica-only" style="display:none;"><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
+            <li class="admin-only logistica-only" style="display:none;"><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
+            <li class="admin-only" style="display:none;"><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
+            <li class="admin-only logistica-only" style="display:none;"><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
+            <li class="admin-only" style="display:none;"><a href="erp-roles.html"><i class="fa fa-user-shield"></i> Roles ERP</a></li>
 
             <hr>
-            <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
-            <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+            <li class="support-visible" style="display:none;"><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
+            <li class="support-visible" style="display:none;"><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
         </ul>
     </nav>
 
-    <main>
+    <main id="main-content">
         
         <div class="top-bar">
             <div class="page-title">
@@ -153,10 +163,10 @@
                 <span>Resumen general y estadísticas en tiempo real</span>
             </div>
             <div class="user-profile">
-                <button class="btn btn-default btn-sm shadow-sm" onclick="cargarDatosDashboard()" title="Actualizar" style="margin-right:10px;">
-                    <i class="fa fa-sync-alt"></i>
+                <button class="btn btn-default btn-sm shadow-sm" onclick="cargarDatosDashboard()" title="Actualizar" style="margin-right:10px; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa fa-sync-alt text-primary"></i>
                 </button>
-                <div class="user-info text-right hidden-xs">
+                <div class="user-info hidden-xs">
                     <span id="userNameDisplay">Usuario</span>
                     <small id="userRoleDisplay">Rol</small>
                 </div>
@@ -170,7 +180,7 @@
                 <div class="kpi-card" id="tab-usuarios" onclick="mostrarSeccion('usuarios')">
                     <div class="kpi-content">
                         <h6>Clientes Registrados</h6>
-                        <h3 id="kpi-users">0</h3>
+                        <h3 id="kpi-users"><i class="fa fa-spinner fa-spin text-muted" style="font-size: 18px;"></i></h3>
                     </div>
                     <div class="kpi-icon icon-blue"><i class="fa fa-users"></i></div>
                 </div>
@@ -180,7 +190,7 @@
                 <div class="kpi-card money-card">
                     <div class="kpi-content">
                         <h6>Ingresos Totales</h6>
-                        <h3 id="kpi-money" style="color: #D10024;">$0</h3>
+                        <h3 id="kpi-money" style="color: #D10024;"><i class="fa fa-spinner fa-spin text-muted" style="font-size: 18px;"></i></h3>
                     </div>
                     <div class="kpi-icon icon-red"><i class="fa fa-dollar-sign"></i></div>
                 </div>
@@ -190,7 +200,7 @@
                 <div class="kpi-card" id="tab-pedidos" onclick="mostrarSeccion('pedidos')">
                     <div class="kpi-content">
                         <h6>Pedidos Totales</h6>
-                        <h3 id="kpi-orders">0</h3>
+                        <h3 id="kpi-orders"><i class="fa fa-spinner fa-spin text-muted" style="font-size: 18px;"></i></h3>
                     </div>
                     <div class="kpi-icon icon-orange"><i class="fa fa-shopping-bag"></i></div>
                 </div>
@@ -200,7 +210,7 @@
                 <div class="kpi-card" id="tab-productos" onclick="mostrarSeccion('productos')">
                     <div class="kpi-content">
                         <h6>En Inventario</h6>
-                        <h3 id="kpi-products">0</h3>
+                        <h3 id="kpi-products"><i class="fa fa-spinner fa-spin text-muted" style="font-size: 18px;"></i></h3>
                     </div>
                     <div class="kpi-icon icon-green"><i class="fa fa-box"></i></div>
                 </div>
@@ -213,10 +223,11 @@
                     <div class="chart-card">
                         <div class="chart-header">
                             <div class="chart-title"><i class="fa fa-chart-area text-primary"></i> Tendencia de Ventas</div>
-                            <small class="text-muted">Últimos 7 días</small>
+                            <small class="text-muted">Últimos 7 días activos</small>
                         </div>
-                        <div style="height: 320px;">
+                        <div style="position: relative; height: 320px;">
                             <canvas id="chartSales"></canvas>
+                            <div id="empty-chartSales" class="chart-empty-state" style="display:none;">No hay datos de ventas recientes.</div>
                         </div>
                     </div>
                 </div>
@@ -225,8 +236,9 @@
                         <div class="chart-header">
                             <div class="chart-title"><i class="fa fa-chart-pie text-warning"></i> Estado de Pedidos</div>
                         </div>
-                        <div style="height: 320px; display:flex; justify-content:center;">
+                        <div style="position: relative; height: 320px; display:flex; justify-content:center;">
                             <canvas id="chartStatus"></canvas>
+                            <div id="empty-chartStatus" class="chart-empty-state" style="display:none;">No hay pedidos registrados.</div>
                         </div>
                     </div>
                 </div>
@@ -240,8 +252,9 @@
                         <div class="chart-header">
                             <div class="chart-title"><i class="fa fa-boxes text-success"></i> Productos por Categoría</div>
                         </div>
-                        <div style="height: 300px;">
+                        <div style="position: relative; height: 300px;">
                             <canvas id="chartProductsMain"></canvas>
+                            <div id="empty-chartProductsMain" class="chart-empty-state" style="display:none;">No hay productos registrados.</div>
                         </div>
                     </div>
                 </div>
@@ -252,17 +265,19 @@
                             <select class="chart-select" id="stockFilter" onchange="renderProductStockChart(this.value)">
                                 <option value="low">Stock Crítico (Bajo)</option>
                                 <option value="high">Stock Saludable</option>
-                                <option value="all">Todo el Inventario</option>
+                                <option value="all" selected>Todo el Inventario</option>
                                 <option disabled>--- Categorías ---</option>
                                 <option value="Perros">Perros</option>
                                 <option value="Gatos">Gatos</option>
                                 <option value="Peces">Peces</option>
                                 <option value="Roedores">Roedores</option>
                                 <option value="Aves">Aves</option>
+                                <option value="Ofertas">Ofertas</option>
                             </select>
                         </div>
-                        <div style="height: 300px;">
+                        <div style="position: relative; height: 300px;">
                             <canvas id="chartProductsStock"></canvas>
+                            <div id="empty-chartProductsStock" class="chart-empty-state" style="display:none;">No hay productos con este filtro.</div>
                         </div>
                     </div>
                 </div>
@@ -277,8 +292,9 @@
                             <div class="chart-title"><i class="fa fa-bullseye text-danger"></i> Oportunidad de Venta</div>
                         </div>
                         <p class="text-muted small mb-3">Análisis de conversión: Clientes que han comprado vs. Clientes registrados sin compras.</p>
-                        <div style="height: 300px;">
+                        <div style="position: relative; height: 300px;">
                             <canvas id="chartClientsActivity"></canvas>
+                            <div id="empty-chartClientsActivity" class="chart-empty-state" style="display:none;">No hay clientes registrados.</div>
                         </div>
                     </div>
                 </div>
@@ -287,8 +303,9 @@
                         <div class="chart-header">
                             <div class="chart-title"><i class="fa fa-user-tag text-info"></i> Roles de Sistema</div>
                         </div>
-                        <div style="height: 300px; display:flex; justify-content:center;">
+                        <div style="position: relative; height: 300px; display:flex; justify-content:center;">
                             <canvas id="chartUserRoles"></canvas>
+                            <div id="empty-chartUserRoles" class="chart-empty-state" style="display:none;">No hay usuarios registrados.</div>
                         </div>
                     </div>
                 </div>
@@ -299,7 +316,6 @@
 
     <script src="../js/jquery.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         let globalData = { users: [], products: [], orders: [] };
@@ -308,41 +324,89 @@
 
         $(document).ready(function() {
             verificarUsuario();
-            cargarDatosDashboard();
-            
-            // Iniciar mostrando Pedidos (Ventas) que es lo más relevante
-            mostrarSeccion('pedidos');
         });
 
         // 1. VERIFICACIÓN DE ROL
         function verificarUsuario() {
-            const user = JSON.parse(localStorage.getItem('currentUser'));
-            if (!user) { window.location.href = '../login.html'; return; }
-            
-            userRole = user.rol;
-            const roleName = userRole === 'admin' ? 'Administrador' : 'Vendedor Autorizado';
-            
-            // Header Profile
-            $('#userNameDisplay').text(user.nombre.split(' ')[0]);
-            $('#userRoleDisplay').text(roleName);
-            $('#userInitial').text(user.nombre.charAt(0).toUpperCase());
-            $('#rolDisplay').text(roleName);
+            try {
+                const user = JSON.parse(localStorage.getItem('currentUser'));
+                if (!user) { window.location.href = '../login.html'; return; }
+                
+                userRole = (user.rol || 'usuario').toLowerCase();
+                
+                let roleName = 'Usuario';
+                if (userRole === 'admin') roleName = 'Administrador';
+                else if (userRole === 'vendedor') roleName = 'Vendedor Autorizado';
+                else if (userRole === 'soporte') roleName = 'Soporte Técnico';
+                else if (userRole === 'logistica') roleName = 'Logística';
+                
+                // Header Profile
+                const primerNombre = user.nombre ? user.nombre.split(' ')[0] : 'Usuario';
+                $('#userNameDisplay').text(primerNombre);
+                $('#userRoleDisplay').text(roleName);
+                $('#userInitial').text(primerNombre.charAt(0).toUpperCase());
+                $('#rolDisplay').text(roleName);
+                $('#welcomeMsg').text(`Hola, ${primerNombre}`);
 
-            $('#welcomeMsg').text(`Hola, ${user.nombre.split(' ')[0]}`);
+                // LÓGICA DE OCULTAR ELEMENTOS DEL SIDEBAR
+                $('.support-visible').show(); // Todos ven Clientes, Ver Tienda, Cerrar Sesión
+
+                if (userRole === 'admin') {
+                    // Admin ve todo
+                    $('.admin-only, .vendor-only, .logistica-only').show(); 
+                    cargarDatosDashboard();
+                    mostrarSeccion('pedidos');
+                } else if (userRole === 'vendedor') {
+                    // Vendedor ve Dashboard, Productos, Pedidos
+                    $('.vendor-only').show();
+                    cargarDatosDashboard();
+                    mostrarSeccion('pedidos');
+                } else if (userRole === 'logistica') {
+                    // Logistica ve Inventario, Proveedores, Movimientos, Ordenes ERP
+                    $('.logistica-only').show();
+                    // Si un logístico entra aquí por error, mandarlo a su panel principal
+                    window.location.href = 'erp-logistica.html';
+                } else if (userRole === 'soporte') {
+                    // Soporte solo ve Clientes y Tienda (ya mostrados arriba). 
+                    // No debe ver el Dashboard, así que lo redirigimos directo a clientes.html
+                    window.location.href = 'clients.html';
+                } else {
+                    // Si es un usuario colado, mandarlo a la tienda
+                    window.location.href = '../index.html';
+                }
+
+            } catch (e) {
+                console.error("Error al verificar usuario:", e);
+                window.location.href = '../login.html';
+            }
         }
 
         // 2. CARGA DE DATOS ASÍNCRONA
         async function cargarDatosDashboard() {
+            if (userRole === 'soporte' || userRole === 'logistica') return; // Seguridad extra
+
             try {
                 const [resUsers, resProds, resOrders] = await Promise.all([
-                    fetch('../api/clients.php'),
-                    fetch('../api/products.php'),
-                    fetch('../api/orders.php')
+                    fetch('../api/clients.php').catch(() => ({ json: () => [] })),
+                    fetch('../api/products.php').catch(() => ({ json: () => [] })),
+                    // Usar erp/ordenes.php si usas la tabla ordenes, o api/orders.php si usas la tabla pedidos
+                    fetch('../api/erp/ordenes.php').catch(() => fetch('../api/orders.php')).catch(() => ({ json: () => [] })) 
                 ]);
 
-                globalData.users = await resUsers.json();
-                globalData.products = await resProds.json();
-                globalData.orders = await resOrders.json();
+                // Extraer JSON manejando posibles errores del servidor
+                const parseJSON = async (res) => {
+                    if (!res.ok) return [];
+                    try { return await res.json(); } catch(e) { return []; }
+                };
+
+                globalData.users = await parseJSON(resUsers);
+                globalData.products = await parseJSON(resProds);
+                globalData.orders = await parseJSON(resOrders);
+
+                // Asegurar que sean arrays
+                if(!Array.isArray(globalData.users)) globalData.users = [];
+                if(!Array.isArray(globalData.products)) globalData.products = [];
+                if(!Array.isArray(globalData.orders)) globalData.orders = [];
 
                 actualizarKPIs();
                 
@@ -351,7 +415,9 @@
                 renderizarGraficas(seccionActiva);
 
             } catch (error) {
-                console.error("Error API:", error);
+                console.error("Error al cargar datos del Dashboard:", error);
+                $('#kpi-users, #kpi-products, #kpi-orders').text('0');
+                $('#kpi-money').text('$0');
             }
         }
 
@@ -362,35 +428,33 @@
             $('#kpi-orders').text(globalData.orders.length);
 
             let totalMoney = globalData.orders.reduce((sum, o) => {
-                return o.estado !== 'Cancelado' ? sum + parseFloat(o.total) : sum;
+                const est = o.estado ? o.estado.toLowerCase() : '';
+                return (est !== 'cancelada' && est !== 'cancelado') ? sum + parseFloat(o.total || 0) : sum;
             }, 0);
-            $('#kpi-money').text('$' + totalMoney.toLocaleString('es-MX', { minimumFractionDigits: 0 }));
+            
+            $('#kpi-money').text('$' + totalMoney.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
         }
 
-        // 4. LÓGICA DE NAVEGACIÓN (TABS) - AQUÍ ESTABA EL PROBLEMA ANTERIOR
+        // 4. LÓGICA DE NAVEGACIÓN (TABS)
         function mostrarSeccion(seccion) {
-            // Ocultar todos los paneles
+            // Ocultar todos los paneles y quitar estado activo
             $('.dashboard-section').removeClass('active');
-            // Quitar clase activa de todas las tarjetas
             $('.kpi-card').removeClass('active-tab');
 
-            // Mostrar el panel seleccionado
+            // Mostrar seleccionado
             $(`#panel-${seccion}`).addClass('active');
-            
-            // Marcar la tarjeta como activa (visual)
             $(`#tab-${seccion}`).addClass('active-tab');
             
-            // Renderizar las gráficas de esa sección
             renderizarGraficas(seccion);
         }
 
         function renderizarGraficas(seccion) {
-            // Un pequeño timeout asegura que el contenedor ya es visible y tiene tamaño
+            // Un timeout asegura que el canvas tiene dimensiones antes de que Chart.js dibuje
             setTimeout(() => {
                 if (seccion === 'usuarios') renderUsersCharts();
                 else if (seccion === 'productos') renderProductsCharts();
                 else if (seccion === 'pedidos') renderOrdersCharts();
-            }, 10);
+            }, 50);
         }
 
         // --- A. GRÁFICAS DE PEDIDOS (VENTAS) ---
@@ -398,36 +462,48 @@
             // Flujo de Ventas (Línea)
             let sales = {};
             globalData.orders.forEach(o => {
-                if (o.estado !== 'Cancelado') {
-                    let f = o.fecha.split(' ')[0];
-                    sales[f] = (sales[f] || 0) + parseFloat(o.total);
+                const est = o.estado ? o.estado.toLowerCase() : '';
+                if (est !== 'cancelada' && est !== 'cancelado' && o.fecha) {
+                    let f = o.fecha.split(' ')[0]; // Extraer solo la fecha YYYY-MM-DD
+                    sales[f] = (sales[f] || 0) + parseFloat(o.total || 0);
                 }
             });
-            let dates = Object.keys(sales).sort().slice(-7);
-            crearChart('chartSales', 'line', dates, [{
-                label: 'Ingresos ($)',
-                data: dates.map(d => sales[d]),
-                borderColor: '#4ea3f1',
-                backgroundColor: 'rgba(78, 163, 241, 0.1)',
-                borderWidth: 3,
-                tension: 0.4,
-                fill: true,
-                pointBackgroundColor: '#fff',
-                pointRadius: 5
-            }]);
+            
+            let dates = Object.keys(sales).sort().slice(-7); // Últimos 7 días
+            
+            if (dates.length > 0) {
+                crearChart('chartSales', 'line', dates, [{
+                    label: 'Ingresos ($)',
+                    data: dates.map(d => sales[d]),
+                    borderColor: '#4ea3f1',
+                    backgroundColor: 'rgba(78, 163, 241, 0.1)',
+                    borderWidth: 3, tension: 0.4, fill: true,
+                    pointBackgroundColor: '#fff', pointRadius: 5
+                }]);
+            } else {
+                mostrarEmptyState('chartSales');
+            }
 
             // Estatus (Dona)
-            let st = { 'Pendiente': 0, 'Enviado': 0, 'Entregado': 0, 'Cancelado': 0 };
+            let st = { 'Pendiente': 0, 'Procesada': 0, 'Cancelada': 0 };
             globalData.orders.forEach(o => {
-                let s = o.estado.charAt(0).toUpperCase() + o.estado.slice(1).toLowerCase();
-                if(st[s] !== undefined) st[s]++; else st['Pendiente']++;
+                if(o.estado) {
+                    let s = o.estado.charAt(0).toUpperCase() + o.estado.slice(1).toLowerCase();
+                    if(st[s] !== undefined) st[s]++; 
+                    else st[s] = 1; // Si hay otro estado nuevo, lo añade
+                }
             });
-            crearChart('chartStatus', 'doughnut', Object.keys(st), [{
-                data: Object.values(st),
-                backgroundColor: ['#ffc107', '#17a2b8', '#28a745', '#dc3545'],
-                borderWidth: 0,
-                hoverOffset: 15
-            }]);
+            
+            const statusLabels = Object.keys(st).filter(k => st[k] > 0);
+            if (statusLabels.length > 0) {
+                crearChart('chartStatus', 'doughnut', statusLabels, [{
+                    data: statusLabels.map(k => st[k]),
+                    backgroundColor: ['#ffc107', '#28a745', '#dc3545', '#17a2b8', '#6c757d'],
+                    borderWidth: 0, hoverOffset: 10
+                }]);
+            } else {
+                mostrarEmptyState('chartStatus');
+            }
         }
 
         // --- B. GRÁFICAS DE PRODUCTOS ---
@@ -437,12 +513,17 @@
                 let c = p.categoria || 'Otros';
                 cats[c] = (cats[c] || 0) + 1;
             });
-            crearChart('chartProductsMain', 'bar', Object.keys(cats), [{
-                label: 'Total',
-                data: Object.values(cats),
-                backgroundColor: '#28a745',
-                borderRadius: 5
-            }]);
+            
+            const catLabels = Object.keys(cats);
+            if (catLabels.length > 0) {
+                crearChart('chartProductsMain', 'bar', catLabels, [{
+                    label: 'Total de Productos',
+                    data: catLabels.map(k => cats[k]),
+                    backgroundColor: '#28a745', borderRadius: 5
+                }]);
+            } else {
+                mostrarEmptyState('chartProductsMain');
+            }
 
             renderProductStockChart($('#stockFilter').val());
         }
@@ -451,57 +532,82 @@
             let items = globalData.products;
             let filtered = [];
 
-            if (filter === 'low') filtered = items.filter(p => parseInt(p.stock) < 5);
-            else if (filter === 'high') filtered = items.filter(p => parseInt(p.stock) >= 10);
+            if (filter === 'low') filtered = items.filter(p => parseInt(p.stock || 0) < 5);
+            else if (filter === 'high') filtered = items.filter(p => parseInt(p.stock || 0) >= 10);
             else if (filter === 'all') filtered = items;
             else filtered = items.filter(p => p.categoria === filter);
 
-            if (filtered.length > 20 && filter === 'all') filtered = filtered.slice(0, 20);
+            // Limitar a 20 barras para no saturar la gráfica visualmente
+            if (filtered.length > 20) filtered = filtered.slice(0, 20);
 
-            let labels = filtered.map(p => p.nombre.length > 15 ? p.nombre.substring(0,12)+'...' : p.nombre);
-            let data = filtered.map(p => parseInt(p.stock));
-            let colors = data.map(s => s < 5 ? '#dc3545' : '#28a745');
+            if (filtered.length > 0) {
+                let labels = filtered.map(p => p.nombre.length > 15 ? p.nombre.substring(0,12)+'...' : p.nombre);
+                let data = filtered.map(p => parseInt(p.stock || 0));
+                let colors = data.map(s => s < 5 ? '#dc3545' : '#28a745');
 
-            crearChart('chartProductsStock', 'bar', labels, [{
-                label: 'Stock',
-                data: data,
-                backgroundColor: colors,
-                borderRadius: 5
-            }]);
+                crearChart('chartProductsStock', 'bar', labels, [{
+                    label: 'Unidades en Stock',
+                    data: data, backgroundColor: colors, borderRadius: 5
+                }]);
+            } else {
+                mostrarEmptyState('chartProductsStock');
+            }
         }
 
         // --- C. GRÁFICAS DE USUARIOS ---
         function renderUsersCharts() {
-            const compradores = new Set(globalData.orders.map(o => o.cliente.trim().toLowerCase()));
+            // Extraer nombres o IDs de clientes de las órdenes
+            const compradores = new Set(globalData.orders.map(o => (o.cliente || '').trim().toLowerCase()));
+            
             let activos = 0, inactivos = 0;
             globalData.users.forEach(u => {
                 if (u.rol !== 'admin') {
-                    if (compradores.has(u.nombre.trim().toLowerCase())) activos++; else inactivos++;
+                    if (compradores.has((u.nombre || '').trim().toLowerCase())) activos++; 
+                    else inactivos++;
                 }
             });
-            crearChart('chartClientsActivity', 'bar', ['Clientes con Compra', 'Potenciales (Sin compra)'], [{
-                label: 'Usuarios',
-                data: [activos, inactivos],
-                backgroundColor: ['#28a745', '#D10024'],
-                borderRadius: 6,
-                barThickness: 50
-            }], { indexAxis: 'y' });
 
-            let roles = { Admin: 0, Vendedor: 0, Cliente: 0 };
+            if (activos > 0 || inactivos > 0) {
+                crearChart('chartClientsActivity', 'bar', ['Compraron', 'Sin compras'], [{
+                    label: 'Cantidad de Usuarios',
+                    data: [activos, inactivos],
+                    backgroundColor: ['#28a745', '#D10024'],
+                    borderRadius: 6, barThickness: 50
+                }], { indexAxis: 'y' }); // Gráfica horizontal
+            } else {
+                mostrarEmptyState('chartClientsActivity');
+            }
+
+            let roles = { Admin: 0, Vendedor: 0, Usuario: 0 };
             globalData.users.forEach(u => {
-                let r = u.rol ? u.rol.charAt(0).toUpperCase() + u.rol.slice(1) : 'Cliente';
-                if(roles[r] !== undefined) roles[r]++; else roles['Cliente']++;
+                let r = u.rol ? u.rol.charAt(0).toUpperCase() + u.rol.slice(1) : 'Usuario';
+                if(roles[r] !== undefined) roles[r]++; else roles[r] = 1;
             });
-            crearChart('chartUserRoles', 'pie', Object.keys(roles), [{
-                data: Object.values(roles),
-                backgroundColor: ['#15161D', '#ffc107', '#4ea3f1'],
-                borderWidth: 0
-            }]);
+            
+            const roleLabels = Object.keys(roles).filter(k => roles[k] > 0);
+            if (roleLabels.length > 0) {
+                crearChart('chartUserRoles', 'pie', roleLabels, [{
+                    data: roleLabels.map(k => roles[k]),
+                    backgroundColor: ['#15161D', '#ffc107', '#4ea3f1', '#6c757d'],
+                    borderWidth: 0
+                }]);
+            } else {
+                mostrarEmptyState('chartUserRoles');
+            }
         }
 
         // --- HELPER CHART.JS ---
         function crearChart(id, type, labels, datasets, extraOptions = {}) {
-            const ctx = document.getElementById(id).getContext('2d');
+            const canvas = document.getElementById(id);
+            const emptyDiv = document.getElementById('empty-' + id);
+            
+            if(!canvas) return;
+
+            // Mostrar Canvas, ocultar Empty State
+            canvas.style.display = 'block';
+            if(emptyDiv) emptyDiv.style.display = 'none';
+
+            const ctx = canvas.getContext('2d');
             if (charts[id]) charts[id].destroy();
 
             charts[id] = new Chart(ctx, {
@@ -510,7 +616,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', display: (type === 'pie' || type === 'doughnut' || type === 'line') } },
+                    plugins: { legend: { position: 'bottom', display: (type === 'pie' || type === 'doughnut') } },
                     scales: (type === 'bar' || type === 'line') ? {
                         y: { beginAtZero: true, grid: { color: '#f0f0f0' } },
                         x: { grid: { display: false } }
@@ -518,6 +624,14 @@
                     ...extraOptions
                 }
             });
+        }
+
+        function mostrarEmptyState(id) {
+            const canvas = document.getElementById(id);
+            const emptyDiv = document.getElementById('empty-' + id);
+            
+            if(canvas) canvas.style.display = 'none';
+            if(emptyDiv) emptyDiv.style.display = 'flex';
         }
 
         function cerrarSesion() {

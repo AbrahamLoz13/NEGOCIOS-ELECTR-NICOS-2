@@ -26,14 +26,14 @@ $cantidad_pedido = 50; // Cantidad fija de restock
 $costo_total = $producto_info['precio'] * $cantidad_pedido;
 
 $insert_pedido = "INSERT INTO pedidos_proveedores 
-                  (producto_id, proveedor_id, cantidad, costo_total, estado) 
-                  VALUES (
-                      {$producto_id}, 
-                      {$producto_info['proveedor_id']}, 
-                      {$cantidad_pedido}, 
-                      {$costo_total}, 
-                      'completado'
-                  )";
+                (producto_id, proveedor_id, cantidad, costo_total, estado) 
+                VALUES (
+                    {$producto_id}, 
+                    {$producto_info['proveedor_id']}, 
+                    {$cantidad_pedido}, 
+                    {$costo_total}, 
+                    'completado'
+                )";
 
 $pedido_creado = false;
 $pedido_id = null;

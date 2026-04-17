@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Centro Logístico | Pet Palace ERP</title>
+
+<link rel="stylesheet" href="../css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700,800" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+<style>
+  body { 
+    font-family: 'Montserrat', sans-serif; 
+    background-color: #0b0f19; 
+    color: #e2e8f0; 
+    font-size: 14px;
+  }
+
+  /* SIDEBAR (Idéntico para mantener consistencia) */
+  #sidebar {
+    position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
+    padding-top: 25px; background-color: #06080f;
+    width: 240px; border-right: 1px solid #1a233a;
+  }
+  .sidebar-brand { text-align: center; margin-bottom: 35px; }
+  .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 5px; }
+  .sidebar-brand h5 { color: #fff; font-weight: 800; margin: 0; }
+  .sidebar-brand p  { color: #3b82f6; font-size: 11px; text-transform: uppercase; font-weight: 700; margin-top: 5px; }
+  
+  .nav-sidebar { list-style: none; padding: 0; margin: 0; }
+  .nav-sidebar li a {
+    display: flex; align-items: center; padding: 15px 25px;
+    color: #94a3b8; text-decoration: none; font-weight: 500; font-size: 13px;
+    transition: 0.3s; border-left: 4px solid transparent;
+  }
+  .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
+  .nav-sidebar li a:hover, .nav-sidebar li.active a { 
+    background-color: #111827; color: #fff; border-left-color: #3b82f6; 
+  }
+  .nav-sidebar hr { border-color: #1e293b; margin: 20px 25px; opacity: 0.5; }
+  .nav-sidebar li a.locked { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+  .nav-sidebar li a.locked::after { content: '\f023'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-left: auto; font-size: 11px; }
+
+  main { margin-left: 240px; padding: 40px; }
+
+  /* HEADER */
+  .page-title { font-weight: 800; color: #fff; font-size: 28px; margin: 0 0 8px 0; letter-spacing: -0.5px; }
+  .page-subtitle { color: #64748b; font-size: 14px; margin-bottom: 35px; display: block; font-weight: 500; }
+
+  /* KPI GRID DARK */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+  .kpi-card {
+    background: linear-gradient(145deg, #111827, #0d131f);
+    border: 1px solid #1e293b; border-radius: 16px;
+    padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    display: flex; align-items: center; gap: 15px;
+    transition: transform 0.3s;
+  }
+  .kpi-card:hover { transform: translateY(-5px); border-color: #334155; }
+  .kpi-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  
+  .icon-blue { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+  .icon-orange { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+  .icon-red { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+  .icon-green { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+  .kpi-info h4 { margin: 0 0 5px 0; font-size: 24px; font-weight: 800; color: #fff; }
+  .kpi-info span { font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+
+  /* DOS COLUMNAS */
+  .two-col-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 30px; }
+
+  /* CARDS GLOBALES */
+  .card-custom {
+    background: #111827; border: 1px solid #1e293b; border-radius: 16px;
+    padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+  .card-title { font-weight: 800; color: #f8fafc; font-size: 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .card-title i { color: #3b82f6; }
+
+  /* TABLA DARK */
+  .table-dark-custom { width: 100%; border-collapse: collapse; text-align: left; }
+  .table-dark-custom th {
+    background: #0f172a; color: #94a3b8; font-weight: 700; text-transform: uppercase;
+    font-size: 11px; padding: 15px; border-bottom: 2px solid #1e293b; letter-spacing: 0.5px;
+  }
+  .table-dark-custom td { padding: 15px; border-bottom: 1px solid #1e293b; vertical-align: middle; font-size: 13px; color: #cbd5e1; }
+  .table-dark-custom tbody tr:hover { background-color: rgba(30, 41, 59, 0.5); }
+
+  .btn-accion { background: #3b82f6; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; transition: 0.2s; cursor: pointer; }
+  .btn-accion:hover { background: #2563eb; }
+
+  /* BADGES */
+  .badge-estado { padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+  .bg-preparando { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+  .bg-listo      { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+  /* LISTA DE ALERTAS */
+  .alerta-item { display: flex; align-items: flex-start; gap: 15px; padding: 15px 0; border-bottom: 1px solid #1e293b; }
+  .alerta-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .alerta-icon { width: 35px; height: 35px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .alerta-text h6 { margin: 0 0 4px 0; color: #e2e8f0; font-size: 13px; font-weight: 700; }
+  .alerta-text p { margin: 0; color: #94a3b8; font-size: 11px; line-height: 1.4; }
+
+  /* CHART CONTAINER */
+  .chart-container { position: relative; height: 250px; width: 100%; }
+
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sidebar-brand">
+    <img src="../img/logo6.png" onerror="this.src='https://via.placeholder.com/60/15161D/ffffff?text=PP'">
+    <h5>ERP System</h5>
+    <p id="rolDisplay">Logística</p>
+  </div>
+  <ul class="nav-sidebar" id="sidebarMenu">
+    </ul>
+</nav>
+
+<main>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="page-title">Centro de Control Logístico</h2>
+      <span class="page-subtitle">Dashboard WMS (Warehouse Management System)</span>
+    </div>
+    <div>
+      <button class="btn btn-outline-light btn-sm" style="border-color: #334155; color: #94a3b8;"><i class="fa fa-print"></i> Imprimir Reporte</button>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon icon-blue"><i class="fa fa-box-open"></i></div>
+      <div class="kpi-info"><h4>18</h4><span>Pedidos por Empacar</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon icon-orange"><i class="fa fa-truck-fast"></i></div>
+      <div class="kpi-info"><h4>5</h4><span>Camiones en Ruta</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon icon-red"><i class="fa fa-triangle-exclamation"></i></div>
+      <div class="kpi-info"><h4>3</h4><span>Alertas de Stock</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon icon-green"><i class="fa fa-bolt"></i></div>
+      <div class="kpi-info"><h4>94%</h4><span>Eficiencia Operativa</span></div>
+    </div>
+  </div>
+
+  <div class="two-col-grid">
+    <div class="card-custom">
+      <div class="card-title"><i class="fa fa-clipboard-list"></i> Próximos Despachos</div>
+      <div style="overflow-x: auto;">
+        <table class="table-dark-custom">
+          <thead>
+            <tr>
+              <th>ID Pedido</th>
+              <th>Destino</th>
+              <th>Transportista</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>ORD-1045</b></td>
+              <td>Sucursal Norte</td>
+              <td>Camión Propio #1</td>
+              <td><span class="badge-estado bg-preparando">Preparando</span></td>
+              <td><button class="btn-accion"><i class="fa fa-eye"></i> Revisar</button></td>
+            </tr>
+            <tr>
+              <td><b>ORD-1046</b></td>
+              <td>Cliente Final (FedEx)</td>
+              <td>FedEx Express</td>
+              <td><span class="badge-estado bg-listo">Listo para Ruta</span></td>
+              <td><button class="btn-accion" style="background:#10b981;"><i class="fa fa-truck"></i> Despachar</button></td>
+            </tr>
+            <tr>
+              <td><b>ORD-1048</b></td>
+              <td>Sucursal Este</td>
+              <td>Camión Propio #2</td>
+              <td><span class="badge-estado bg-preparando">Preparando</span></td>
+              <td><button class="btn-accion"><i class="fa fa-eye"></i> Revisar</button></td>
+            </tr>
+            <tr>
+              <td><b>ORD-1050</b></td>
+              <td>Cliente Final (DHL)</td>
+              <td>DHL Ground</td>
+              <td><span class="badge-estado bg-listo">Listo para Ruta</span></td>
+              <td><button class="btn-accion" style="background:#10b981;"><i class="fa fa-truck"></i> Despachar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card-custom">
+      <div class="card-title"><i class="fa fa-bell"></i> Alertas Operativas</div>
+      
+      <div class="alerta-item">
+        <div class="alerta-icon icon-red"><i class="fa fa-arrow-down"></i></div>
+        <div class="alerta-text">
+          <h6>Stock Mínimo Alcanzado</h6>
+          <p>Croquetas DogChow 2kg ha bajado de 5 unidades. Requiere reabastecimiento urgente.</p>
+        </div>
+      </div>
+      <div class="alerta-item">
+        <div class="alerta-icon icon-orange"><i class="fa fa-wrench"></i></div>
+        <div class="alerta-text">
+          <h6>Mantenimiento Programado</h6>
+          <p>Montacargas Pasillo 3 fuera de servicio por mantenimiento preventivo hoy.</p>
+        </div>
+      </div>
+      <div class="alerta-item">
+        <div class="alerta-icon icon-blue"><i class="fa fa-info"></i></div>
+        <div class="alerta-text">
+          <h6>Llegada de Proveedor</h6>
+          <p>Proveedor "Petco" programado para llegar a rampa de descarga a las 14:00 hrs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-custom">
+    <div class="card-title"><i class="fa fa-chart-area"></i> Flujo de Envíos de la Semana</div>
+    <div class="chart-container">
+      <canvas id="chartEnvios"></canvas>
+    </div>
+  </div>
+
+</main>
+
+<script src="../js/jquery.min.js"></script>
+<script>
+// Lógica del menú lateral (Igual que en tus otros archivos para que no falle la navegación)
+const MENUS = {
+  admin: [
+    { href: 'admin-panel.html',   icon: 'fa-chart-line',  label: 'Dashboard' },
+    { href: 'clients.html',       icon: 'fa-users',       label: 'Clientes' },
+    { href: 'products.html',      icon: 'fa-box-open',    label: 'Inventario' },
+    { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
+    { href: 'providers.html',     icon: 'fa-truck',       label: 'Proveedores' },
+    { href: 'movimientos.html',   icon: 'fa-history',     label: 'Movimientos' },
+    { href: 'erp-dashboard.html', icon: 'fa-building',    label: 'Dashboard ERP' },
+    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
+    { href: 'erp-procesos.html',  icon: 'fa-cogs',        label: 'Procesos' },
+    { href: 'erp-recursos.html',  icon: 'fa-users-cog',   label: 'Recursos' },
+    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
+    { divider: true },
+    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
+    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
+  ],
+  logistica: [
+    { href: 'erp-dashboard.html', icon: 'fa-chart-line',  label: 'Dashboard ERP' },
+    { href: 'erp-logistica.html', icon: 'fa-truck-loading', label: 'Panel Logístico', active: true },
+    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP', locked: true }, 
+    { href: 'erp-procesos.html',  icon: 'fa-cogs',        label: 'Procesos' },
+    { href: 'erp-recursos.html',  icon: 'fa-users-cog',   label: 'Recursos' },
+    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
+    { divider: true },
+    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
+    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
+  ]
+};
+
+$(document).ready(function() {
+  const rolGuardado = localStorage.getItem('rol') || 'logistica'; 
+  renderSidebar(rolGuardado);
+  renderizarGrafica();
+});
+
+function renderSidebar(rol) {
+  const menu = MENUS[rol] || MENUS['logistica'];
+  const ul = $('#sidebarMenu');
+  
+  const nombres = { admin: 'Administrador', vendedor: 'Vendedor', logistica: 'Logística', usuario: 'Usuario' };
+  $('#rolDisplay').text(nombres[rol] || 'Logística');
+
+  ul.empty();
+  menu.forEach(item => {
+    if (item.divider) { ul.append('<hr style="border-color: #1e293b; margin: 20px 25px;">'); return; }
+    const lockClass   = item.locked ? 'locked' : '';
+    const activeClass = item.active ? 'active' : '';
+    const onclick     = item.onclick ? `onclick="${item.onclick}"` : '';
+    ul.append(`<li class="${activeClass}"><a href="${item.href}" class="${lockClass}" ${onclick}><i class="fa ${item.icon}"></i> ${item.label}</a></li>`);
+  });
+}
+
+function renderizarGrafica() {
+  const ctx = document.getElementById('chartEnvios').getContext('2d');
+  
+  // Gradiente para la línea
+  let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)'); // Azul
+  gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)'); // Transparente
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+      datasets: [{
+        label: 'Paquetes Despachados',
+        data: [12, 19, 15, 25, 22, 30, 10],
+        borderColor: '#3b82f6',
+        backgroundColor: gradient,
+        borderWidth: 3,
+        tension: 0.4, // Curvas suaves
+        fill: true,
+        pointBackgroundColor: '#111827',
+        pointBorderColor: '#3b82f6',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { 
+          beginAtZero: true, 
+          grid: { color: '#1e293b', drawBorder: false },
+          ticks: { color: '#94a3b8' }
+        },
+        x: { 
+          grid: { display: false, drawBorder: false },
+          ticks: { color: '#94a3b8' }
+        }
+      }
+    }
+  });
+}
+
+function cerrarSesion() {
+  localStorage.removeItem('currentUser');
+  window.location.href = '../login.html';
+}
+</script>
+</body>
+</html>

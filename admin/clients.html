@@ -73,7 +73,7 @@
             font-weight: 800; margin-right: 10px; font-size: 14px;
         }
 
-        /* BADGES */
+        /* BADGES DE ESTADO */
         .badge-status { padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .bg-activo { background-color: #e8f5e9; color: #28a745; border: 1px solid #c3e6cb; }
         .bg-suspendido { background-color: #fbe9eb; color: #dc3545; border: 1px solid #f5c6cb; }
@@ -85,30 +85,47 @@
         .btn-action { 
             width: 32px; height: 32px; border-radius: 8px; border: none; 
             display: inline-flex; align-items: center; justify-content: center; 
-            margin: 0 2px; transition: 0.2s; color: white; cursor: pointer;
+            margin: 0 4px; transition: 0.2s; color: white; cursor: pointer;
+            position: relative;
+            overflow: visible !important; /* CRUCIAL para que no se corte el globo rojo */
         }
-        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         
         .btn-edit { background: #4ea3f1; }
         .btn-delete { background: #ff4b5c; }
         .btn-suspend { background: #ffc107; color: #333; }
         .btn-activate { background: #28a745; color: #fff; }
-        .btn-chat { background: #6610f2; position: relative; }
+        .btn-chat { background: #6610f2; }
+        .btn-queja { background: #fd7e14; }
 
+        /* NOTIFICACIÓN BADGE (GLOBITO ROJO) */
         .notification-badge {
-            position: absolute; top: -5px; right: -5px; background-color: #D10024; color: white;
-            border-radius: 50%; width: 18px; height: 18px; font-size: 10px; line-height: 18px;
-            text-align: center; font-weight: bold; border: 2px solid white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: popIn 0.3s;
+            position: absolute !important; 
+            top: -8px !important; 
+            right: -8px !important; 
+            background-color: #ff0000 !important; 
+            color: white !important;
+            border-radius: 50% !important; 
+            width: 20px !important; 
+            height: 20px !important; 
+            font-size: 11px !important; 
+            line-height: 18px !important;
+            text-align: center !important; 
+            font-weight: 900 !important; 
+            border: 2px solid white !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; 
+            z-index: 9999 !important;
+            display: inline-block !important;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+        @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
         /* MODAL FORMS */
         .form-control-custom { border-radius: 8px; border: 1px solid #e0e0e0; padding: 10px; font-size: 13px; }
         .modal-header-custom { background: linear-gradient(135deg, #15161D, #2c3e50); color: white; border-radius: 8px 8px 0 0; }
         
-        /* CHAT */
-        #chatHistory {
+        /* CHAT Y QUEJAS */
+        #chatHistory, #quejasHistory {
             height: 300px; overflow-y: auto; background-color: #e5ddd5;
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
             background-blend-mode: soft-light; border-radius: 8px; padding: 15px; margin-bottom: 15px;
@@ -131,16 +148,20 @@
             <p id="rolDisplay">Verificando...</p>
         </div>
         <ul class="nav-sidebar">
-            <li><a href="admin-panel.html"><i class="fa fa-chart-line"></i> Dashboard</a></li>
-            <li class="active"><a href="#"><i class="fa fa-users"></i> Clientes</a></li>
-            <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
-            <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
-            <li><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
-            <li><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
-    <li class="active"><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
-    <li><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
-    <li class="active"><a href="erp-roles.html"><i class="fa fa-building"></i> Roles ERP</a></li>
-
+            <li class="menu-restricted"><a href="admin-panel.html"><i class="fa fa-chart-line"></i> Dashboard</a></li>
+            <li class="active">
+                <a href="#" style="display: flex; align-items: center;">
+                    <i class="fa fa-users"></i> Clientes
+                    <span id="sidebar-badge" style="background: #D10024; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; margin-left: auto; font-weight: bold; display:none;">0</span>
+                </a>
+            </li>
+            <li class="menu-restricted"><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
+            <li class="menu-restricted"><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
+            <li class="menu-restricted"><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
+            <li class="menu-restricted"><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
+            <li class="menu-restricted"><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
+            <li class="menu-restricted"><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
+            <li class="menu-restricted"><a href="erp-roles.html"><i class="fa fa-user-shield"></i> Roles ERP</a></li>
             <hr>
             <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
             <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
@@ -152,7 +173,7 @@
         <div class="top-bar">
             <div>
                 <h2 class="fw-bold m-0" style="color: #15161D;">Gestión de Clientes</h2>
-                <small class="text-muted">Directorio de usuarios y administración de roles</small>
+                <small class="text-muted">Directorio de usuarios y atención a clientes</small>
             </div>
             
             <div id="admin-actions" style="display:none;">
@@ -222,6 +243,8 @@
                                 <select class="form-control form-control-custom" id="clientRole">
                                     <option value="usuario">Cliente (Usuario)</option>
                                     <option value="vendedor">Vendedor</option>
+                                    <option value="soporte">Soporte Técnico</option>
+                                    <option value="logistica">Logística</option>
                                     <option value="admin">Administrador</option>
                                 </select>
                             </div>
@@ -260,16 +283,41 @@
             <div class="modal-content" style="border-radius: 12px; border:none;">
                 <div class="modal-header bg-primary text-white" style="background: linear-gradient(135deg, #6610f2, #5e72e4); border-radius: 12px 12px 0 0;">
                     <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><i class="fa fa-comments"></i> Chat con <span id="notifyClientName"></span></h4>
+                    <h4 class="modal-title"><i class="fa fa-shopping-bag"></i> Ventas a: <span id="notifyClientName"></span></h4>
                 </div>
                 <div class="modal-body" style="background: #f4f6f9;">
                     <input type="hidden" id="notifyClientId">
                     <div id="chatHistory"></div>
                     <form id="notifyForm">
                         <div class="input-group">
-                            <input type="text" class="form-control" id="notifyMessage" placeholder="Escribe un mensaje..." required autocomplete="off" style="border-radius: 20px 0 0 20px;">
+                            <input type="text" class="form-control" id="notifyMessage" placeholder="Escribe un mensaje de ventas..." required autocomplete="off" style="border-radius: 20px 0 0 20px;">
                             <span class="input-group-btn">
                                 <button type="submit" class="btn btn-primary" id="btnSendNotify" style="background:#6610f2; border-radius: 0 20px 20px 0;">
+                                    <i class="fa fa-paper-plane"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="quejasModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 12px; border:none;">
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #fd7e14, #e65c00); border-radius: 12px 12px 0 0;">
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><i class="fa fa-bell"></i> Soporte / Quejas: <span id="quejasClientName"></span></h4>
+                </div>
+                <div class="modal-body" style="background: #f4f6f9;">
+                    <input type="hidden" id="quejaClientId">
+                    <div id="quejasHistory"></div>
+                    <form id="quejaForm">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="quejaMessageInput" placeholder="Responder al ticket de queja..." required autocomplete="off" style="border-radius: 20px 0 0 20px;">
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-warning" id="btnSendQueja" style="background:#fd7e14; color:white; border:none; border-radius: 0 20px 20px 0;">
                                     <i class="fa fa-paper-plane"></i>
                                 </button>
                             </span>
@@ -288,60 +336,109 @@
         const API_NOTIF = '../api/notifications.php';
         
         let clientesCargados = [];
-        let unreadCounts = {}; 
+        let unreadCountsVentas = {}; 
+        let unreadCountsQuejas = {}; 
         let userRole = '';
         let chatInterval = null;
         let isEditing = false;
 
         $(document).ready(function() {
             verificarPermisos();
-            loadData();
-            setInterval(loadUnreadCounts, 10000); 
+            loadData(); // Inicia la carga maestra
+            setInterval(loadUnreadCounts, 5000); 
         });
 
-        // 1. VERIFICACIÓN DE ROL
+        // 1. VERIFICACIÓN DE ROL SEGURA
         function verificarPermisos() {
             const user = JSON.parse(localStorage.getItem('currentUser'));
             if (!user) { window.location.href = '../login.html'; return; }
             
-            userRole = user.rol;
-            $('#rolDisplay').text(userRole === 'admin' ? 'Administrador' : 'Vendedor Autorizado');
+            userRole = (user.rol || 'usuario').toLowerCase();
+            let displayRole = 'Verificando...';
             
-            // Mostrar botones de admin si corresponde
-            if (userRole === 'admin') $('#admin-actions').show();
+            if (userRole === 'admin') displayRole = 'Administrador';
+            else if (userRole === 'vendedor') displayRole = 'Vendedor Autorizado';
+            else if (userRole === 'soporte') displayRole = 'Soporte Técnico';
+            else if (userRole === 'logistica') displayRole = 'Logística';
+
+            $('#rolDisplay').text(displayRole);
+            
+            if (userRole === 'admin') {
+                $('#admin-actions').show();
+            }
+
+            if (userRole === 'soporte') {
+                $('.menu-restricted').hide();
+            }
         }
 
-        // 2. CARGAR DATOS
+        // 2. CARGA SECUENCIAL PARA QUE EL GLOBITO NO SE PIERDA
         function loadData() {
-            $.getJSON(API_NOTIF, { get_counts: true }, function(counts) {
-                unreadCounts = counts;
-                loadClients();
+            // Primero traemos los clientes
+            $.getJSON(API_CLIENTS, function(data) {
+                clientesCargados = Array.isArray(data) ? data : (data.data || []);
+                // Luego traemos las notificaciones y pintamos todo junto
+                loadUnreadCounts(); 
+            }).fail(function() {
+                $('#clientsTableBody').html('<tr><td colspan="6" class="text-center p-5 text-danger">Error al cargar clientes de la BD.</td></tr>');
             });
         }
 
         function loadUnreadCounts() {
-            $.getJSON(API_NOTIF, { get_counts: true }, function(counts) {
-                unreadCounts = counts;
+            // Pedimos TODO el historial para contar globalmente
+            $.getJSON(API_NOTIF, function(data) {
+                let notifs = Array.isArray(data) ? data : (data.data || []);
+                calcularUnreadCounts(notifs);
+                renderTable(clientesCargados); 
+            }).fail(function() {
+                // Si falla la BD, de todos modos dibujamos la tabla
                 renderTable(clientesCargados); 
             });
         }
 
-        function loadClients() {
-            $.getJSON(API_CLIENTS, function(data) {
-                clientesCargados = data;
-                renderTable(data);
+        function calcularUnreadCounts(allNotifications) {
+            unreadCountsVentas = {};
+            unreadCountsQuejas = {};
+            let totalParaMiRol = 0;
+            
+            if(!Array.isArray(allNotifications)) return;
+            
+            allNotifications.forEach(n => {
+                let est = (n.estado || '').toLowerCase();
+                let tipoMsg = (n.tipo || n.type || '').toLowerCase();
+                let origen = (n.origen || '').toLowerCase();
+                
+                // Extraemos el ID del cliente de forma ULTRA robusta
+                let idCliente = parseInt(n.sender_id) || parseInt(n.user_id) || parseInt(n.cliente_id);
+
+                // LÓGICA INFALIBLE: Si el mensaje NO es de admin, es del cliente. Y si NO está leído, suma.
+                if (est !== 'leido' && est !== 'read' && origen !== 'admin') {
+                    if (tipoMsg !== 'queja') {
+                        unreadCountsVentas[idCliente] = (unreadCountsVentas[idCliente] || 0) + 1;
+                        if (userRole === 'admin' || userRole === 'vendedor') totalParaMiRol++;
+                    } else {
+                        unreadCountsQuejas[idCliente] = (unreadCountsQuejas[idCliente] || 0) + 1;
+                        if (userRole === 'admin' || userRole === 'soporte') totalParaMiRol++;
+                    }
+                }
             });
+
+            // Actualizar el globito rojo de la barra lateral
+            if (totalParaMiRol > 0) {
+                $('#sidebar-badge').text(totalParaMiRol > 99 ? '99+' : totalParaMiRol).show();
+            } else {
+                $('#sidebar-badge').hide();
+            }
         }
 
-        // 3. RENDERIZAR TABLA (CON FILTRO DE SEGURIDAD)
+        // 3. RENDERIZAR TABLA CON LOS GLOBITOS ROJOS SUPER VISIBLES
         function renderTable(data) {
             const $tbody = $('#clientsTableBody');
             $tbody.empty();
 
-            // --- FILTRO DE SEGURIDAD: Vendedor solo ve Usuarios ---
             let displayData = data;
-            if (userRole === 'vendedor') {
-                displayData = data.filter(client => client.rol === 'usuario');
+            if (userRole === 'vendedor' || userRole === 'soporte') {
+                displayData = data.filter(client => (client.rol || 'usuario').toLowerCase() === 'usuario');
             }
             
             if(displayData.length === 0) {
@@ -350,8 +447,17 @@
             }
 
             displayData.forEach(c => {
-                const unread = unreadCounts[c.id] || 0;
-                const badgeHTML = unread > 0 ? `<span class="notification-badge">${unread}</span>` : '';
+                const clientIdParsed = parseInt(c.id);
+
+                // Bolita de Notificación de Ventas
+                const unreadVentas = unreadCountsVentas[clientIdParsed] || 0;
+                let displayVentas = unreadVentas > 9 ? '9+' : unreadVentas;
+                const badgeVentas = unreadVentas > 0 ? `<span class="notification-badge">${displayVentas}</span>` : '';
+
+                // Bolita de Notificación de Quejas
+                const unreadQuejas = unreadCountsQuejas[clientIdParsed] || 0;
+                let displayQuejas = unreadQuejas > 9 ? '9+' : unreadQuejas;
+                const badgeQuejas = unreadQuejas > 0 ? `<span class="notification-badge">${displayQuejas}</span>` : '';
                 
                 let estado = (c.estado || 'activo').toLowerCase();
                 let estadoBadge = '<span class="badge-status bg-activo">Activo</span>';
@@ -359,10 +465,23 @@
                 if(estado === 'suspendido') estadoBadge = '<span class="badge-status bg-suspendido">Suspendido</span>';
                 else if(estado === 'pendiente') estadoBadge = '<span class="badge-status bg-pendiente">Pendiente</span>';
 
+                // BOTÓN DE CHAT (Ventas)
+                let chatBtn = `
+                    <button class="btn-action btn-chat" onclick="openChatModal(${c.id}, '${c.nombre}')" title="Chat de Ventas">
+                        <i class="fa fa-comments"></i> ${(userRole === 'vendedor' || userRole === 'admin') ? badgeVentas : ''}
+                    </button>
+                `;
+
+                // BOTÓN DE QUEJAS (Soporte)
+                let quejaBtn = `
+                    <button class="btn-action btn-queja" onclick="verQuejas(${c.id}, '${c.nombre}')" title="Ver Soporte / Quejas">
+                        <i class="fa fa-bell"></i> ${(userRole === 'soporte' || userRole === 'admin') ? badgeQuejas : ''}
+                    </button>
+                `;
+
                 let actions = '';
                 
                 if (userRole === 'admin') {
-                    // LÓGICA DE SUSPENSIÓN (Admin)
                     let suspendBtn = '';
                     if (estado === 'suspendido') {
                         suspendBtn = `<button class="btn-action btn-activate" onclick="toggleStatus(${c.id}, 'activo')" title="Reactivar Cuenta"><i class="fa fa-check"></i></button>`;
@@ -371,17 +490,18 @@
                     }
 
                     actions = `
+                        ${chatBtn}
+                        ${quejaBtn}
                         <button class="btn-action btn-edit" onclick="openEditModal(${c.id})" title="Editar"><i class="fa fa-pencil-alt"></i></button>
                         ${suspendBtn}
                         <button class="btn-action btn-delete" onclick="deleteClient(${c.id})" title="Eliminar"><i class="fa fa-trash-alt"></i></button>
                     `;
+                } else if (userRole === 'vendedor') {
+                    actions = chatBtn;
+                } else if (userRole === 'soporte') {
+                    actions = quejaBtn;
                 } else {
-                    // BOTONES DE VENDEDOR (SOLO CHAT)
-                    actions = `
-                        <button class="btn-action btn-chat" onclick="openChatModal(${c.id}, '${c.nombre}')">
-                            <i class="fa fa-comments"></i> ${badgeHTML}
-                        </button>
-                    `;
+                    actions = '<small class="text-muted">Sin permisos</small>';
                 }
 
                 $tbody.append(`
@@ -406,8 +526,6 @@
         }
 
         // --- LÓGICA DE NEGOCIO ---
-
-        // 1. SUSPENDER / ACTIVAR
         function toggleStatus(id, nuevoEstado) {
             let verbo = nuevoEstado === 'suspendido' ? 'suspender' : 'activar';
             if(!confirm(`¿Estás seguro de que deseas ${verbo} a este usuario?`)) return;
@@ -420,13 +538,12 @@
                 contentType: 'application/json',
                 data: JSON.stringify(payload),
                 success: function(res) {
-                    if(res.status === 'success') loadClients();
+                    if(res.status === 'success') loadData(); // Recarga todo
                     else alert("Error: " + (res.message || 'Error desconocido'));
                 }
             });
         }
 
-        // 2. CREAR / EDITAR
         function openAddModal() { 
             isEditing = false; 
             $('#clientForm')[0].reset(); 
@@ -446,7 +563,7 @@
             $('#clientPhone').val(c.telefono);
             $('#clientRole').val(c.rol);
             $('#clientStreet').val(c.calle || '');
-            $('#clientNumberStreet').val(c.numero || '');
+            $('#clientNumberStreet').val(c.numeroCasa || '');
             $('#clientPostalCode').val(c.codigoPostal || '');
             $('#clientPassword').val(''); 
             
@@ -457,7 +574,6 @@
         $('#clientForm').on('submit', function(e) {
             e.preventDefault();
             
-            // Construir objeto para edición
             const data = {
                 id: $('#clientId').val(),
                 nombre: $('#clientName').val(),
@@ -480,7 +596,7 @@
                 success: function(res) {
                     if(res.status === 'success') {
                         $('#clientModal').modal('hide');
-                        loadClients();
+                        loadData(); // Recarga todo
                     } else {
                         alert("Error: " + (res.message || 'Error en la base de datos'));
                     }
@@ -488,7 +604,6 @@
             });
         });
 
-        // 3. ELIMINAR
         function deleteClient(id) {
             if(confirm('ADVERTENCIA: ¿Eliminar este usuario permanentemente?')) {
                 $.ajax({ 
@@ -496,27 +611,43 @@
                     type: 'DELETE', 
                     contentType: 'application/json',
                     data: JSON.stringify({id: id}), 
-                    success: () => loadClients() 
+                    success: () => loadData() 
                 });
             }
         }
 
-        // 4. CHAT
+        // =========================================
+        // 4. CHAT (VENTAS / MENSAJES NORMALES)
+        // =========================================
         function openChatModal(clientId, clientName) {
             $('#notifyClientId').val(clientId);
             $('#notifyClientName').text(clientName);
             $('#notifyModal').modal('show');
-            $.ajax({ url: API_NOTIF, type: 'PUT', contentType: 'application/json', data: JSON.stringify({ mark_all_read_for_client: clientId }), success: () => loadUnreadCounts() });
+            
+            // Marcar todos los mensajes normales como leídos para este cliente
+            $.ajax({ url: API_NOTIF, type: 'PUT', contentType: 'application/json', data: JSON.stringify({ mark_all_read_for_client: clientId, tipo: 'mensaje' }), success: () => loadUnreadCounts() });
+            
             cargarHistorial(clientId);
             if (chatInterval) clearInterval(chatInterval);
             chatInterval = setInterval(() => cargarHistorial(clientId), 3000);
         }
+        
         function cargarHistorial(clientId) {
             $.getJSON(API_NOTIF, { user_id: clientId }, function(data) {
                 const $box = $('#chatHistory');
                 $box.empty();
-                data.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
-                data.forEach(m => {
+                
+                // Filtramos las quejas para ver todo lo demás (Mensajes/Ventas)
+                let chatMessages = Array.isArray(data) ? data : (data.data || []);
+                chatMessages = chatMessages.filter(m => (m.tipo || m.type || '').toLowerCase() !== 'queja');
+
+                if (chatMessages.length === 0) {
+                    $box.html('<div class="text-center text-muted py-4">No hay mensajes de ventas.</div>');
+                    return;
+                }
+
+                chatMessages.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
+                chatMessages.forEach(m => {
                     const isMe = m.origen === 'admin';
                     const msgClass = isMe ? 'admin' : 'cliente';
                     const checks = m.estado === 'leido' ? '<i class="fa fa-check-double leido"></i>' : '<i class="fa fa-check"></i>';
@@ -525,6 +656,7 @@
                 $box.scrollTop($box[0].scrollHeight);
             });
         }
+        
         $('#notifyForm').submit(function(e){
             e.preventDefault();
             const msg = $('#notifyMessage').val().trim();
@@ -532,18 +664,99 @@
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             $.ajax({
                 url: API_NOTIF, type: 'POST', contentType: 'application/json',
-                data: JSON.stringify({ user_id: $('#notifyClientId').val(), sender_id: currentUser.id, message: msg, origen: 'admin' }),
+                data: JSON.stringify({ 
+                    user_id: $('#notifyClientId').val(), 
+                    sender_id: currentUser.id, 
+                    message: msg, 
+                    origen: 'admin', 
+                    type: 'mensaje' // Mantiene la lógica compatible con la web
+                }),
                 success: function() { $('#notifyMessage').val(''); cargarHistorial($('#notifyClientId').val()); }
             });
         });
-        
+
+        // =========================================
+        // 5. QUEJAS (SOPORTE)
+        // =========================================
+        function verQuejas(clientId, clientName) {
+            $('#quejaClientId').val(clientId);
+            $('#quejasClientName').text(clientName);
+            $('#quejasModal').modal('show');
+            
+            $.ajax({ url: API_NOTIF, type: 'PUT', contentType: 'application/json', data: JSON.stringify({ mark_all_read_for_client: clientId, tipo: 'queja' }), success: () => loadUnreadCounts() });
+
+            cargarHistorialQuejas(clientId);
+            if (chatInterval) clearInterval(chatInterval);
+            chatInterval = setInterval(() => cargarHistorialQuejas(clientId), 3000);
+        }
+
+        function cargarHistorialQuejas(clientId) {
+            $.getJSON(API_NOTIF, { user_id: clientId }, function(data) {
+                const $box = $('#quejasHistory');
+                $box.empty();
+                
+                // SOLO MENSAJES DE QUEJA
+                let quejas = Array.isArray(data) ? data : (data.data || []);
+                quejas = quejas.filter(m => (m.tipo || m.type || '').toLowerCase() === 'queja');
+
+                if (quejas.length === 0) {
+                    $box.html('<div class="text-center text-muted py-4">Este cliente no ha enviado ninguna alerta o queja.</div>');
+                    return;
+                }
+
+                quejas.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
+                quejas.forEach(q => {
+                    const isMe = q.origen === 'admin';
+                    const msgClass = isMe ? 'admin' : 'cliente';
+                    const checks = q.estado === 'leido' ? '<i class="fa fa-check-double leido"></i>' : '<i class="fa fa-check"></i>';
+                    
+                    $box.append(`
+                        <div class="chat-msg ${msgClass}">
+                            ${!isMe ? '<span class="badge badge-warning" style="background-color: #fd7e14; margin-bottom:5px;"><i class="fa fa-ticket"></i> Alerta / Ticket</span><br>' : ''}
+                            <div style="white-space:pre-wrap;">${q.mensaje}</div>
+                            <div class="chat-meta"><span>${q.fecha.substring(11, 16)}</span> ${isMe ? checks : ''}</div>
+                        </div>
+                    `);
+                });
+                $box.scrollTop($box[0].scrollHeight);
+            });
+        }
+
+        $('#quejaForm').submit(function(e){
+            e.preventDefault();
+            const msg = $('#quejaMessageInput').val().trim();
+            if(!msg) return;
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            $.ajax({
+                url: API_NOTIF, type: 'POST', contentType: 'application/json',
+                data: JSON.stringify({ 
+                    user_id: $('#quejaClientId').val(), 
+                    sender_id: currentUser.id, 
+                    message: msg, 
+                    origen: 'admin', 
+                    type: 'queja' // ADMIN RESPONDE A LA QUEJA
+                }),
+                success: function() { 
+                    $('#quejaMessageInput').val(''); 
+                    cargarHistorialQuejas($('#quejaClientId').val()); 
+                }
+            });
+        });
+
         function filterTable() {
             const val = $('#filterSearch').val().toLowerCase();
-            const filtered = clientesCargados.filter(c => c.nombre.toLowerCase().includes(val) || c.correo.toLowerCase().includes(val) || c.estado.toLowerCase().includes(val) );
+            const filtered = clientesCargados.filter(c => c.nombre.toLowerCase().includes(val) || c.correo.toLowerCase().includes(val) || (c.estado || '').toLowerCase().includes(val) );
             renderTable(filtered);
         }
 
         function cerrarSesion() { localStorage.removeItem('currentUser'); window.location.href = '../login.html'; }
+        
+        // Limpiar intervalos al cerrar modales
+        $('#notifyModal, #quejasModal').on('hidden.bs.modal', function () {
+            if (chatInterval) clearInterval(chatInterval);
+            loadUnreadCounts(); // Refrescar botones al cerrar para quitar la burbuja si las leyeron
+        });
     </script>
 
 </body>

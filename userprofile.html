@@ -8,46 +8,256 @@
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="css/slick.css">
-    <link rel="stylesheet" href="css/slick-theme.css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/nouislider.min.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
 
     <style>
-        /* BARRA DE BÚSQUEDA FIJA */
+        /* =========================================
+           ESTILOS GENERALES Y HEADER
+           ========================================= */
+        body { font-family: 'Nunito', sans-serif; background-color: #f4f7f6; color: #2B2D42; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
+
         .sticky-header {
-            position: fixed !important;
-            top: 0;
-            width: 100%;
-            z-index: 9999;
-            background: #15161D !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            position: fixed !important; top: 0; width: 100%; z-index: 9999;
+            background: #15161D !important; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
             animation: slideDown 0.4s ease;
         }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
-        @keyframes slideDown {
-            from { transform: translateY(-100%); }
-            to { transform: translateY(0); }
+        .header-ctn > div > a { width: 70px !important; display: block; position: relative;}
+        .header-ctn > div + div { margin-left: 5px !important; }
+
+        .qty-msg { position: absolute; top: -10px; right: 15px; width: 20px; height: 20px; line-height: 20px; text-align: center; border-radius: 50%; font-size: 10px; color: #FFF; background-color: #D10024; display: none; border: 2px solid #15161D; box-shadow: 0 2px 5px rgba(0,0,0,0.3); animation: popIn 0.3s ease; }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        /* =========================================
+           PERFIL DE USUARIO MODERNO
+           ========================================= */
+        .profile-container { padding: 50px 0; }
+        
+        .card-custom {
+            background: #fff; border-radius: 20px; border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 30px;
+            overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-custom:hover { box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+        .card-body-custom { padding: 40px 30px; }
+
+        .avatar-wrapper { position: relative; display: inline-block; margin-bottom: 20px; padding: 5px; background: linear-gradient(135deg, #D10024, #ff6b6b); border-radius: 50%; }
+        .profile-img { width: 140px; height: 140px; object-fit: cover; border-radius: 50%; border: 4px solid #fff; transition: 0.3s; background: #fff; }
+        .btn-change-photo {
+            position: absolute; bottom: 10px; right: 10px; background: #D10024; color: white;
+            border: 2px solid #fff; width: 40px; height: 40px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(209,0,36,0.3);
+        }
+        .btn-change-photo:hover { background: #15161D; transform: scale(1.1); }
+
+        .profile-name { font-weight: 800; color: #15161D; font-size: 24px; margin: 10px 0 5px; letter-spacing: -0.5px; }
+        .profile-role-badge { background: #e0eafe; color: #1A1F71; padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 15px; letter-spacing: 1px; }
+        .profile-status { color: #28a745; font-size: 13px; font-weight: 700; margin-bottom: 25px; }
+
+        .btn-panel { width: 100%; font-weight: 800; border-radius: 12px; padding: 12px; margin-bottom: 12px; transition: 0.3s; display: none; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        .btn-admin { background: #1A1F71; color: white; border: none; box-shadow: 0 4px 15px rgba(26, 31, 113, 0.2); }
+        .btn-admin:hover { background: #11154b; color: white; transform: translateY(-2px); }
+        .btn-vendor { background: #ffc107; color: #15161D; border: none; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2); }
+        .btn-vendor:hover { background: #e0a800; color: #15161D; transform: translateY(-2px); }
+        .btn-logout { background-color: #fff; color: #D10024; border: 2px solid #f5c6cb; width: 100%; font-weight: 800; border-radius: 12px; padding: 12px; transition: 0.3s; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        .btn-logout:hover { background-color: #D10024; color: white; border-color: #D10024; box-shadow: 0 4px 15px rgba(209, 0, 36, 0.2); transform: translateY(-2px); }
+
+        .info-row { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #f0f2f5; transition: 0.2s; }
+        .info-row:hover { background-color: #fdfdfd; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { font-weight: 800; color: #8D99AE; font-size: 13px; width: 35%; text-transform: uppercase; letter-spacing: 0.5px; }
+        .info-value { font-weight: 700; color: #2B2D42; font-size: 15px; width: 65%; }
+        .edit-input { display: none; border-radius: 8px; border: 2px solid #e0e4e8; padding: 10px 15px; width: 100%; font-size: 14px; font-weight: 600; outline: none; transition: border-color 0.3s; }
+        .edit-input:focus { border-color: #4ea3f1; }
+        
+        .btn-edit-profile { background: #f0f2f5; color: #2B2D42; border: none; padding: 10px 25px; border-radius: 10px; font-weight: 800; font-size: 13px; transition: 0.3s; }
+        .btn-edit-profile:hover { background: #D10024; color: white; box-shadow: 0 4px 10px rgba(209,0,36,0.2); }
+
+        /* =========================================
+           TABS DE ACTIVIDAD
+           ========================================= */
+        .nav-tabs-custom { border-bottom: 2px solid #f0f2f5; margin-bottom: 30px; display: flex; gap: 10px; border: none; }
+        .nav-tabs-custom > li { margin-bottom: 0; }
+        .nav-tabs-custom > li > a { 
+            border: none !important; background: #f4f7f6; color: #8D99AE; font-weight: 800; font-size: 13px; 
+            text-transform: uppercase; padding: 12px 25px; border-radius: 30px; transition: 0.3s; letter-spacing: 0.5px; 
+        }
+        .nav-tabs-custom > li > a:hover { background: #e9ecef; color: #15161D; }
+        .nav-tabs-custom > li.active > a, 
+        .nav-tabs-custom > li.active > a:hover, 
+        .nav-tabs-custom > li.active > a:focus { 
+            background: #D10024 !important; color: white !important; box-shadow: 0 4px 15px rgba(209,0,36,0.3); 
         }
 
-        /* Estilos Perfil */
-        .main-body { padding: 15px; }
-        .card { box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06); position: relative; display: flex; flex-direction: column; min-width: 0; word-wrap: break-word; background-color: #fff; background-clip: border-box; border: 0 solid rgba(0,0,0,.125); border-radius: .25rem; margin-bottom: 1rem; }
-        .card-body { flex: 1 1 auto; min-height: 1px; padding: 1rem; }
-        .gutters-sm { margin-right: -8px; margin-left: -8px; }
-        .gutters-sm>.col, .gutters-sm>[class*=col-] { padding-right: 8px; padding-left: 8px; }
-        .mb-3, .my-3 { margin-bottom: 1rem!important; }
-        .btn-logout { background-color: #D10024; color: white; border: none; padding: 5px 15px; border-radius: 4px; font-weight: bold; margin-top: 10px; width: 100%; }
+        /* =========================================
+           ACORDEÓN PARA PEDIDOS Y SEGUIMIENTO
+           ========================================= */
+        .order-card {
+            background: #fff; border-radius: 16px; margin-bottom: 20px; border: 1px solid #f0f2f5;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .order-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #8D99AE; transition: 0.3s; }
+        .order-card:hover { border-color: #e4e7ed; box-shadow: 0 8px 25px rgba(0,0,0,0.06); transform: translateY(-2px); }
         
-        /* Botón Admin Panel */
-        #admin-panel-btn { display: none; margin-bottom: 10px; width: 100%; font-weight: bold; }
-        /* Botón Vendedor Panel */
-        #vendor-panel-btn { display: none; margin-bottom: 10px; width: 100%; font-weight: bold; background-color: #ffc107; color: #333; border: none; }
+        .order-card.status-entregado::before { background: #28a745; }
+        .order-card.status-procesada::before { background: #28a745; }
+        .order-card.status-pendiente::before { background: #ffc107; }
+        .order-card.status-cancelado::before { background: #D10024; }
+        .order-card.status-enviado::before { background: #4ea3f1; }
+        
+        .order-header-main { padding: 25px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .order-info-brief { display: flex; align-items: center; gap: 20px; }
+        .order-icon-box {
+            width: 55px; height: 55px; background: #f8f9fa; color: #15161D;
+            border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; transition: 0.3s;
+        }
+        .order-card:hover .order-icon-box { background: #15161D; color: white; }
+        
+        .order-brief-details h5 { margin: 0 0 5px 0; font-weight: 800; color: #15161D; font-size: 18px; }
+        .order-brief-details p { margin: 0; font-size: 13px; color: #8D99AE; font-weight: 600; }
+        
+        .order-status-col { text-align: right; }
+        .order-total-price { font-size: 20px; font-weight: 900; color: #D10024; margin-bottom: 8px; }
+        
+        .badge-status { padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; }
+        .badge-facturado { background: #e0eafe; color: #1A1F71; margin-left: 8px; }
+        
+        .badge-pendiente { background: #fff3cd; color: #856404; }
+        .badge-enviado { background: #d1ecf1; color: #0c5460; }
+        .badge-entregado { background: #d4edda; color: #155724; }
+        .badge-cancelada { background: #f8d7da; color: #721c24; }
+        
+        .order-details-btn { color: #8D99AE; font-size: 14px; font-weight: 800; margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .order-details-btn:hover { color: #D10024; text-decoration: none; }
+        .order-toggle-icon { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .order-card.open .order-toggle-icon { transform: rotate(180deg); color: #D10024; }
+        
+        .order-body-content {
+            display: none; border-top: 1px solid #f0f2f5; padding: 30px 25px;
+            background: #fafbfc; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;
+        }
 
-        .edit-input { display: none; margin-bottom: 5px; }
-        .social-floating a { display: flex !important; align-items: center !important; justify-content: center !important; }
+        /* =========================================
+           TRACKER ESTILO ERP (CONECTADO A LA BD)
+           ========================================= */
+        .track-container { margin: 20px 0 40px; padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #f0f2f5; }
+        .track { position: relative; background-color: #e9ecef; height: 6px; display: flex; margin-bottom: 30px; margin-top: 30px; border-radius: 5px; }
+        .track .step { flex-grow: 1; width: 25%; margin-top: -18px; text-align: center; position: relative; }
+        .track .step::before { height: 6px; position: absolute; content: ""; width: 100%; left: 0; top: 18px; transition: background-color 0.4s ease; }
+        .track .step.active::before { background-color: #28a745; }
+        
+        .track .icon { display: inline-block; width: 40px; height: 40px; line-height: 36px; position: relative; border-radius: 100%; background: #fff; color: #aeb4be; z-index: 5; font-size: 16px; border: 3px solid #e9ecef; transition: all 0.4s ease; }
+        .track .step.active .icon { background: #28a745; color: #fff; border-color: #28a745; }
+        
+        .track .text { display: block; margin-top: 10px; font-size: 12px; font-weight: 700; color: #8D99AE; text-transform: uppercase; }
+        .track .step.active .text { color: #15161D; }
+
+        .track.canceled .step::before { background-color: #D10024 !important; }
+        .track.canceled .step .icon { background: #D10024 !important; color: #fff !important; border-color: #D10024 !important; }
+        .track.canceled .step .text { color: #D10024 !important; }
+
+
+        .product-item-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed #e4e7ed; font-size: 15px; color: #495057; }
+        .product-item-row:last-child { border-bottom: none; }
+        .product-item-row strong { color: #15161D; font-weight: 800; }
+
+        /* Botones Factura */
+        .btn-invoice-primary {
+            display: inline-flex; align-items: center; gap: 8px; padding: 12px 25px; font-size: 13px; font-weight: 800;
+            border-radius: 10px; text-transform: uppercase; border: none; cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.5px;
+            background-color: #1A1F71; color: #fff; box-shadow: 0 4px 15px rgba(26,31,113,0.3);
+        }
+        .btn-invoice-primary:hover { background-color: #11154b; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,31,113,0.4); }
+
+        .btn-invoice-view {
+            display: inline-flex; align-items: center; gap: 8px; padding: 10px 15px; font-size: 12px; font-weight: 800;
+            border-radius: 8px; text-transform: uppercase; border: 2px solid #e4e7ed; cursor: pointer; transition: all 0.3s ease;
+            background-color: #fff; color: #15161D;
+        }
+        .btn-invoice-view:hover { background-color: #f8f9fa; border-color: #15161D; }
+
+        .btn-invoice-down {
+            display: inline-flex; align-items: center; gap: 8px; padding: 10px 15px; font-size: 12px; font-weight: 800;
+            border-radius: 8px; text-transform: uppercase; border: none; cursor: pointer; transition: all 0.3s ease;
+            background-color: #D10024; color: #fff; box-shadow: 0 4px 15px rgba(209,0,36,0.3);
+        }
+        .btn-invoice-down:hover { background-color: #15161D; box-shadow: 0 4px 15px rgba(21,22,29,0.3); transform: translateY(-2px); }
+
+        .btn-invoice-mail {
+            display: inline-flex; align-items: center; gap: 8px; padding: 10px 15px; font-size: 12px; font-weight: 800;
+            border-radius: 8px; text-transform: uppercase; border: none; cursor: pointer; transition: all 0.3s ease;
+            background-color: #4ea3f1; color: #fff; box-shadow: 0 4px 15px rgba(78,163,241,0.3);
+        }
+        .btn-invoice-mail:hover { background-color: #1A1F71; box-shadow: 0 4px 15px rgba(26,31,113,0.3); transform: translateY(-2px); }
+
+        /* SCROLLS EN MODAL DE FACTURA */
+        .modal-body-scrollable {
+            max-height: 65vh; 
+            overflow-y: auto !important; 
+            overflow-x: auto !important; 
+            padding: 30px;
+            background-color: #f4f7f6;
+        }
+        .modal-body-scrollable::-webkit-scrollbar { width: 8px; height: 8px; } 
+        .modal-body-scrollable::-webkit-scrollbar-thumb { background-color: #c1c1c1; border-radius: 10px; }
+        .modal-body-scrollable::-webkit-scrollbar-track { background-color: #f4f7f6; }
+
+        /* WIDGET DE CHAT Y SOPORTE */
+        .chat-widget-container { 
+            position: fixed; bottom: 25px; right: 25px; width: 380px; height: 600px; 
+            background: #ffffff; border-radius: 20px; box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1); 
+            z-index: 10000; display: none; flex-direction: column; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); transition: all 0.3s ease; 
+        }
+        .chat-header { background: #ffffff; padding: 15px 20px; height: 75px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f0f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); cursor: pointer; }
+        .chat-header-left { display: flex; align-items: center; gap: 15px; }
+        .chat-back-btn { font-size: 18px; color: #333; cursor: pointer; display: none; padding: 8px; border-radius: 50%; transition: 0.2s; }
+        .chat-back-btn:hover { background: #f5f5f5; }
+        .chat-avatar-wrapper { position: relative; }
+        
+        .avatar-chat { width: 45px; height: 45px; background: linear-gradient(135deg, #D10024, #ff4d4d); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 2px 5px rgba(209, 0, 36, 0.3); }
+        .avatar-support { width: 45px; height: 45px; background: linear-gradient(135deg, #fd7e14, #e65c00); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 2px 5px rgba(253, 126, 20, 0.3); }
+
+        .status-dot { position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: #31a24c; border: 2px solid #fff; border-radius: 50%; }
+        .chat-info h4 { margin: 0; color: #1c1e21; font-size: 17px; font-weight: 800; letter-spacing: -0.3px; }
+        .chat-info small { font-size: 13px; font-weight: 600; color: #65676b; }
+        .close-chat { font-size: 24px; color: #bcc0c4; cursor: pointer; transition: 0.2s; padding: 5px; }
+        .close-chat:hover { color: #D10024; }
+        
+        .chat-body { flex-grow: 1; background-color: #f4f7f6; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 2px; }
+        .message-row { display: flex; margin-bottom: 10px; width: 100%; }
+        .message-content-wrapper { max-width: 80%; display: flex; flex-direction: column; }
+        .message-row.incoming { justify-content: flex-start; }
+        .message-row.incoming .message-bubble { background-color: #fff; color: #2B2D42; border-bottom-left-radius: 4px; border: 1px solid #eaeaea; }
+        .message-row.incoming .msg-name-label { display: block; font-size: 11px; font-weight: 700; color: #8D99AE; margin-left: 12px; margin-bottom: 4px; }
+        .message-row.outgoing { justify-content: flex-end; }
+        
+        .message-row.outgoing .bubble-chat { background-color: #D10024; color: #ffffff; border-bottom-right-radius: 4px; box-shadow: 0 2px 5px rgba(209,0,36,0.2); }
+        .message-row.outgoing .bubble-support { background-color: #fd7e14; color: #ffffff; border-bottom-right-radius: 4px; box-shadow: 0 2px 5px rgba(253,126,20,0.2); }
+
+        .message-bubble { padding: 12px 16px; border-radius: 18px; font-size: 14px; font-weight: 600; line-height: 1.4; position: relative; word-wrap: break-word; animation: fadeIn 0.3s ease; display: inline-block; min-width: 60px; }
+        .msg-time { font-size: 10px; margin-top: 5px; margin-left: 10px; float: right; white-space: nowrap; vertical-align: bottom; opacity: 0.7; }
+        
+        .chat-footer { padding: 15px; background: #fff; border-top: 1px solid #f0f0f0; display: none; align-items: center; gap: 10px; }
+        .chat-input-wrapper { flex: 1; background: #f4f7f6; border-radius: 25px; padding: 10px 20px; display: flex; align-items: center; }
+        .chat-input { width: 100%; background: transparent; border: none; outline: none; font-size: 14px; font-weight: 600; color: #2B2D42; }
+        
+        .btn-chat-send { color: #fff; background: #D10024; border: none; font-size: 16px; cursor: pointer; transition: 0.2s; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(209,0,36,0.3); }
+        .btn-chat-send:hover { transform: scale(1.05); background: #15161D; }
+
+        .inbox-list { list-style: none; padding: 0; margin: 0; }
+        .inbox-item { padding: 15px; display: flex; align-items: center; cursor: pointer; border-radius: 12px; transition: 0.2s; background: #fff; margin-bottom: 10px; border: 1px solid #eee; }
+        .inbox-item:hover { background-color: #fdfdfd; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .inbox-avatar { width: 50px; height: 50px; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 15px; }
+        .inbox-details { flex: 1; overflow: hidden; }
+        .inbox-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .inbox-name { font-weight: 800; font-size: 15px; color: #15161D; }
+        .inbox-time { font-size: 11px; font-weight: 700; color: #8D99AE; }
+        .inbox-msg { font-size: 13px; font-weight: 600; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .unread-dot { width: 12px; height: 12px; background: #D10024; border-radius: 50%; margin-left: 10px; box-shadow: 0 0 5px rgba(209,0,36,0.5); }
     </style>
 </head>
 
@@ -58,12 +268,12 @@
             <div class="container">
                 <ul class="header-links pull-left">
                     <li><a><i class="fa fa-phone"></i> +52 449 928 9336</a></li>
-                    <li><a href="https://mail.google.com/"><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a></li>
+                    <li><a href="mailto:petspalace@gmail.com"><i class="fa fa-envelope-o"></i> petspalace@gmail.com</a></li>
                     <li><a href="#"><i class="fa fa-map-marker"></i> Av. Adolfo López Mateos </a></li>
                 </ul>
                 <ul class="header-links pull-right">
                     <li id="auth-container">
-                        <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1;"><i class="fa fa-user"></i> Mi Cuenta</a>
+                        <a href="login.html" style="font-weight: bold; color: #4ea3f1; margin-right: 10px;"><i class="fa fa-sign-in"></i> Iniciar sesión</a>
                     </li>
                 </ul>
             </div>
@@ -74,9 +284,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="header-logo">
-                            <a href="index.html" class="logo">
-                                <img src="img/logo6.png" alt="Pet Palace">
-                            </a>
+                            <a href="index.html" class="logo"><img src="img/logo6.png" alt="Pet Palace"></a>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -94,7 +302,31 @@
                     </div>
                     <div class="col-md-3 clearfix">
                         <div class="header-ctn">
-                            <div><a href="wishlist.html"><i class="fa fa-heart-o"></i><span>Favoritos</span></a></div>
+                            
+                            <div id="support-wrapper" style="display:none; position: relative;">
+                                <a href="#" onclick="toggleSupportWidget(event)">
+                                    <i class="fa fa-bell"></i>
+                                    <span>Notificaciones</span>
+                                    <div class="qty-msg" id="support-badge" style="background-color: #fd7e14;">0</div>
+                                </a>
+                            </div>
+
+                            <div id="msg-wrapper" style="display:none; position: relative;">
+                                <a href="#" onclick="toggleChatWidget(event)">
+                                    <i class="fa fa-envelope"></i>
+                                    <span>Mensajes</span>
+                                    <div class="qty-msg" id="msg-badge">0</div>
+                                </a>
+                            </div>
+
+                            <div class="dropdown">
+                                <a href="api/carrito.php" style="cursor: pointer;">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span>Tu Carrito</span>
+                                    <div class="qty cart-qty">0</div>
+                                </a>
+                            </div>
+                            <div class="menu-toggle"><a href="#"><i class="fa fa-bars"></i><span>Menú</span></a></div>
                         </div>
                     </div>
                 </div>
@@ -132,93 +364,277 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="main-body">
-            <div class="row gutters-sm">
-                <div class="col-md-4 mb-3">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Usuario" class="rounded-circle" width="150">
-                            <div class="mt-3">
-                                <h4 id="profile-name-header">Cargando...</h4>
-                                <p class="text-muted font-size-sm" id="profile-role">Cargando datos...</p>
-                                
-                                <a id="admin-panel-btn" href="admin/admin-panel.html" class="btn btn-primary">Panel de Administrador</a>
-                                <a id="vendor-panel-btn" href="admin/admin-panel.html" class="btn btn-warning">Panel de Ventas</a>
-                                
-                                <button class="btn-logout" onclick="cerrarSesion()"><i class="fa fa-sign-out"></i> Cerrar Sesión</button>
+    <div class="container profile-container">
+        <div class="row">
+            
+            <div class="col-md-4">
+                <div class="card-custom text-center">
+                    <div class="card-body-custom">
+                        <div class="avatar-wrapper">
+                            <img src="img/logo6.png" id="profile-img" alt="Avatar" class="profile-img">
+                            <button class="btn-change-photo" title="Cambiar foto" onclick="$('#avatar-upload').click()">
+                                <i class="fa fa-camera"></i>
+                            </button>
+                            <input type="file" id="avatar-upload" accept="image/*" style="display: none;" onchange="uploadAvatar(event)">
+                        </div>
+                        
+                        <h4 class="profile-name" id="profile-name-header">Cargando...</h4>
+                        <div class="profile-role-badge" id="profile-badge">CLIENTE</div>
+                        <div class="profile-status"><i class="fa fa-check-circle"></i> Cuenta Activa y Verificada</div>
+                        
+                        <a href="admin/admin-panel.html" id="btn-panel-admin" class="btn btn-panel btn-admin"><i class="fa fa-cogs"></i> Panel de Control ERP</a>
+                        <a href="admin/admin-panel.html" id="btn-panel-vendor" class="btn btn-panel btn-vendor"><i class="fa fa-line-chart"></i> Panel de Ventas</a>
+                        
+                        <button class="btn-logout" onclick="cerrarSesion()"><i class="fa fa-sign-out"></i> Cerrar Sesión</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card-custom">
+                    <div class="card-body-custom">
+                        <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 10px;">
+                            <h4 style="margin:0; font-weight:800; font-size:22px;"><i class="fa fa-user-circle text-danger"></i> Información Personal</h4>
+                            <div>
+                                <button id="btn-edit" class="btn-edit-profile" onclick="habilitarEdicion()"><i class="fa fa-pencil"></i> Editar</button>
+                                <button id="btn-save" class="btn btn-success btn-edit-profile" style="display:none; background:#28a745; color:white;" onclick="guardarCambios()"><i class="fa fa-save"></i> Guardar</button>
+                                <button id="btn-cancel" class="btn btn-secondary btn-edit-profile" style="display:none;" onclick="cancelarEdicion()"><i class="fa fa-times"></i> Cancelar</button>
+                            </div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">Nombre Completo</div>
+                            <div class="info-value">
+                                <span id="profile-full-name-view">---</span>
+                                <input type="text" id="profile-full-name-edit" class="edit-input">
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Correo Electrónico</div>
+                            <div class="info-value">
+                                <span id="profile-email-view">---</span>
+                                <input type="email" id="profile-email-edit" class="edit-input">
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Teléfono</div>
+                            <div class="info-value">
+                                <span id="profile-phone-view">---</span>
+                                <input type="tel" id="profile-phone-edit" class="edit-input" placeholder="Ej. 4491234567">
+                            </div>
+                        </div>
+                        
+                        <h4 style="margin: 30px 0 10px; font-weight:800; font-size:16px; color:#15161D;"><i class="fa fa-map-marker text-danger"></i> Dirección Predeterminada</h4>
+                        <p style="font-size: 13px; color: #8D99AE; margin-bottom: 20px;">Esta dirección se usará para autocompletar tus envíos en el checkout.</p>
+                        
+                        <div class="info-row">
+                            <div class="info-label">Calle y Número</div>
+                            <div class="info-value">
+                                <span id="profile-street-view">---</span>
+                                <input type="text" id="profile-street-edit" class="edit-input" placeholder="Ej. Av. Universidad 123">
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Colonia / Barrio</div>
+                            <div class="info-value">
+                                <span id="profile-suburb-view">---</span>
+                                <input type="text" id="profile-suburb-edit" class="edit-input" placeholder="Ej. Centro">
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Ciudad</div>
+                            <div class="info-value">
+                                <span id="profile-city-view">---</span>
+                                <input type="text" id="profile-city-edit" class="edit-input" placeholder="Ej. Aguascalientes">
+                            </div>
+                        </div>
+                        <div class="info-row" style="border-bottom: none;">
+                            <div class="info-label">Código Postal</div>
+                            <div class="info-value">
+                                <span id="profile-zip-view">---</span>
+                                <input type="text" id="profile-zip-edit" class="edit-input" placeholder="Ej. 20000">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card-custom">
+                    <div class="card-body-custom" style="padding-top: 20px;">
+                        <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
+                            <li role="presentation" class="active">
+                                <a href="#tab-pedidos" aria-controls="tab-pedidos" role="tab" data-toggle="tab"><i class="fa fa-shopping-bag"></i> Historial de Compras</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="tab-pedidos">
+                                <div id="mis-pedidos">
+                                    <div class="text-center py-5 text-muted"><i class="fa fa-spinner fa-spin fa-2x"></i><br>Cargando tus pedidos...</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-8">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-3"><h6 class="mb-0">Nombre de Usuario</h6></div>
-                                <div class="col-sm-9 text-secondary">
-                                    <span id="profile-full-name-view">---</span>
-                                    <input type="text" id="profile-full-name-edit" class="form-control edit-input">
-                                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="billingFormModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document" style="margin-top: 5vh;">
+            <div class="modal-content" style="border-radius: 16px; overflow: hidden; border: none;">
+                <div class="modal-header" style="background:#15161D; color:white; padding: 20px 30px;">
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 1; text-shadow: none;"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title" style="font-weight: 800; font-family: 'Montserrat';"><i class="fa fa-file-text text-danger"></i> Solicitud de Factura (CFDI 4.0)</h4>
+                </div>
+                
+                <form id="form-generar-factura" onsubmit="generarFacturaDesdeFormulario(event)">
+                    <div class="modal-body" style="padding: 30px; background-color: #f4f7f6;">
+                        <p style="font-size: 13px; color: #8D99AE; margin-bottom: 20px;">Por favor, llena los datos fiscales correspondientes. Revisa que tu RFC y Código Postal coincidan con tu Constancia de Situación Fiscal.</p>
+                        
+                        <div class="form-group">
+                            <label style="font-weight: 700; font-size: 12px; color: #15161D;">RFC (Obligatorio)</label>
+                            <input type="text" id="bill-rfc" class="form-control" placeholder="Ej. XAXX010101000" required maxlength="13" style="border-radius: 8px; text-transform: uppercase;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label style="font-weight: 700; font-size: 12px; color: #15161D;">Nombre o Razón Social (Obligatorio)</label>
+                            <input type="text" id="bill-nombre" class="form-control" placeholder="Nombre de la persona o empresa" required style="border-radius: 8px; text-transform: uppercase;">
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label style="font-weight: 700; font-size: 12px; color: #15161D;">Código Postal Fiscal</label>
+                                <input type="text" id="bill-cp" class="form-control" placeholder="Ej. 20000" required maxlength="5" pattern="\d{5}" style="border-radius: 8px;">
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3"><h6 class="mb-0">Email</h6></div>
-                                <div class="col-sm-9 text-secondary">
-                                    <span id="profile-email-view">---</span>
-                                    <input type="email" id="profile-email-edit" class="form-control edit-input">
-                                </div>
+                            <div class="col-md-6 form-group">
+                                <label style="font-weight: 700; font-size: 12px; color: #15161D;">Uso de CFDI</label>
+                                <select id="bill-uso-cfdi" class="form-control" required style="border-radius: 8px;">
+                                    <option value="G03">G03 - Gastos en general</option>
+                                    <option value="G01">G01 - Adquisición de mercancías</option>
+                                    <option value="P01">P01 - Por definir</option>
+                                </select>
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3"><h6 class="mb-0">Rol de Cuenta</h6></div>
-                                <div class="col-sm-9 text-secondary">
-                                    <span id="profile-account-type">---</span>
-                                </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group mb-0">
+                                <label style="font-weight: 700; font-size: 12px; color: #15161D;">Forma de Pago</label>
+                                <select id="bill-forma-pago" class="form-control" required style="border-radius: 8px;">
+                                    <option value="01">01 - Efectivo</option>
+                                    <option value="03">03 - Transferencia electrónica</option>
+                                    <option value="04">04 - Tarjeta de crédito</option>
+                                    <option value="28">28 - Tarjeta de débito</option>
+                                </select>
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <button id="btn-edit" class="btn btn-info" onclick="habilitarEdicion()">Editar Perfil</button>
-                                    <button id="btn-save" class="btn btn-success" style="display:none;" onclick="guardarCambios()">Guardar Cambios</button>
-                                    <button id="btn-cancel" class="btn btn-secondary" style="display:none;" onclick="cancelarEdicion()">Cancelar</button>
-                                </div>
+                            <div class="col-md-6 form-group mb-0">
+                                <label style="font-weight: 700; font-size: 12px; color: #15161D;">Método de Pago</label>
+                                <input type="text" class="form-control" value="PUE - Pago en una sola exhibición" readonly style="border-radius: 8px; background-color: #e9ecef; cursor: not-allowed;">
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- ================= MI ACTIVIDAD ================= -->
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-body">
-                <h4><i class="fa fa-history"></i> Mi Actividad</h4>
-                <hr>
 
-                <!-- PEDIDOS -->
-                <h5><i class="fa fa-shopping-bag"></i> Mis Pedidos</h5>
-                <div id="mis-pedidos">
-                    <p>Cargando pedidos...</p>
-                </div>
-
-                <hr>
-
-                <!-- CHATS -->
-                <h5><i class="fa fa-comments"></i> Mis Conversaciones</h5>
-                <div id="mis-chats">
-                    <p>Cargando conversaciones...</p>
-                </div>
+                    <div class="modal-footer" style="background: #fff; padding: 20px 30px; border-top: 1px solid #f0f0f0;">
+                        <button type="button" class="btn btn-default" style="font-weight: 800; border-radius: 10px; padding: 10px 20px;" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" style="font-weight: 800; border-radius: 10px; padding: 10px 20px; background: #1A1F71; border: none;"><i class="fa fa-cogs"></i> Generar Factura</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <footer id="footer">
+    <div class="modal fade" id="emailInvoiceModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm" role="document" style="margin-top: 15vh;">
+            <div class="modal-content" style="border-radius: 16px; overflow: hidden; border: none;">
+                <div class="modal-header" style="background:#15161D; color:white; padding: 15px 20px;">
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 1; text-shadow: none;"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title" style="font-weight: 800; font-family: 'Montserrat';"><i class="fa fa-envelope text-info"></i> Enviar Factura</h4>
+                </div>
+                
+                <form id="form-enviar-correo" onsubmit="enviarFacturaPorCorreo(event)">
+                    <div class="modal-body" style="padding: 20px; background-color: #f4f7f6;">
+                        <div class="form-group mb-0">
+                            <label style="font-weight: 700; font-size: 12px; color: #15161D;">Correo destino</label>
+                            <input type="email" id="email-destino" class="form-control" required style="border-radius: 8px;">
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="background: #fff; padding: 15px 20px; border-top: 1px solid #f0f0f0;">
+                        <button type="submit" id="btn-send-email-modal" class="btn btn-info btn-block" style="font-weight: 800; border-radius: 10px; padding: 10px; background: #4ea3f1; border: none;"><i class="fa fa-paper-plane"></i> Enviar a este correo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="invoiceModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="border-radius: 16px; overflow: hidden; border: none;">
+                <div class="modal-header" style="background:#15161D; color:white; padding: 20px 30px;">
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 1; text-shadow: none;"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title" style="font-weight: 800; font-family: 'Montserrat';"><i class="fa fa-file-text-o text-danger"></i> Visor de Factura</h4>
+                </div>
+                
+                <div class="modal-body modal-body-scrollable">
+                    <div id="invoice-render-area" style="box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: #fff; width: 100%; min-width: 650px; margin: 0 auto; border-radius: 8px; overflow: hidden;">
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="background: #fff; padding: 20px 30px; border-top: 1px solid #f0f0f0;">
+                    <button type="button" class="btn btn-default" style="font-weight: 800; border-radius: 10px; padding: 10px 20px;" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-danger" style="font-weight: 800; border-radius: 10px; padding: 10px 20px; background: #D10024; border: none;" onclick="ejecutarDescargaPDFDesdeModal()"><i class="fa fa-download"></i> Descargar PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="chat-widget" class="chat-widget-container">
+        <div class="chat-header" onclick="if(currentView==='chat') mostrarBandeja();">
+            <div class="chat-header-left">
+                <i class="fa fa-arrow-left chat-back-btn" id="chatBackBtn"></i>
+                <div class="chat-avatar-wrapper">
+                    <div class="avatar-chat" id="headerAvatar"><i class="fa fa-envelope"></i></div>
+                    <div class="status-dot"></div>
+                </div>
+                <div class="chat-info">
+                    <h4 id="chatTitle">Mensajes</h4>
+                    <small id="chatSubtitle">Haga clic para ver bandeja</small>
+                </div>
+            </div>
+            <i class="fa fa-times close-chat" onclick="toggleChatWidget(event)"></i>
+        </div>
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-footer" id="chatFooter">
+            <div class="chat-input-wrapper">
+                <input type="text" class="chat-input" id="chatInputMain" placeholder="Escribe un mensaje..." autocomplete="off">
+            </div>
+            <button class="btn-chat-send" onclick="enviarMensajeChat()"><i class="fa fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <div id="support-widget" class="chat-widget-container">
+        <div class="chat-header" onclick="if(currentViewSupport==='chat') mostrarBandejaSupport();">
+            <div class="chat-header-left">
+                <i class="fa fa-arrow-left chat-back-btn" id="supportBackBtn"></i>
+                <div class="chat-avatar-wrapper">
+                    <div class="avatar-support" id="supportHeaderAvatar"><i class="fa fa-bell"></i></div>
+                    <div class="status-dot" style="background:#ffc107;"></div>
+                </div>
+                <div class="chat-info">
+                    <h4 id="supportTitle">Notificaciones</h4>
+                    <small id="supportSubtitle">Respuestas a tus tickets</small>
+                </div>
+            </div>
+            <i class="fa fa-times close-chat" onclick="toggleSupportWidget(event)"></i>
+        </div>
+        
+        <div class="chat-body" id="supportBody" style="background-color: #fcfcfc;"></div>
+    </div>
+
+    <footer id="footer" style="margin-top:40px;">
         <div id="bottom-footer" class="section">
             <div class="container text-center">
-                <span class="copyright">© 2026 Pet Palace | Gestión de Perfil</span>
+                <span class="copyright">© 2026 Pet Palace | Gestión de Perfil Seguro <i class="fa fa-shield"></i></span>
             </div>
         </div>
     </footer>
@@ -227,141 +643,1126 @@
     <script src="js/bootstrap.min.js"></script>
 
     <script>
+        let currentUser = null;
+        let allUserOrders = []; 
+        
+        let currentView = 'inbox'; 
+        let currentViewSupport = 'inbox'; 
+        
+        let chatPollInterval = null;
+        let supportPollInterval = null;
+
         $(document).ready(function() {
-            cargarDatosUsuario();
-            cargarActividad();
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-        });
-
-        function cargarDatosUsuario() {
-            const userData = JSON.parse(localStorage.getItem('currentUser'));
-
-            if (!userData) {
+            if (!currentUser) {
                 window.location.href = "login.html";
                 return;
             }
 
-            // Llenar textos
-            $('#profile-name-header').text(userData.nombre);
-            $('#profile-full-name-view').text(userData.nombre);
-            $('#profile-email-view').text(userData.correo || "No registrado");
-            
-            // Mostrar Rol
-            let rolMostrar = userData.rol ? userData.rol.toUpperCase() : "CLIENTE";
-            $('#profile-account-type').text(rolMostrar);
-            $('#profile-role').text("Estatus: Activo | Rol: " + rolMostrar);
-
-            // Actualizar header superior
             $('#auth-container').html(`
-                <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1;">
-                    <i class="fa fa-user"></i> ${userData.nombre}
+                <a href="userprofile.html" style="font-weight: 800; color: #4ea3f1; margin-right: 12px; letter-spacing: 0.5px;">
+                    <i class="fa fa-user-circle"></i> Mi Cuenta, ${currentUser.nombre.split(' ')[0]}
                 </a>
+                <a href="#" onclick="cerrarSesion()" style="font-size:12px; color:#D10024; font-weight: 800; letter-spacing: 0.5px;">(Salir)</a>
             `);
 
-            // LÓGICA DE PERMISOS
-            // Normalizamos el rol a minúsculas para evitar errores
-            const userRole = (userData.rol || "").toLowerCase();
+            $('#msg-wrapper').css('display', 'inline-block');
+            $('#support-wrapper').css('display', 'inline-block');
+            
+            verificarBadges();
+            setInterval(verificarBadges, 5000);
 
-            if (userRole === 'admin') {
-                $('#admin-panel-btn').show(); // Muestra botón azul de Admin
-            } else if (userRole === 'vendedor') {
-                $('#vendor-panel-btn').show(); // Muestra botón amarillo de Vendedor
+            const savedCart = localStorage.getItem(`cart_${currentUser.id}`);
+            if (savedCart) {
+                let cart = JSON.parse(savedCart);
+                let count = cart.reduce((sum, item) => sum + item.cantidad, 0);
+                $('.cart-qty').text(count);
+            }
+
+            cargarDatosUsuario();
+            cargarFotoPerfil();
+            
+            // LA FUSIÓN MAESTRA INICIA AQUÍ
+            cargarActividad();
+        });
+
+        // ==========================================
+        // 1. CARGA DE DATOS BÁSICOS Y DE DIRECCIÓN
+        // ==========================================
+        function cargarDatosUsuario() {
+            $('#profile-name-header').text(currentUser.nombre);
+            
+            $('#profile-full-name-view').text(currentUser.nombre);
+            $('#profile-email-view').text(currentUser.correo || "No registrado");
+            $('#profile-phone-view').text(currentUser.telefono || "---");
+            $('#profile-street-view').text(currentUser.calle || "---");
+            $('#profile-suburb-view').text(currentUser.colonia || "---"); 
+            $('#profile-city-view').text(currentUser.ciudad || "---");    
+            $('#profile-zip-view').text(currentUser.codigoPostal || currentUser.cp || "---");
+            
+            $('#profile-full-name-edit').val(currentUser.nombre);
+            $('#profile-email-edit').val(currentUser.correo); 
+            $('#profile-phone-edit').val(currentUser.telefono || "");
+            $('#profile-street-edit').val(currentUser.calle || "");
+            $('#profile-suburb-edit').val(currentUser.colonia || "");
+            $('#profile-city-edit').val(currentUser.ciudad || "");
+            $('#profile-zip-edit').val(currentUser.codigoPostal || currentUser.cp || "");
+            
+            const userRole = (currentUser.rol || "cliente").toLowerCase();
+            $('#profile-badge').text(userRole.toUpperCase());
+
+            if (userRole === 'admin') $('#btn-panel-admin').show();
+            if (userRole === 'vendedor') $('#btn-panel-vendor').show();
+        }
+
+        // ==========================================
+        // 2. FOTO DE PERFIL
+        // ==========================================
+        function uploadAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (!file.type.startsWith('image/')) {
+                    alert('Por favor selecciona un archivo de imagen válido.');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Img = e.target.result;
+                    $('#profile-img').attr('src', base64Img).css('opacity', '0').animate({opacity: 1}, 500);
+                    localStorage.setItem(`avatar_${currentUser.id}`, base64Img);
+                };
+                reader.readAsDataURL(file);
             }
         }
 
+        function cargarFotoPerfil() {
+            const savedAvatar = localStorage.getItem(`avatar_${currentUser.id}`);
+            if (savedAvatar) {
+                $('#profile-img').attr('src', savedAvatar);
+            } else {
+                $('#profile-img').attr('src', 'https://bootdey.com/img/Content/avatar/avatar7.png');
+            }
+        }
+
+        // ==========================================
+        // 3. EDICIÓN DE PERFIL Y DIRECCIÓN
+        // ==========================================
         function habilitarEdicion() {
-            const userData = JSON.parse(localStorage.getItem('currentUser'));
-            $('#profile-full-name-view, #profile-email-view').hide();
-            $('#profile-full-name-edit').val(userData.nombre).show();
-            $('#profile-email-edit').val(userData.correo).show();
+            $('#profile-full-name-view, #profile-email-view, #profile-phone-view, #profile-street-view, #profile-suburb-view, #profile-city-view, #profile-zip-view').hide();
+            $('#profile-full-name-edit, #profile-email-edit, #profile-phone-edit, #profile-street-edit, #profile-suburb-edit, #profile-city-edit, #profile-zip-edit').show();
             $('#btn-edit').hide();
             $('#btn-save, #btn-cancel').show();
         }
 
         function cancelarEdicion() {
             $('.edit-input').hide();
-            $('#profile-full-name-view, #profile-email-view').show();
+            $('#profile-full-name-view, #profile-email-view, #profile-phone-view, #profile-street-view, #profile-suburb-view, #profile-city-view, #profile-zip-view').show();
             $('#btn-edit').show();
             $('#btn-save, #btn-cancel').hide();
-        }
-
-        function guardarCambios() {
-            let userData = JSON.parse(localStorage.getItem('currentUser'));
-            userData.nombre = $('#profile-full-name-edit').val();
-            userData.correo = $('#profile-email-edit').val();
-
-            localStorage.setItem('currentUser', JSON.stringify(userData));
-            alert("Perfil actualizado correctamente.");
-            cancelarEdicion();
             cargarDatosUsuario();
         }
 
-        function cerrarSesion() {
-            localStorage.removeItem('currentUser');
-            window.location.href = "index.html";
+        function guardarCambios() {
+            const newName = $('#profile-full-name-edit').val().trim();
+            const newEmail = $('#profile-email-edit').val().trim();
+            
+            if (!newName || !newEmail) { alert("El nombre y el correo son obligatorios."); return; }
+
+            const targetBtn = $('#btn-save');
+            const originalHtml = targetBtn.html();
+            targetBtn.html('<i class="fa fa-spinner fa-spin"></i> Guardando...').prop('disabled', true);
+
+            const updateData = {
+                id: currentUser.id,
+                nombre: newName,
+                correo: newEmail,
+                telefono: $('#profile-phone-edit').val().trim(),
+                rol: currentUser.rol || 'usuario',
+                calle: $('#profile-street-edit').val().trim(),
+                colonia: $('#profile-suburb-edit').val().trim(), 
+                ciudad: $('#profile-city-edit').val().trim(),    
+                numeroCasa: 'S/N', 
+                codigoPostal: $('#profile-zip-edit').val().trim() || "0"
+            };
+
+            $.ajax({
+                url: 'api/clients.php',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(updateData),
+                success: function(res) {
+                    if(res.status === 'success') {
+                        currentUser.nombre = newName;
+                        currentUser.correo = newEmail; 
+                        currentUser.telefono = updateData.telefono;
+                        currentUser.calle = updateData.calle;
+                        currentUser.colonia = updateData.colonia;
+                        currentUser.ciudad = updateData.ciudad;
+                        currentUser.codigoPostal = updateData.codigoPostal;
+                        
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        
+                        cargarDatosUsuario(); 
+                        cancelarEdicion();
+                        alert("¡Perfil y dirección guardados con éxito para siempre!");
+                    } else {
+                        alert("Error del servidor: " + res.message);
+                    }
+                },
+                error: function(err) {
+                    console.error("Detalles del error AJAX:", err.responseText);
+                    alert("Error crítico al guardar. Revisa la consola.");
+                },
+                complete: function() {
+                    targetBtn.html(originalHtml).prop('disabled', false);
+                }
+            });
         }
+
+        // ==========================================
+        // 4. CARGA DE ORDENES (FUSIÓN MAESTRA WEB + ERP)
+        // ==========================================
         function cargarActividad() {
-    const userData = JSON.parse(localStorage.getItem('currentUser'));
-    if (!userData) return;
+            let userOrdersMap = {};
 
-    fetch(`api/actividad.php?nombre=${encodeURIComponent(userData.nombre)}`)
-        .then(res => res.json())
-        .then(data => {
+            // 1. CARGAMOS LOS PEDIDOS WEB (CON PRODUCTOS Y DETALLES EXACTOS)
+            $.getJSON(`api/actividad.php?nombre=${encodeURIComponent(currentUser.nombre)}`, function(data) {
+                if(data.status === "success" && data.pedidos) {
+                    data.pedidos.forEach(row => {
+                        const id = row.pedido_id;
+                        if(!userOrdersMap[id]) {
+                            userOrdersMap[id] = {
+                                id: id,
+                                display_id: id,
+                                fecha: row.fecha,
+                                estado: row.estado,
+                                total: row.total,
+                                metodo_pago: row.metodo_pago || 'Pago Web',
+                                items: []
+                            };
+                        }
+                        userOrdersMap[id].items.push({
+                            nombre: row.producto,
+                            cantidad: row.cantidad,
+                            subtotal: row.subtotal,
+                            precio_unitario: row.precio_unitario || row.precio
+                        });
+                    });
+                }
+                
+                // 2. UNA VEZ CARGADOS, VAMOS AL ERP A ROBARNOS EL ESTADO EN VIVO
+                sincronizarConERP(userOrdersMap);
 
-            /* ===== PEDIDOS ===== */
-            if (data.pedidos.length === 0) {
-                $('#mis-pedidos').html("<p>No tienes pedidos registrados.</p>");
-            } else {
-                let pedidosHTML = '<ul class="list-group">';
-                data.pedidos.forEach(p => {
+            }).fail(function() {
+                // Si falla la web por alguna razón, intentamos solo con el ERP
+                sincronizarConERP(userOrdersMap);
+            });
+        }
 
-                    let badge = "secondary";
-                    if (p.estado.toLowerCase() === "pendiente") badge = "warning";
-                    if (p.estado.toLowerCase() === "enviado") badge = "info";
-                    if (p.estado.toLowerCase() === "entregado") badge = "success";
-
-                    pedidosHTML += `
-                        <li class="list-group-item">
-                            <strong>${p.producto_nombre}</strong><br>
-                            Cantidad: ${p.cantidad} |
-                            Total: $${p.total} |
-                            Fecha: ${p.fecha}
-                            <span class="badge badge-${badge}" style="float:right;">
-                                ${p.estado}
-                            </span>
-                        </li>
-                    `;
+        function sincronizarConERP(userOrdersMap) {
+            $.getJSON('api/erp/ordenes.php', function(erpOrdenes) {
+                let misOrdenesERP = erpOrdenes.filter(o => o.cliente_id == currentUser.id || o.cliente == currentUser.nombre).sort((a,b) => b.id - a.id);
+                let webOrders = Object.values(userOrdersMap).sort((a,b) => b.id - a.id);
+                
+                // ZIP (Fusión): Emparejamos el pedido Web más reciente con el pedido ERP más reciente
+                webOrders.forEach((wo, index) => {
+                    if(misOrdenesERP[index]) {
+                        wo.estado = misOrdenesERP[index].estado; // Inyectamos el Estado en vivo del ERP
+                        wo.display_id = misOrdenesERP[index].id; // Inyectamos el Folio/ID del ERP
+                    }
                 });
-                pedidosHTML += '</ul>';
-                $('#mis-pedidos').html(pedidosHTML);
+
+                // Si por alguna razón el Admin creó pedidos directo en el ERP que no están en la Web
+                if(misOrdenesERP.length > webOrders.length) {
+                    for(let i = webOrders.length; i < misOrdenesERP.length; i++) {
+                        webOrders.push({
+                            id: 'erp_' + misOrdenesERP[i].id,
+                            display_id: misOrdenesERP[i].id,
+                            fecha: misOrdenesERP[i].fecha,
+                            estado: misOrdenesERP[i].estado,
+                            total: misOrdenesERP[i].total,
+                            metodo_pago: 'Generado en ERP',
+                            items: [] // Sin items porque el ERP no los suelta en esta ruta
+                        });
+                    }
+                }
+
+                allUserOrders = webOrders;
+                finalizarCargaPedidos();
+            }).fail(function() {
+                // Si el ERP falla o está desconectado, nos quedamos con lo de la Web
+                allUserOrders = Object.values(userOrdersMap).sort((a,b) => b.id - a.id);
+                finalizarCargaPedidos();
+            });
+        }
+
+        function finalizarCargaPedidos() {
+            if (allUserOrders.length === 0) {
+                $('#mis-pedidos').html(`
+                    <div class="text-center py-5 text-muted">
+                        <i class="fa fa-shopping-basket mb-3" style="font-size:50px; color:#d1d5db;"></i>
+                        <h4 style="font-weight:800; color:#15161D; margin-top:15px;">Aún no tienes pedidos</h4>
+                        <p style="font-weight:600; font-size:14px;">Explora nuestro catálogo y consiente a tu mascota.</p>
+                        <a href="general.html" class="btn btn-danger mt-3" style="font-weight:800; border-radius:10px; padding:10px 25px;"><i class="fa fa-shopping-bag"></i> Ir a la tienda</a>
+                    </div>
+                `);
+            } else {
+                renderPedidosHTML();
+            }
+        }
+
+
+        // ==========================================
+        // 5. RENDERIZADO DEL HTML DE LOS PEDIDOS
+        // ==========================================
+        function renderPedidosHTML() {
+            let pedidosHTML = '';
+            
+            allUserOrders.forEach(p => {
+                let estadoLimpio = p.estado ? p.estado.toLowerCase() : "pendiente";
+                let badgeClass = "badge-pendiente";
+                
+                if (estadoLimpio === "enviado") badgeClass = "badge-enviado"; 
+                else if (estadoLimpio === "entregado" || estadoLimpio === "procesada" || estadoLimpio === "procesado" || estadoLimpio === "completado") badgeClass = "badge-entregado"; 
+                else if (estadoLimpio === "cancelada" || estadoLimpio === "cancelado") badgeClass = "badge-cancelada"; 
+
+                let estadoTexto = estadoLimpio.charAt(0).toUpperCase() + estadoLimpio.slice(1);
+                const fecha = p.fecha ? (p.fecha.includes(' ') ? p.fecha.split(' ')[0] : p.fecha) : '—';
+
+                let itemsHTML = '';
+                if (p.items && p.items.length > 0) {
+                    p.items.forEach(item => {
+                        const qty = parseInt(item.cantidad) || 1;
+                        let pUnit = parseFloat(item.precio_unitario || item.precio || 0);
+                        if (pUnit === 0 && item.subtotal) pUnit = parseFloat(item.subtotal) / qty;
+                        itemsHTML += `
+                            <div class="product-item-row">
+                                <div><strong style="color:#D10024; margin-right:5px;">${qty}x</strong> <strong>${item.nombre || 'Producto'}</strong></div>
+                                <div style="font-weight:800;">$${(pUnit * qty).toFixed(2)}</div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    itemsHTML = `
+                        <div class="product-item-row">
+                            <div><strong style="color:#D10024; margin-right:5px;">1x</strong> <strong>Compra General (Ref: #${p.display_id})</strong></div>
+                            <div style="font-weight:800;">$${parseFloat(p.total || 0).toFixed(2)}</div>
+                        </div>
+                    `;
+                }
+
+                // ---- CONSTRUCCIÓN DEL TRACKER EXACTAMENTE IGUAL AL DEL ERP ----
+                let step1 = '', step2 = '', step3 = '', step4 = '';
+                let isCanceled = false;
+
+                if (estadoLimpio === 'cancelada' || estadoLimpio === 'cancelado') {
+                    isCanceled = true;
+                    step1 = step2 = step3 = step4 = 'cancel'; 
+                } else if (estadoLimpio === 'pendiente') {
+                    step1 = 'active';
+                } else if (estadoLimpio === 'procesada' || estadoLimpio === 'procesado' || estadoLimpio === 'completado') {
+                    step1 = 'active'; step2 = 'active';
+                } else if (estadoLimpio === 'enviado') {
+                    step1 = 'active'; step2 = 'active'; step3 = 'active';
+                } else if (estadoLimpio === 'entregado') {
+                    step1 = 'active'; step2 = 'active'; step3 = 'active'; step4 = 'active';
+                }
+
+                let timelineHTML = `
+                    <div class="track-container">
+                        <div class="track ${isCanceled ? 'canceled' : ''}">
+                            <div class="step ${step1}"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Recibido</span> </div>
+                            <div class="step ${step2}"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Preparando</span> </div>
+                            <div class="step ${step3}"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text">En Camino</span> </div>
+                            <div class="step ${step4}"> <span class="icon"> <i class="fa fa-home"></i> </span> <span class="text">Entregado</span> </div>
+                        </div>
+                    </div>
+                `;
+
+                // Botones de Factura
+                const infoFacturaGuardada = localStorage.getItem(`factura_orden_${p.display_id}`);
+                let botonesFacturaHTML = '';
+                let badgeFacturado = '';
+
+                if (infoFacturaGuardada) {
+                    badgeFacturado = `<span class="badge-status badge-facturado"><i class="fa fa-check"></i> FACTURADO</span>`;
+                    botonesFacturaHTML = `
+                        <button type="button" class="btn-invoice-view" onclick="procesarAccionFactura('${p.id}', 'ver', event)"><i class="fa fa-eye"></i> Ver Factura</button>
+                        <button type="button" class="btn-invoice-down" onclick="procesarAccionFactura('${p.id}', 'descargar', event)"><i class="fa fa-download"></i> Descargar PDF</button>
+                        <button type="button" class="btn-invoice-mail" onclick="abrirModalCorreo('${p.id}', event)"><i class="fa fa-envelope"></i> Enviar</button>
+                    `;
+                } else {
+                    botonesFacturaHTML = `
+                        <button type="button" class="btn-invoice-primary" onclick="abrirFormularioFactura('${p.id}', event)"><i class="fa fa-file-text"></i> Solicitar Factura</button>
+                    `;
+                }
+
+                pedidosHTML += `
+                    <div class="order-card status-${estadoLimpio}" id="order-card-${p.id}">
+                        <div class="order-header-main" onclick="toggleOrder('${p.id}')">
+                            <div class="order-info-brief">
+                                <div class="order-icon-box"><i class="fa fa-shopping-bag"></i></div>
+                                <div class="order-brief-details">
+                                    <h5>Pedido #${p.display_id}</h5>
+                                    <p><i class="fa fa-calendar-o"></i> Realizado: ${fecha}</p>
+                                    <a href="javascript:void(0);" class="order-details-btn">
+                                        Ver seguimiento <i class="fa fa-chevron-down order-toggle-icon" id="order-icon-${p.id}"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="order-status-col">
+                                <div class="order-total-price">$${parseFloat(p.total || 0).toFixed(2)}</div>
+                                <span class="badge-status ${badgeClass}">${estadoTexto}</span>
+                                ${badgeFacturado}
+                            </div>
+                        </div>
+                        <div class="order-body-content" id="order-body-${p.id}">
+                            ${timelineHTML}
+
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-2" style="border-bottom: 2px solid #eaeaea;">
+                                <h6 style="font-size:14px; color:#15161D; font-weight:800; margin:0;"><i class="fa fa-list"></i> DETALLE DE COMPRA:</h6>
+                            </div>
+                            <div id="order-items-${p.id}" style="margin-bottom: 20px;">
+                                ${itemsHTML}
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center pt-3" style="border-top: 2px solid #eaeaea;" id="botones-factura-${p.id}">
+                                ${botonesFacturaHTML}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            $('#mis-pedidos').html(pedidosHTML);
+        }
+
+        function toggleOrder(id) {
+            const content = $(`#order-body-${id}`);
+            const card = $(`#order-card-${id}`);
+
+            if (content.is(':visible')) {
+                content.slideUp(300);
+                card.removeClass('open');
+            } else {
+                content.slideDown(300);
+                card.addClass('open');
+            }
+        }
+
+        // ==========================================
+        // LÓGICA DE SOLICITUD DE FACTURA (CFDI 4.0)
+        // ==========================================
+        let ordenParaFacturar = null;
+
+        function abrirFormularioFactura(orderId, event) {
+            if(event) event.stopPropagation();
+            const order = allUserOrders.find(o => o.id == orderId);
+            if (!order) return;
+
+            ordenParaFacturar = order;
+
+            const datosFiscalesGlobales = JSON.parse(localStorage.getItem('mis_datos_fiscales_globales')) || {};
+            $('#bill-rfc').val(datosFiscalesGlobales.rfc || '');
+            $('#bill-nombre').val(datosFiscalesGlobales.nombre || currentUser.nombre);
+            $('#bill-cp').val(datosFiscalesGlobales.cp || currentUser.codigoPostal || currentUser.cp || '');
+            
+            if(datosFiscalesGlobales.uso_cfdi) $('#bill-uso-cfdi').val(datosFiscalesGlobales.uso_cfdi);
+            
+            let mPago = order.metodo_pago ? order.metodo_pago.toLowerCase() : '';
+            if (mPago.includes('tarjeta')) $('#bill-forma-pago').val('04');
+            else if (mPago.includes('efectivo')) $('#bill-forma-pago').val('01');
+            else $('#bill-forma-pago').val('03'); 
+
+            if (!order.items || order.items.length === 0) {
+                const targetBtn = $(event.currentTarget);
+                const prevHTML = targetBtn.html();
+                targetBtn.html('<i class="fa fa-spinner fa-spin"></i> Cargando...').prop('disabled', true);
+                
+                $.getJSON(`api/erp/ordenes.php?id=${order.display_id}`, function(data) {
+                    order.items = data.detalle || [];
+                    $('#billingFormModal').modal('show');
+                }).always(function() {
+                    targetBtn.html(prevHTML).prop('disabled', false);
+                });
+            } else {
+                $('#billingFormModal').modal('show');
+            }
+        }
+
+        function generarFacturaDesdeFormulario(e) {
+            e.preventDefault();
+            
+            const facturacionData = {
+                rfc: $('#bill-rfc').val().trim().toUpperCase(),
+                nombre: $('#bill-nombre').val().trim().toUpperCase(),
+                cp: $('#bill-cp').val().trim(),
+                uso_cfdi: $('#bill-uso-cfdi option:selected').text(),
+                forma_pago: $('#bill-forma-pago option:selected').text(),
+                metodo_pago: 'PUE - Pago en una sola exhibición'
+            };
+
+            ordenParaFacturar.facturacion = facturacionData;
+
+            localStorage.setItem(`factura_orden_${ordenParaFacturar.display_id}`, JSON.stringify(facturacionData));
+            localStorage.setItem('mis_datos_fiscales_globales', JSON.stringify({
+                rfc: facturacionData.rfc,
+                nombre: facturacionData.nombre,
+                cp: facturacionData.cp,
+                uso_cfdi: $('#bill-uso-cfdi').val()
+            }));
+
+            const botonesHTML = `
+                <button type="button" class="btn-invoice-view" onclick="procesarAccionFactura('${ordenParaFacturar.id}', 'ver', event)"><i class="fa fa-eye"></i> Ver Factura</button>
+                <button type="button" class="btn-invoice-down" onclick="procesarAccionFactura('${ordenParaFacturar.id}', 'descargar', event)"><i class="fa fa-download"></i> Descargar PDF</button>
+                <button type="button" class="btn-invoice-mail" onclick="abrirModalCorreo('${ordenParaFacturar.id}', event)"><i class="fa fa-envelope"></i> Enviar</button>
+            `;
+            $(`#botones-factura-${ordenParaFacturar.id}`).html(botonesHTML);
+            
+            if ($(`#order-card-${ordenParaFacturar.id} .badge-facturado`).length === 0) {
+                $(`#order-card-${ordenParaFacturar.id} .order-status-col`).append(`<span class="badge-status badge-facturado"><i class="fa fa-check"></i> FACTURADO</span>`);
             }
 
-            /* ===== CHATS ===== */
-            if (data.chats.length === 0) {
-                $('#mis-chats').html("<p>No tienes conversaciones.</p>");
-            } else {
-                let chatsHTML = '<ul class="list-group">';
-                data.chats.forEach(c => {
+            $('#billingFormModal').modal('hide');
+            procesarAccionFactura(ordenParaFacturar.id, 'ver', null);
+        }
 
-                    let origenColor = c.origen === "admin" ? "danger" : "primary";
+        // ==========================================
+        // LÓGICA DE ENVÍO POR CORREO
+        // ==========================================
+        let ordenParaCorreo = null;
 
-                    chatsHTML += `
-                        <li class="list-group-item">
-                            <span class="badge badge-${origenColor}">
-                                ${c.origen.toUpperCase()}
-                            </span>
-                            ${c.mensaje}<br>
-                            <small>${c.fecha}</small>
-                        </li>
+        function abrirModalCorreo(orderId, event) {
+            if(event) event.stopPropagation();
+            ordenParaCorreo = allUserOrders.find(o => o.id == orderId);
+            if(!ordenParaCorreo) return;
+
+            $('#email-destino').val(currentUser.correo);
+            $('#emailInvoiceModal').modal('show');
+        }
+
+        function enviarFacturaPorCorreo(e) {
+            e.preventDefault();
+            const emailDestino = $('#email-destino').val().trim();
+            const btn = $('#btn-send-email-modal');
+            const originalText = btn.html();
+
+            if(!ordenParaCorreo) return;
+
+            btn.html('<i class="fa fa-spinner fa-spin"></i> Enviando...').prop('disabled', true);
+
+            const facturaHTMLCompleta = construirFacturaHTML(ordenParaCorreo, true);
+            const htmlBase64 = window.btoa(unescape(encodeURIComponent(facturaHTMLCompleta)));
+
+            $.ajax({
+                url: 'api/enviar_factura.php',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    correo_destino: emailDestino,
+                    asunto: `Tu Factura CFDI - Pet Palace (Orden #${ordenParaCorreo.display_id})`,
+                    html_content: htmlBase64 
+                }),
+                success: function(res) {
+                    if(res.status === 'success') {
+                        alert(`¡Factura enviada exitosamente a ${emailDestino}!`);
+                    } else if(res.status === 'warning') {
+                        alert("Simulación de envío: " + res.message + "\n\n(Se intentó enviar a: " + emailDestino + ")");
+                    } else {
+                        alert("Error al enviar: " + res.message);
+                    }
+                },
+                error: function(xhr) {
+                    console.error("Error en la petición de correo:", xhr.responseText);
+                    alert("Hubo un error de conexión al intentar enviar el correo.");
+                },
+                complete: function() {
+                    $('#emailInvoiceModal').modal('hide');
+                    btn.html(originalText).prop('disabled', false);
+                }
+            });
+        }
+
+        // ==========================================
+        // LÓGICA DE FACTURACIÓN (CORRECCIÓN DE IVA 100%)
+        // ==========================================
+        function construirFacturaHTML(order, esParaDescarga = false) {
+            const fecha = order.fecha ? (order.fecha.includes(' ') ? order.fecha.split(' ')[0] : order.fecha) : '—';
+            
+            let bill = order.facturacion;
+            if(!bill) {
+                const guardado = localStorage.getItem(`factura_orden_${order.display_id}`);
+                if(guardado) bill = JSON.parse(guardado);
+            }
+            if(!bill) bill = {};
+
+            const rfc = bill.rfc || 'XAXX010101000';
+            const rZocial = bill.nombre || currentUser.nombre;
+            const cpFiscal = bill.cp || currentUser.codigoPostal || '00000';
+            const usoCfdi = bill.uso_cfdi || 'G03 - Gastos en general';
+            const formaPago = bill.forma_pago || '04 - Tarjeta de crédito';
+            const metodoPago = bill.metodo_pago || 'PUE - Pago en una sola exhibición';
+
+            let sumaItems = 0;
+            let itemsHTML = '';
+            
+            if (order.items && order.items.length > 0) {
+                order.items.forEach(item => {
+                    let qty = parseInt(item.cantidad) || 1;
+                    let pUnit = parseFloat(item.precio_unitario || item.precio || 0);
+                    if (pUnit === 0 && item.subtotal) pUnit = parseFloat(item.subtotal) / qty;
+                    
+                    let itemTotal = pUnit * qty;
+                    sumaItems += itemTotal;
+                    
+                    itemsHTML += `
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px; font-size: 13px; color: #000;">${item.nombre || 'Producto'}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: center; font-size: 13px; color: #000;">${qty}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right; font-size: 13px; color: #000;">$${pUnit.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right; font-size: 13px; font-weight: bold; color: #000;">$${itemTotal.toFixed(2)}</td>
+                        </tr>
                     `;
                 });
-                chatsHTML += '</ul>';
-                $('#mis-chats').html(chatsHTML);
+            } else {
+                sumaItems = parseFloat(order.total || 0);
+                itemsHTML = `
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px; font-size: 13px; color: #000;">Compra General</td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: center; font-size: 13px; color: #000;">1</td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: right; font-size: 13px; color: #000;">$${sumaItems.toFixed(2)}</td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: right; font-size: 13px; font-weight: bold; color: #000;">$${sumaItems.toFixed(2)}</td>
+                    </tr>
+                `;
             }
 
+            // CORRECCIÓN MATEMÁTICA DEL IVA (Suma el 16% EN CIMA del costo de los productos)
+            let subtotalBase = sumaItems;
+            let calcIva = subtotalBase * 0.16;
+            let finalTotalBD = subtotalBase + calcIva;
+            
+            const widthCSS = esParaDescarga ? 'width: 100%;' : 'width: 100%;';
+
+            return `
+            <div style="font-family: Arial, Helvetica, sans-serif; background-color: #ffffff; color: #000000; padding: 20px; box-sizing: border-box; margin: 0 auto; ${widthCSS}">
+                <table style="width: 100%; border-bottom: 2px solid #D10024; padding-bottom: 15px; margin-bottom: 20px; border-collapse: collapse;">
+                    <tr>
+                        <td style="vertical-align: top; width: 60%; text-align: left;">
+                            <h2 style="color: #000; margin: 0; font-size: 24px; font-weight: bold;">PET PALACE</h2>
+                            <p style="margin: 5px 0 0 0; color: #333; font-size: 12px;">Av. Adolfo López Mateos, Aguascalientes</p>
+                            <p style="margin: 2px 0 0 0; color: #333; font-size: 12px;">RFC: PPA190520ABC</p>
+                            <p style="margin: 2px 0 0 0; color: #333; font-size: 12px;">Régimen Fiscal: 601 - General de Ley Personas Morales</p>
+                        </td>
+                        <td style="vertical-align: top; text-align: right; width: 40%;">
+                            <h1 style="color: #D10024; margin: 0; font-size: 32px; font-weight: bold;">FACTURA</h1>
+                            <p style="margin: 8px 0 0 0; font-weight: bold; font-size: 14px; color: #000;">Folio #${order.display_id}</p>
+                            <p style="margin: 2px 0 0 0; color: #333; font-size: 12px;">Fecha Emisión: ${fecha}</p>
+                        </td>
+                    </tr>
+                </table>
+
+                <table style="width: 100%; margin-bottom: 20px; border-collapse: collapse;">
+                    <tr>
+                        <td style="background-color: #f5f5f5; padding: 15px; border: 1px solid #ddd;">
+                            <h4 style="color: #15161D; margin: 0 0 10px 0; font-size: 13px; text-transform: uppercase; font-weight: bold;">Datos Fiscales del Receptor</h4>
+                            <div style="display:flex; justify-content:space-between;">
+                                <div style="width: 50%;">
+                                    <p style="margin: 0 0 5px 0; font-size: 12px; color: #000;"><strong>Razón Social:</strong> ${rZocial}</p>
+                                    <p style="margin: 0 0 5px 0; font-size: 12px; color: #000;"><strong>RFC:</strong> ${rfc}</p>
+                                    <p style="margin: 0 0 5px 0; font-size: 12px; color: #000;"><strong>C.P. Fiscal:</strong> ${cpFiscal}</p>
+                                </div>
+                                <div style="width: 50%;">
+                                    <p style="margin: 0 0 5px 0; font-size: 12px; color: #000;"><strong>Uso de CFDI:</strong> ${usoCfdi}</p>
+                                    <p style="margin: 0 0 5px 0; font-size: 12px; color: #000;"><strong>Forma de Pago:</strong> ${formaPago}</p>
+                                    <p style="margin: 0; font-size: 12px; color: #000;"><strong>Método de Pago:</strong> ${metodoPago}</p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                    <thead>
+                        <tr style="background-color: #000000; color: #ffffff;">
+                            <th style="padding: 10px; font-size: 12px; text-transform: uppercase; text-align: left; border: 1px solid #000;">Descripción</th>
+                            <th style="padding: 10px; font-size: 12px; text-transform: uppercase; text-align: center; width: 10%; border: 1px solid #000;">Cant.</th>
+                            <th style="padding: 10px; font-size: 12px; text-transform: uppercase; text-align: right; width: 20%; border: 1px solid #000;">Precio Unit.</th>
+                            <th style="padding: 10px; font-size: 12px; text-transform: uppercase; text-align: right; width: 20%; border: 1px solid #000;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHTML}
+                    </tbody>
+                </table>
+
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="width: 50%;"></td>
+                        <td style="width: 50%; padding: 0;">
+                            <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                <tr>
+                                    <td style="padding: 10px; text-align: right; font-size: 13px; color: #333; border-bottom: 1px solid #ddd;">Subtotal:</td>
+                                    <td style="padding: 10px; text-align: right; font-weight: bold; font-size: 13px; border-bottom: 1px solid #ddd; color: #000;">$${subtotalBase.toFixed(2)}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px; text-align: right; font-size: 13px; color: #333; border-bottom: 1px solid #ddd;">IVA (16%):</td>
+                                    <td style="padding: 10px; text-align: right; font-weight: bold; font-size: 13px; border-bottom: 1px solid #ddd; color: #000;">$${calcIva.toFixed(2)}</td>
+                                </tr>
+                                <tr style="background-color: #f5f5f5;">
+                                    <td style="padding: 12px 10px; text-align: right; font-weight: bold; font-size: 15px; color: #000; text-transform: uppercase;">Total General:</td>
+                                    <td style="padding: 12px 10px; text-align: right; font-weight: bold; font-size: 16px; color: #D10024;">$${finalTotalBD.toFixed(2)}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <div style="margin-top: 40px; text-align: center; color: #666; font-size: 11px; padding-top: 15px; border-top: 1px solid #ddd;">
+                    <p style="margin: 0;"><strong>¡Gracias por tu compra en Pet Palace!</strong></p>
+                    <p style="margin: 3px 0 0 0;">Este documento es una representación impresa de un CFDI válido.</p>
+                </div>
+            </div>
+            `;
+        }
+
+        function procesarAccionFactura(orderId, accion, event) {
+            if(event) event.stopPropagation(); 
+            
+            const order = allUserOrders.find(o => o.id == orderId);
+            if (!order) return;
+
+            ordenParaFacturar = order;
+            const facturaHTML = construirFacturaHTML(order, false);
+
+            if (accion === 'ver') {
+                $('#invoice-render-area').html(facturaHTML);
+                $('#invoiceModal').modal('show');
+            } else if (accion === 'descargar') {
+                const targetBtn = $(event.currentTarget);
+                const prevHTML = targetBtn.html();
+                targetBtn.html('<i class="fa fa-spinner fa-spin"></i> Generando...').prop('disabled', true);
+                
+                generarPDFNativo(order);
+                
+                setTimeout(() => targetBtn.html(prevHTML).prop('disabled', false), 1500);
+            }
+        }
+
+        function ejecutarDescargaPDFDesdeModal() {
+            if (ordenParaFacturar) {
+                generarPDFNativo(ordenParaFacturar);
+            } else {
+                const htmlStr = $('#invoice-render-area').html();
+                const folioMatch = htmlStr.match(/Folio #(\d+)/);
+                if(folioMatch && folioMatch[1]) {
+                    const orderId = parseInt(folioMatch[1]);
+                    const order = allUserOrders.find(o => o.display_id == orderId || o.id == orderId);
+                    if(order) generarPDFNativo(order);
+                }
+            }
+        }
+
+        function generarPDFNativo(order) {
+            const htmlString = construirFacturaHTML(order, true);
+            const ventanaImpresion = window.open('', '_blank');
+            
+            ventanaImpresion.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Factura_CFDI_${order.display_id}</title>
+                    <style>
+                        body { 
+                            -webkit-print-color-adjust: exact !important; 
+                            print-color-adjust: exact !important; 
+                            color-adjust: exact !important;
+                            margin: 0; 
+                            padding: 0;
+                        }
+                        @media print {
+                            @page { margin: 10mm; size: auto; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${htmlString}
+                    <script>
+                        window.onload = function() {
+                            setTimeout(function() {
+                                window.print();
+                            }, 500);
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            ventanaImpresion.document.close();
+        }
+
+        // =================================================================
+        // VERIFICADOR GLOBAL DE BADGES (SEPARA MENSAJES DE QUEJAS)
+        // =================================================================
+        function verificarBadges() {
+            if(!currentUser) return;
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                const unread = data.filter(n => n.estado !== 'leido' && n.origen === 'admin');
+                
+                const unreadMensajes = unread.filter(n => n.tipo !== 'queja'); 
+                const unreadQuejas = unread.filter(n => n.tipo === 'queja');
+
+                if(unreadMensajes.length > 0) $('#msg-badge').text(unreadMensajes.length).show(); 
+                else $('#msg-badge').hide();
+
+                if(unreadQuejas.length > 0) $('#support-badge').text(unreadQuejas.length).show(); 
+                else $('#support-badge').hide();
+            });
+        }
+
+        // =================================================================
+        // LÓGICA DEL CHAT DE MENSAJES NORMALES (VENTAS / HISTORIAL ORIGINAL)
+        // =================================================================
+        function toggleChatWidget(e) {
+            if(e) { e.preventDefault(); e.stopPropagation(); }
+            const widget = $('#chat-widget');
+            $('#support-widget').hide(); 
+            
+            if (widget.is(':visible')) {
+                widget.css('opacity', '0');
+                setTimeout(() => widget.hide(), 300);
+                if(chatPollInterval) clearInterval(chatPollInterval);
+            } else {
+                widget.show();
+                setTimeout(() => widget.css('opacity', '1'), 10);
+                widget.css('display', 'flex'); 
+                mostrarBandeja(); 
+            }
+        }
+
+        function mostrarBandeja() {
+            currentView = 'inbox';
+            $('#chatBackBtn').hide();
+            $('#headerAvatar').html('<i class="fa fa-envelope"></i>');
+            $('#chatTitle').text('Mensajes');
+            $('#chatSubtitle').text('Bandeja de Entrada');
+            $('#chatFooter').hide();
+            
+            if(chatPollInterval) clearInterval(chatPollInterval);
+            cargarBandejaChat();
+            chatPollInterval = setInterval(cargarBandejaChat, 5000);
+        }
+
+        function cargarBandejaChat() {
+            if(!currentUser || currentView !== 'inbox') return;
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                const $box = $('#chatBody');
+
+                const chatsOnly = data.filter(m => m.tipo !== 'queja');
+
+                if(chatsOnly.length === 0) {
+                    $box.html('<div class="text-center py-5 text-muted" style="margin-top:50px;">Aún no tienes mensajes.<br><button class="btn btn-chat-send mx-auto mt-3" style="width:auto; padding:10px 20px; border-radius:20px; font-size:14px; font-weight:bold;" onclick="entrarAlChat()">Contactar Vendedor</button></div>');
+                    return;
+                }
+
+                const adminMsgs = chatsOnly.filter(m => m.origen === 'admin');
+                const unreadCount = adminMsgs.filter(n => n.estado !== 'leido').length;
+                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                
+                let senderName = "Vendedor Pet Palace"; 
+                if (adminMsgs.length > 0 && adminMsgs[0].remitente) senderName = adminMsgs[0].remitente;
+
+                chatsOnly.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                const lastMsg = chatsOnly[0];
+                const time = lastMsg.fecha.substring(11, 16);
+                const preview = (lastMsg.origen === 'cliente' ? 'Tú: ' : '') + lastMsg.mensaje;
+                const unreadDot = unreadCount > 0 ? '<div class="unread-dot"></div>' : '';
+                const boldStyle = unreadCount > 0 ? 'font-weight:800; color:#15161D;' : '';
+
+                const html = `
+                    <ul class="inbox-list">
+                        <li class="inbox-item" onclick="entrarAlChat()">
+                            <div class="inbox-avatar avatar-chat"><i class="fa fa-envelope"></i></div>
+                            <div class="inbox-details">
+                                <div class="inbox-top">
+                                    <span class="inbox-name">${senderName}</span>
+                                    <span class="inbox-time">${time}</span>
+                                </div>
+                                <div class="inbox-msg" style="${boldStyle}">${preview}</div>
+                            </div>
+                            ${unreadDot}
+                        </li>
+                    </ul>`;
+                $box.html(html);
+            });
+        }
+
+        function entrarAlChat() {
+            currentView = 'chat';
+            $('#chatBackBtn').show();
+            $('#chatFooter').css('display', 'flex'); 
+            cargarConversacion(false);
+            if(chatPollInterval) clearInterval(chatPollInterval);
+            chatPollInterval = setInterval(() => cargarConversacion(true), 3000);
+            marcarTodoLeido();
+        }
+
+        function cargarConversacion(silent = false) {
+            if(!currentUser || currentView !== 'chat') return;
+            const $box = $('#chatBody');
+            const isAtBottom = ($box.scrollTop() + $box.innerHeight() >= $box[0].scrollHeight - 60);
+
+            if(!silent) $box.html('<div class="text-center py-5"><i class="fa fa-circle-o-notch fa-spin text-muted fa-2x"></i></div>');
+
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                let finalTitle = "Vendedor Pet Palace";
+                
+                const chatsOnly = data.filter(m => m.tipo !== 'queja');
+
+                const adminMsgs = chatsOnly.filter(m => m.origen === 'admin');
+                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                if (adminMsgs.length > 0 && adminMsgs[0].remitente) finalTitle = adminMsgs[0].remitente;
+                
+                $('#chatTitle').text(finalTitle);
+                $('#chatSubtitle').text('En línea');
+                chatsOnly.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+                let html = '<div style="margin-top:auto;">'; 
+                if(chatsOnly.length === 0) html += '<div class="text-center text-muted small mt-3 font-weight-bold">¡Hola! ¿En qué podemos ayudarte hoy?</div>';
+
+                chatsOnly.forEach(n => {
+                    const isMe = (n.origen === 'cliente');
+                    const rowClass = isMe ? 'outgoing' : 'incoming';
+                    const nameLabel = !isMe ? `<span class="msg-name-label">${n.remitente || 'Vendedor'}</span>` : '';
+
+                    html += `
+                        <div class="message-row ${rowClass}">
+                            <div class="message-content-wrapper">
+                                ${nameLabel}
+                                <div class="message-bubble ${isMe ? 'bubble-chat' : ''}">
+                                    ${n.mensaje}
+                                    <span class="msg-time">${n.fecha.substring(11, 16)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                if(silent) {
+                    if($box.html() !== html) {
+                        $box.html(html);
+                        if(isAtBottom) $box.scrollTop($box[0].scrollHeight);
+                    }
+                } else {
+                    $box.html(html);
+                    $box.scrollTop($box[0].scrollHeight); 
+                }
+            });
+        }
+
+        function enviarMensajeChat() {
+            const txt = $('#chatInputMain').val().trim();
+            if(!txt) return;
+            $('#chatInputMain').val('').focus(); 
+            
+            const tiempoActual = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const tempMsg = `
+                <div class="message-row outgoing">
+                    <div class="message-content-wrapper">
+                        <div class="message-bubble bubble-chat" style="opacity:0.7;">
+                            ${txt}
+                            <span class="msg-time">${tiempoActual}</span>
+                        </div>
+                    </div>
+                </div>`;
+            $('#chatBody').append(tempMsg);
+            $('#chatBody').scrollTop($('#chatBody')[0].scrollHeight);
+
+            $.ajax({
+                url: 'api/notifications.php', 
+                type: 'POST', 
+                contentType: 'application/json',
+                data: JSON.stringify({ user_id: currentUser.id, sender_id: currentUser.id, message: txt, origen: 'cliente', type: 'mensaje' }),
+                success: function() { cargarConversacion(true); }
+            });
+        }
+
+        $('#chatInputMain').on('keypress', function(e) { 
+            if(e.which === 13) { e.preventDefault(); enviarMensajeChat(); }
         });
-}
 
+        function marcarTodoLeido() {
+            if(!currentUser) return;
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                data.filter(n => n.estado !== 'leido' && n.origen === 'admin' && n.tipo !== 'queja').forEach(m => {
+                    $.ajax({ url: 'api/notifications.php', type: 'PUT', contentType: 'application/json', data: JSON.stringify({ id: m.id, estado: 'leido' }) });
+                });
+                verificarBadges();
+            });
+        }
+
+
+        // =================================================================
+        // LÓGICA DEL WIDGET DE SOPORTE (CAMPANA - SOLO LECTURA)
+        // =================================================================
+        function toggleSupportWidget(e) {
+            if(e) { e.preventDefault(); e.stopPropagation(); }
+            const widget = $('#support-widget');
+            $('#chat-widget').hide(); 
+            
+            if (widget.is(':visible')) {
+                widget.css('opacity', '0');
+                setTimeout(() => widget.hide(), 300);
+                if(supportPollInterval) clearInterval(supportPollInterval);
+            } else {
+                widget.show();
+                setTimeout(() => widget.css('opacity', '1'), 10);
+                widget.css('display', 'flex'); 
+                mostrarBandejaSupport(); 
+            }
+        }
+
+        function mostrarBandejaSupport() {
+            currentViewSupport = 'inbox';
+            $('#supportBackBtn').hide();
+            $('#supportHeaderAvatar').html('<i class="fa fa-bell"></i>');
+            $('#supportTitle').text('Notificaciones');
+            $('#supportSubtitle').text('Respuestas a tus tickets');
+            
+            if(supportPollInterval) clearInterval(supportPollInterval);
+            cargarBandejaSupport();
+            supportPollInterval = setInterval(cargarBandejaSupport, 5000);
+        }
+
+        function cargarBandejaSupport() {
+            if(!currentUser || currentViewSupport !== 'inbox') return;
+
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                const $box = $('#supportBody');
+                const quejasOnly = data.filter(m => m.tipo === 'queja');
+
+                if(quejasOnly.length === 0) {
+                    $box.html('<div class="text-center py-5 text-muted" style="margin-top:50px;">No tienes notificaciones de soporte.</div>');
+                    return;
+                }
+
+                const adminMsgs = quejasOnly.filter(m => m.origen === 'admin');
+                const unreadCount = adminMsgs.filter(n => n.estado !== 'leido').length;
+                
+                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                let senderName = "Soporte Pet Palace"; 
+                if (adminMsgs.length > 0 && adminMsgs[0].remitente) {
+                    senderName = adminMsgs[0].remitente;
+                }
+
+                quejasOnly.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                const lastMsg = quejasOnly[0];
+                const time = lastMsg.fecha.substring(11, 16);
+                let preview = lastMsg.mensaje;
+                
+                if(lastMsg.origen === 'cliente') {
+                    const idx = preview.indexOf('\nMensaje: ');
+                    if(idx !== -1) preview = "Tú: " + preview.substring(idx + 10);
+                    else preview = "Tú: " + preview;
+                }
+
+                const unreadDot = unreadCount > 0 ? '<div class="unread-dot"></div>' : '';
+                const boldStyle = unreadCount > 0 ? 'font-weight:700; color:#000;' : '';
+
+                const html = `
+                    <ul class="inbox-list">
+                        <li class="inbox-item" onclick="entrarAlChatSupport()">
+                            <div class="inbox-avatar avatar-support"><i class="fa fa-ticket"></i></div>
+                            <div class="inbox-details">
+                                <div class="inbox-top">
+                                    <span class="inbox-name">${senderName}</span>
+                                    <span class="inbox-time">${time}</span>
+                                </div>
+                                <div class="inbox-msg" style="${boldStyle}">${preview}</div>
+                            </div>
+                            ${unreadDot}
+                        </li>
+                    </ul>`;
+                $box.html(html);
+            });
+        }
+
+        function entrarAlChatSupport() {
+            currentViewSupport = 'chat';
+            $('#supportBackBtn').show();
+            
+            cargarConversacionSupport(false);
+            if(supportPollInterval) clearInterval(supportPollInterval);
+            supportPollInterval = setInterval(() => cargarConversacionSupport(true), 3000);
+            marcarLeidoSupport();
+        }
+
+        function cargarConversacionSupport(silent = false) {
+            if(!currentUser || currentViewSupport !== 'chat') return;
+            const $box = $('#supportBody');
+            const isAtBottom = ($box.scrollTop() + $box.innerHeight() >= $box[0].scrollHeight - 60);
+
+            if(!silent) $box.html('<div class="text-center py-5"><i class="fa fa-circle-o-notch fa-spin text-muted"></i></div>');
+
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                let finalTitle = "Soporte Pet Palace";
+                
+                const quejasOnly = data.filter(m => m.tipo === 'queja');
+
+                const adminMsgs = quejasOnly.filter(m => m.origen === 'admin');
+                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+                if (adminMsgs.length > 0 && adminMsgs[0].remitente) finalTitle = adminMsgs[0].remitente;
+                
+                $('#supportTitle').text(finalTitle);
+                $('#supportSubtitle').text('Ticket Activo');
+
+                quejasOnly.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+                let html = '<div style="margin-top:auto;">'; 
+
+                quejasOnly.forEach(n => {
+                    const isMe = (n.origen === 'cliente');
+                    const rowClass = isMe ? 'outgoing' : 'incoming';
+                    const nameLabel = !isMe ? `<span class="msg-name-label">${n.remitente || 'Soporte'}</span>` : '';
+
+                    html += `
+                        <div class="message-row ${rowClass}">
+                            <div class="message-content-wrapper" style="max-width:85%;">
+                                ${nameLabel}
+                                <div class="message-bubble ${isMe ? 'bubble-support' : ''}" style="white-space:pre-wrap;">
+                                    ${n.mensaje}
+                                    <span class="msg-time">${n.fecha.substring(11, 16)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                if(silent) {
+                    if($box.html() !== html) {
+                        $box.html(html);
+                        if(isAtBottom) $box.scrollTop($box[0].scrollHeight);
+                    }
+                } else {
+                    $box.html(html);
+                    $box.scrollTop($box[0].scrollHeight); 
+                }
+            });
+        }
+
+        function marcarLeidoSupport() {
+            if(!currentUser) return;
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                data.filter(n => n.estado !== 'leido' && n.origen === 'admin' && n.tipo === 'queja').forEach(m => {
+                    $.ajax({ url: 'api/notifications.php', type: 'PUT', contentType: 'application/json', data: JSON.stringify({ id: m.id, estado: 'leido' }) });
+                });
+                verificarBadges();
+            });
+        }
+
+        function cerrarSesionIndex() {
+            localStorage.removeItem('currentUser');
+            window.location.href = "login.html";
+        }
+        function cerrarSesion() { cerrarSesionIndex(); }
     </script>
 </body>
 </html>
