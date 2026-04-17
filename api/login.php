@@ -1,7 +1,7 @@
 <?php
 // api/login.php
 require 'db.php';
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
@@ -17,7 +17,8 @@ if (empty($correo) || empty($pass)) {
     exit;
 }
 
-$stmt = $conn->prepare("SELECT id, nombre, password, rol, estado FROM usuarios WHERE correo = ?");
+// AHORA PEDIMOS TODAS LAS COLUMNAS A LA BASE DE DATOS
+$stmt = $conn->prepare("SELECT id, nombre, correo, telefono, password, rol, estado, calle, colonia, ciudad, numeroCasa, codigoPostal FROM usuarios WHERE correo = ?");
 $stmt->bind_param("s", $correo);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -39,9 +40,15 @@ if ($result->num_rows > 0) {
         echo json_encode([
             "status" => "success",
             "data"   => [
-                "id"     => $user['id'],
-                "nombre" => $user['nombre'],
-                "rol"    => $user['rol']
+                "id"           => $user['id'],
+                "nombre"       => $user['nombre'],
+                "correo"       => $user['correo'],
+                "rol"          => $user['rol'],
+                "telefono"     => $user['telefono'] ?? '',
+                "calle"        => $user['calle'] ?? '',
+                "colonia"      => $user['colonia'] ?? '',
+                "ciudad"       => $user['ciudad'] ?? '',
+                "codigoPostal" => $user['codigoPostal'] ?? ''
             ]
         ]);
     } else {

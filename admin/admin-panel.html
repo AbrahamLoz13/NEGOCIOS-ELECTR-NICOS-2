@@ -137,23 +137,25 @@
             <p id="rolDisplay">Verificando...</p>
         </div>
         <ul class="nav-sidebar">
-            <li class="active"><a href="#"><i class="fa fa-chart-pie"></i> Dashboard</a></li>
-            <li><a href="clients.html"><i class="fa fa-users"></i> Clientes</a></li>
-            <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
-            <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
-            <li><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
-            <li><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
-            <li><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
-            <li><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
-            <li><a href="erp-roles.html"><i class="fa fa-user-shield"></i> Roles ERP</a></li>
+            <li class="active admin-only vendor-only" style="display:none;"><a href="#"><i class="fa fa-chart-pie"></i> Dashboard</a></li>
+            
+            <li class="support-visible" style="display:none;"><a href="clients.html"><i class="fa fa-users"></i> Clientes</a></li>
+            
+            <li class="admin-only vendor-only logistica-only" style="display:none;"><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
+            <li class="admin-only vendor-only" style="display:none;"><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
+            <li class="admin-only logistica-only" style="display:none;"><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
+            <li class="admin-only logistica-only" style="display:none;"><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
+            <li class="admin-only" style="display:none;"><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
+            <li class="admin-only logistica-only" style="display:none;"><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
+            <li class="admin-only" style="display:none;"><a href="erp-roles.html"><i class="fa fa-user-shield"></i> Roles ERP</a></li>
 
             <hr>
-            <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
-            <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+            <li class="support-visible" style="display:none;"><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
+            <li class="support-visible" style="display:none;"><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
         </ul>
     </nav>
 
-    <main>
+    <main id="main-content">
         
         <div class="top-bar">
             <div class="page-title">
@@ -322,10 +324,6 @@
 
         $(document).ready(function() {
             verificarUsuario();
-            cargarDatosDashboard();
-            
-            // Iniciar mostrando Pedidos (Ventas)
-            mostrarSeccion('pedidos');
         });
 
         // 1. VERIFICACIÓN DE ROL
@@ -334,8 +332,13 @@
                 const user = JSON.parse(localStorage.getItem('currentUser'));
                 if (!user) { window.location.href = '../login.html'; return; }
                 
-                userRole = user.rol;
-                const roleName = userRole === 'admin' ? 'Administrador' : 'Vendedor Autorizado';
+                userRole = (user.rol || 'usuario').toLowerCase();
+                
+                let roleName = 'Usuario';
+                if (userRole === 'admin') roleName = 'Administrador';
+                else if (userRole === 'vendedor') roleName = 'Vendedor Autorizado';
+                else if (userRole === 'soporte') roleName = 'Soporte Técnico';
+                else if (userRole === 'logistica') roleName = 'Logística';
                 
                 // Header Profile
                 const primerNombre = user.nombre ? user.nombre.split(' ')[0] : 'Usuario';
@@ -344,6 +347,34 @@
                 $('#userInitial').text(primerNombre.charAt(0).toUpperCase());
                 $('#rolDisplay').text(roleName);
                 $('#welcomeMsg').text(`Hola, ${primerNombre}`);
+
+                // LÓGICA DE OCULTAR ELEMENTOS DEL SIDEBAR
+                $('.support-visible').show(); // Todos ven Clientes, Ver Tienda, Cerrar Sesión
+
+                if (userRole === 'admin') {
+                    // Admin ve todo
+                    $('.admin-only, .vendor-only, .logistica-only').show(); 
+                    cargarDatosDashboard();
+                    mostrarSeccion('pedidos');
+                } else if (userRole === 'vendedor') {
+                    // Vendedor ve Dashboard, Productos, Pedidos
+                    $('.vendor-only').show();
+                    cargarDatosDashboard();
+                    mostrarSeccion('pedidos');
+                } else if (userRole === 'logistica') {
+                    // Logistica ve Inventario, Proveedores, Movimientos, Ordenes ERP
+                    $('.logistica-only').show();
+                    // Si un logístico entra aquí por error, mandarlo a su panel principal
+                    window.location.href = 'erp-logistica.html';
+                } else if (userRole === 'soporte') {
+                    // Soporte solo ve Clientes y Tienda (ya mostrados arriba). 
+                    // No debe ver el Dashboard, así que lo redirigimos directo a clientes.html
+                    window.location.href = 'clients.html';
+                } else {
+                    // Si es un usuario colado, mandarlo a la tienda
+                    window.location.href = '../index.html';
+                }
+
             } catch (e) {
                 console.error("Error al verificar usuario:", e);
                 window.location.href = '../login.html';
@@ -352,6 +383,8 @@
 
         // 2. CARGA DE DATOS ASÍNCRONA
         async function cargarDatosDashboard() {
+            if (userRole === 'soporte' || userRole === 'logistica') return; // Seguridad extra
+
             try {
                 const [resUsers, resProds, resOrders] = await Promise.all([
                     fetch('../api/clients.php').catch(() => ({ json: () => [] })),
@@ -524,7 +557,6 @@
         // --- C. GRÁFICAS DE USUARIOS ---
         function renderUsersCharts() {
             // Extraer nombres o IDs de clientes de las órdenes
-            // Nota: Dependiendo de tu tabla (pedidos o ordenes), el campo puede llamarse 'cliente' o 'usuario_id'
             const compradores = new Set(globalData.orders.map(o => (o.cliente || '').trim().toLowerCase()));
             
             let activos = 0, inactivos = 0;

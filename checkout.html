@@ -54,6 +54,7 @@
         .chat-input-wrapper { flex: 1; background: #f0f2f5; border-radius: 20px; padding: 8px 15px; display: flex; align-items: center; }
         .chat-input { width: 100%; background: transparent; border: none; outline: none; font-size: 15px; color: #050505; }
         .btn-chat-send { color: #D10024; background: none; border: none; font-size: 20px; cursor: pointer; transition: 0.2s; padding: 5px; }
+        .btn-chat-send:hover { transform: scale(1.1); color: #a8001d; }
         .inbox-list { list-style: none; padding: 0; margin: 0; }
         .inbox-item { padding: 15px; display: flex; align-items: center; cursor: pointer; border-radius: 10px; transition: 0.2s; }
         .inbox-item:hover { background-color: #f2f2f2; }
@@ -82,9 +83,10 @@
         .primary-btn.order-submit:hover { background-color: #15161D; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .primary-btn.order-submit:disabled { background-color: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        .location-btn { background: #e0eafe; color: #1A1F71; border: 1px solid #aeb4be; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-bottom: 15px; width: 100%; text-align: left; }
+        .location-btn { background: #e0eafe; color: #1A1F71; border: 1px solid #aeb4be; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%; text-align: left; transition: all 0.2s; }
         .location-btn i { margin-right: 8px; color: #D10024; }
         .location-btn:hover { background: #d0e0fd; }
+        .input.auto-filled { transition: background-color 1s ease; }
 
         /* MODAL DE ALERTAS PERSONALIZADO */
         .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
@@ -100,10 +102,11 @@
         .custom-alert-box button { background: #D10024; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 100%; text-transform: uppercase; font-size: 14px; }
         .custom-alert-box button:hover { background: #15161D; }
 
-        /* MODAL DE SIMULACIÓN DE PAYPAL */
-        .paypal-sim-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100005; display: none; align-items: center; justify-content: center; }
-        .paypal-sim-box { background: #fff; padding: 40px; border-radius: 12px; text-align: center; width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-
+        /* MODAL DE SIMULACIÓN BANCARIA (TARJETA / PAYPAL) */
+        .bank-sim-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100005; display: none; align-items: center; justify-content: center; }
+        .bank-sim-box { background: #fff; padding: 40px; border-radius: 12px; text-align: center; width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .bank-header { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; display:flex; align-items:center; justify-content:center; gap: 15px; }
+        
         /* Estilo input de IVA */
         .iva-input {
             width: 60px;
@@ -114,7 +117,6 @@
             font-weight: bold;
             color: #D10024;
         }
-
     </style>
 </head>
 
@@ -218,9 +220,14 @@
                                 <h3 class="title">Dirección de Envío</h3>
                             </div>
 
-                            <button type="button" class="location-btn" onclick="autoFillLocation()">
-                                <i class="fa fa-map-marker"></i> Usar mi ubicación actual
-                            </button>
+                            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                                <button type="button" class="location-btn" id="btn-saved-location" onclick="usarDireccionGuardada()" style="display:none; background-color: #15161D; color: white; border: none; flex: 1; text-align: center; font-size: 13px;">
+                                    <i class="fa fa-home" style="color: #4ea3f1;"></i> Usar mi perfil
+                                </button>
+                                <button type="button" class="location-btn" id="btn-gps-location" onclick="autoFillLocationGPS()" style="flex: 1; text-align: center; font-size: 13px; margin-bottom: 0;">
+                                    <i class="fa fa-map-marker"></i> Ubicación GPS
+                                </button>
+                            </div>
 
                             <div class="form-group">
                                 <label style="font-size:12px; font-weight:600; color:#8D99AE;">Nombre de quien recibe</label>
@@ -322,23 +329,32 @@
                             </label>
                         </div>
                         
-                        <button type="submit" class="primary-btn order-submit" id="btnPlaceOrder">Confirmar Pedido</button>
+                        <button type="submit" class="primary-btn order-submit" id="btnPlaceOrder"><i class="fa fa-credit-card"></i> Pagar con Tarjeta</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="paypalSimModal" class="paypal-sim-overlay">
-        <div class="paypal-sim-box">
-            <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal" style="height:40px; margin-bottom:20px;">
-            <div id="paypalSimStep1">
-                <i class="fa fa-spinner fa-spin" style="font-size: 40px; color: #003087;"></i>
-                <p style="margin-top: 15px; font-weight: 600;">Conectando de forma segura...</p>
+    <div id="bankSimModal" class="bank-sim-overlay">
+        <div class="bank-sim-box">
+            <div class="bank-header">
+                <div id="bankSimLogoContainer"></div>
+                <h4 style="margin:0; font-weight:800; color:#15161D;">Pasarela de Pago</h4>
             </div>
-            <div id="paypalSimStep2" style="display:none;">
-                <i class="fa fa-check-circle" style="font-size: 50px; color: #28a745;"></i>
-                <p style="margin-top: 15px; font-weight: 600; color: #28a745;">Pago aprobado por PayPal</p>
+            
+            <div id="bankSimStep1" style="padding: 20px 0;">
+                <i class="fa fa-circle-o-notch fa-spin" style="font-size: 50px; color: #1A1F71;" id="bankSimSpinnerColor"></i>
+                <p style="margin-top: 20px; font-size: 16px; font-weight: 600; color: #555;" id="bankSimText1">Conectando con su banco...</p>
+                <div class="progress" style="height: 12px; margin-top: 20px; border-radius: 10px; background-color: #f0f0f0;">
+                    <div class="progress-bar progress-bar-striped active" id="bankProgressBar" role="progressbar" style="width: 15%; background-color: #1A1F71; transition: width 1s ease;"></div>
+                </div>
+            </div>
+
+            <div id="bankSimStep2" style="display:none; padding: 30px 0;">
+                <i class="fa fa-check-circle" style="font-size: 65px; color: #28a745;"></i>
+                <h3 style="margin-top: 20px; font-weight: 800; color: #28a745;">¡Pago Aprobado!</h3>
+                <p style="color: #666; font-weight:600; font-size: 15px;">Generando su recibo...</p>
             </div>
         </div>
     </div>
@@ -396,8 +412,8 @@
         let cart = [];
         let currentView = 'inbox'; 
         let chatPollInterval = null;
+        let tieneDireccionGuardada = false;
         
-        // Variables de precio
         let orderSubtotalAmount = 0;
         let orderIvaAmount = 0;
         let ivaPercentage = 16;
@@ -411,7 +427,7 @@
             if (currentUser) {
                 $('#auth-container').html(`
                     <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1; margin-right: 15px;">
-                        <i class="fa fa-user"></i> ${currentUser.nombre}
+                        <i class="fa fa-user"></i> ${currentUser.nombre.split(' ')[0]}
                     </a>
                     <a href="#" onclick="cerrarSesionIndex()" style="font-size:12px; color:#D10024;">(Salir)</a>
                 `);
@@ -420,6 +436,13 @@
                 
                 $('#chkName').val(currentUser.nombre);
                 $('#chkEmail').val(currentUser.correo);
+                if (currentUser.telefono) $('#chkPhone').val(currentUser.telefono);
+
+                // LÓGICA DE DIRECCIÓN DEL PERFIL
+                if (currentUser.calle && currentUser.ciudad) {
+                    tieneDireccionGuardada = true;
+                    $('#btn-saved-location').show();
+                }
 
                 verificarBadge();
                 setInterval(verificarBadge, 5000); 
@@ -440,11 +463,82 @@
                 });
             }
 
-            // Escuchador de eventos para el IVA dinámico
             $('#iva-percentage').on('input change', function() {
                 renderCheckoutProducts();
             });
         });
+
+        function usarDireccionGuardada() {
+            const numero = (currentUser.numeroCasa && currentUser.numeroCasa !== 'S/N') ? ` #${currentUser.numeroCasa}` : '';
+            $('#chkStreet').val((currentUser.calle || '') + numero);
+            $('#chkSuburb').val(currentUser.colonia || '');
+            $('#chkCity').val(currentUser.ciudad || '');
+            $('#chkZip').val(currentUser.codigoPostal || currentUser.cp || currentUser.codigo_postal || '');
+            
+            const btn = $('#btn-saved-location');
+            const originalHtml = btn.html();
+            btn.html('<i class="fa fa-check" style="color:#28a745;"></i> Cargada con éxito');
+            $('#chkStreet, #chkSuburb, #chkCity, #chkZip').addClass('auto-filled').css('background-color', '#e8f5e9');
+            setTimeout(() => {
+                $('#chkStreet, #chkSuburb, #chkCity, #chkZip').css('background-color', '');
+                btn.html(originalHtml);
+            }, 1500);
+        }
+
+        function autoFillLocationGPS() {
+            const btn = $('#btn-gps-location');
+            const originalHtml = btn.html();
+            btn.html('<i class="fa fa-spinner fa-spin"></i> Obteniendo ubicación...');
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`);
+                        const data = await res.json();
+                        
+                        if (data && data.address) {
+                            const ad = data.address;
+                            const calle = ad.road || ad.pedestrian || ad.street || '';
+                            const numero = ad.house_number || '';
+                            const calleCompleta = (calle + ' ' + numero).trim();
+                            const colonia = ad.neighbourhood || ad.suburb || ad.residential || ad.quarter || '';
+                            const ciudad = ad.city || ad.town || ad.village || ad.municipality || ad.county || ad.state || '';
+                            const codigoPostal = ad.postcode || '';
+                            
+                            $('#chkStreet').val(calleCompleta);
+                            $('#chkSuburb').val(colonia);
+                            $('#chkCity').val(ciudad);
+                            $('#chkZip').val(codigoPostal);
+
+                            btn.html('<i class="fa fa-check" style="color:green;"></i> Autocompletada');
+                            
+                            $('#chkStreet, #chkSuburb, #chkCity, #chkZip').addClass('auto-filled').css('background-color', '#e8f5e9');
+                            setTimeout(() => {
+                                $('#chkStreet, #chkSuburb, #chkCity, #chkZip').css('background-color', '');
+                                btn.html(originalHtml);
+                            }, 1500);
+
+                        } else {
+                            btn.html('<i class="fa fa-map-marker"></i> No se hallaron detalles');
+                            setTimeout(() => btn.html(originalHtml), 2000);
+                        }
+                    } catch (error) {
+                        btn.html('<i class="fa fa-map-marker"></i> Error de red');
+                        setTimeout(() => btn.html(originalHtml), 2000);
+                    }
+                }, (error) => {
+                    btn.html('<i class="fa fa-map-marker"></i> Permiso denegado');
+                    setTimeout(() => btn.html(originalHtml), 2000);
+                }, {
+                    enableHighAccuracy: true, timeout: 10000, maximumAge: 0
+                });
+            } else {
+                btn.html('<i class="fa fa-map-marker"></i> Tu navegador no soporta GPS');
+                setTimeout(() => btn.html(originalHtml), 2000);
+            }
+        }
 
         function showCustomAlert(type, title, message, callback = null) {
             const overlay = $('#customAlert');
@@ -476,40 +570,6 @@
             }, 300);
         }
 
-        function autoFillLocation() {
-            const btn = $('.location-btn');
-            btn.html('<i class="fa fa-spinner fa-spin"></i> Obteniendo ubicación...');
-            
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async (position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    try {
-                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-                        const data = await res.json();
-                        if (data && data.address) {
-                            const road = data.address.road || '';
-                            const suburb = data.address.suburb || data.address.neighbourhood || '';
-                            const city = data.address.city || data.address.town || data.address.village || data.address.state || '';
-                            const postcode = data.address.postcode || '';
-                            
-                            $('#chkStreet').val(road);
-                            $('#chkSuburb').val(suburb);
-                            $('#chkCity').val(city);
-                            $('#chkZip').val(postcode);
-                            btn.html('<i class="fa fa-check" style="color:green;"></i> Ubicación encontrada');
-                        }
-                    } catch (error) {
-                        btn.html('<i class="fa fa-map-marker"></i> Error. Ingresar manual.');
-                    }
-                }, (error) => {
-                    btn.html('<i class="fa fa-map-marker"></i> Permiso denegado. Ingresar manual.');
-                });
-            } else {
-                btn.html('<i class="fa fa-map-marker"></i> Tu navegador no soporta ubicación');
-            }
-        }
-
         function renderCheckoutProducts() {
             const $container = $('#checkout-products-container');
             $container.empty();
@@ -533,13 +593,11 @@
                 $container.append(html);
             });
 
-            // Lógica de cálculo del IVA
             ivaPercentage = parseFloat($('#iva-percentage').val()) || 0;
             orderSubtotalAmount = rawSubtotal;
             orderIvaAmount = rawSubtotal * (ivaPercentage / 100);
             orderTotalAmount = orderSubtotalAmount + orderIvaAmount;
 
-            // Actualización visual
             $('#checkout-subtotal').text('$' + orderSubtotalAmount.toFixed(2));
             $('#checkout-iva-amount').text('$' + orderIvaAmount.toFixed(2));
             $('#checkout-total').text('$' + orderTotalAmount.toFixed(2));
@@ -549,41 +607,82 @@
             const btn = $('#btnPlaceOrder');
             if ($('#payment-2').is(':checked')) {
                 btn.css({'background-color': '#ffc439', 'color': '#003087'}).html('<i class="fa fa-paypal"></i> Pagar con PayPal');
+            } else if ($('#payment-1').is(':checked')) {
+                btn.css({'background-color': '#1A1F71', 'color': 'white'}).html('<i class="fa fa-credit-card"></i> Pagar con Tarjeta');
             } else {
-                btn.css({'background-color': '#D10024', 'color': 'white'}).html('Confirmar Pedido');
+                btn.css({'background-color': '#28a745', 'color': 'white'}).html('<i class="fa fa-money"></i> Confirmar Pedido');
             }
         });
 
-        $('#checkoutForm').on('submit', function(e) {
+        // =========================================================
+        // AHORA SÍ: EL EVENTO DE SUBMIT CON ICONOS SEGUROS
+        // =========================================================
+        $('#checkoutForm').off('submit').on('submit', function(e) {
             e.preventDefault();
+            e.stopImmediatePropagation();
+
             const btn = $('#btnPlaceOrder');
             btn.attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Procesando...');
 
-            if ($('#payment-2').is(':checked')) {
-                // SIMULACIÓN DE PAYPAL
-                $('#paypalSimModal').css('display', 'flex');
+            const isPayPal = $('#payment-2').is(':checked');
+            const isTarjeta = $('#payment-1').is(':checked');
+
+            if (isPayPal || isTarjeta) {
+                // CONFIGURAR ESTILO DE SIMULADOR CON ICONOS (NO MÁS IMÁGENES ROTAS)
+                if (isPayPal) {
+                    $('#bankSimLogoContainer').html('<i class="fa fa-paypal" style="color: #003087; font-size: 40px; margin-right: 15px;"></i>');
+                    $('#bankSimSpinnerColor').css('color', '#003087');
+                    $('#bankSimText1').text('Conectando con PayPal...');
+                    $('#bankProgressBar').css({'background-color': '#003087', 'width': '20%'});
+                } else {
+                    $('#bankSimLogoContainer').html('<i class="fa fa-cc-visa" style="color: #1A1F71; font-size: 40px; margin-right: 5px;"></i> <i class="fa fa-cc-mastercard" style="color: #EB001B; font-size: 40px; margin-right: 15px;"></i>');
+                    $('#bankSimSpinnerColor').css('color', '#1A1F71');
+                    $('#bankSimText1').text('Conectando con su banco emisor...');
+                    $('#bankProgressBar').css({'background-color': '#1A1F71', 'width': '20%'});
+                }
+
+                // MOSTRAR PANTALLA NEGRA
+                $('#bankSimModal').css('display', 'flex').hide().fadeIn(300);
                 
+                // ANIMACIÓN DE PROGRESO DE PAGO
                 setTimeout(() => {
-                    $('#paypalSimStep1').hide();
-                    $('#paypalSimStep2').fadeIn();
+                    $('#bankSimText1').text('Verificando fondos de su cuenta...');
+                    $('#bankProgressBar').css('width', '50%');
                     
                     setTimeout(() => {
-                        $('#paypalSimModal').fadeOut(() => {
-                            $('#paypalSimStep2').hide();
-                            $('#paypalSimStep1').show();
-                            procesarPedidoBackend('PayPal');
-                        });
-                    }, 1500);
-                }, 2000);
+                        $('#bankSimText1').text('Autorizando transacción...');
+                        $('#bankProgressBar').css('width', '85%');
+                        
+                        setTimeout(() => {
+                            $('#bankProgressBar').css('width', '100%');
+                            $('#bankSimText1').text('Transacción exitosa...');
+                            
+                            setTimeout(() => {
+                                // CAMBIO A PALOMITA VERDE
+                                $('#bankSimStep1').hide();
+                                $('#bankSimStep2').fadeIn();
+                                
+                                setTimeout(() => {
+                                    // SE QUITA EL MODAL BANCARIO Y PROCEDEMOS AL BACKEND
+                                    $('#bankSimModal').fadeOut(() => {
+                                        $('#bankSimStep2').hide();
+                                        $('#bankSimStep1').show();
+                                        
+                                        let metodoPago = isPayPal ? 'PayPal' : 'Tarjeta';
+                                        procesarPedidoBackend(metodoPago);
+                                    });
+                                }, 1800);
+                            }, 800);
+                        }, 1200);
+                    }, 1200);
+                }, 1200);
+
             } else {
-                // PAGO TRADICIONAL
-                let metodoPago = $('#payment-1').is(':checked') ? 'Tarjeta' : 'Efectivo';
-                procesarPedidoBackend(metodoPago);
+                procesarPedidoBackend('Efectivo');
             }
         });
 
         function procesarPedidoBackend(metodoPago) {
-            const btn = $('#btnPlaceOrder');
             const direccionCompleta = $('#chkStreet').val() + ', Col. ' + $('#chkSuburb').val() + ', ' + $('#chkCity').val() + ', C.P. ' + $('#chkZip').val();
             
             const orderData = {
@@ -594,9 +693,9 @@
                 direccion: direccionCompleta,
                 notas: $('#chkNotes').val(),
                 metodo_pago: metodoPago,
-                subtotal: orderSubtotalAmount,     // Añadido para la BD
-                iva_porcentaje: ivaPercentage,     // Añadido para la BD
-                iva_monto: orderIvaAmount,         // Añadido para la BD
+                subtotal: orderSubtotalAmount,
+                iva_porcentaje: ivaPercentage,
+                iva_monto: orderIvaAmount,
                 total: orderTotalAmount,
                 cart: cart
             };
@@ -608,7 +707,6 @@
                 data: JSON.stringify(orderData),
                 success: function(res) {
                     if (res.status === 'success') {
-                        // AQUÍ ESTÁ LA LÓGICA AÑADIDA PARA ENVIAR AL ERP
                         sincronizarConERP(orderData, function() {
                              localStorage.removeItem(`cart_${currentUser.id}`);
                              showCustomAlert('success', '¡Pedido Exitoso!', 'Tu orden ha sido registrada y el inventario actualizado. Gracias por tu compra.', function() {
@@ -628,9 +726,7 @@
             });
         }
         
-        // FUNCIÓN PARA ENVIAR UNA COPIA AL ERP (A la tabla ordenes)
         function sincronizarConERP(orderData, callback) {
-            // Mapeamos los productos del carrito a la estructura que espera ordenes.php
             const productosERP = orderData.cart.map(item => ({
                 producto_id: item.id,
                 cantidad: item.cantidad,
@@ -639,8 +735,10 @@
             
             const dataERP = {
                 cliente_id: orderData.user_id,
-                usuario_id: orderData.user_id, // Usamos el mismo para registrar quien lo pidió
-                productos: productosERP
+                usuario_id: orderData.user_id,
+                productos: productosERP,
+                porcentaje_iva: orderData.iva_porcentaje,
+                total: orderData.total
             };
 
             $.ajax({
@@ -649,7 +747,6 @@
                 contentType: 'application/json',
                 data: JSON.stringify(dataERP),
                 success: function(res) {
-                    // Independientemente de si funciona o no, dejamos pasar al usuario a su perfil
                     if(callback) callback();
                 },
                 error: function() {
@@ -664,11 +761,16 @@
             btn.attr('disabled', false);
             if ($('#payment-2').is(':checked')) {
                 btn.html('<i class="fa fa-paypal"></i> Pagar con PayPal');
+            } else if ($('#payment-1').is(':checked')) {
+                btn.css({'background-color': '#1A1F71', 'color': 'white'}).html('<i class="fa fa-credit-card"></i> Pagar con Tarjeta');
             } else {
                 btn.html('Confirmar Pedido');
             }
         }
 
+        // =================================================================
+        // LÓGICA DEL CHAT PROFESIONAL 
+        // =================================================================
         function toggleChatWidget(e) {
             if(e) { e.preventDefault(); e.stopPropagation(); }
             const widget = $('#chat-widget');
@@ -835,13 +937,22 @@
                     message: txt,
                     origen: 'cliente' 
                 }),
-                success: function(res) { cargarConversacion(true); },
-                error: function(err) { showCustomAlert('error', 'Fallo de conexión', 'No se pudo enviar el mensaje.'); }
+                success: function(res) { 
+                    console.log("Mensaje enviado:", res);
+                    cargarConversacion(true); 
+                },
+                error: function(err) {
+                    console.error("Error al enviar mensaje:", err);
+                    alert("No se pudo enviar el mensaje.");
+                }
             });
         }
 
         $('#chatInputMain').on('keypress', function(e) { 
-            if(e.which === 13) { e.preventDefault(); enviarMensajeChat(); }
+            if(e.which === 13) {
+                e.preventDefault(); 
+                enviarMensajeChat(); 
+            }
         });
 
         function verificarBadge() {
@@ -853,10 +964,17 @@
             });
         }
 
-        function cerrarSesionIndex() {
-            localStorage.removeItem('currentUser');
-            window.location.href = "login.html";
+        function marcarTodoLeido() {
+            if(!currentUser) return;
+            $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
+                data.filter(n => n.estado !== 'leido' && n.origen === 'admin').forEach(m => {
+                    $.ajax({ url: 'api/notifications.php', type: 'PUT', contentType: 'application/json', data: JSON.stringify({ id: m.id, estado: 'leido' }) });
+                });
+                $('#msg-badge').hide();
+            });
         }
+
+        function cerrarSesionIndex() { localStorage.removeItem('currentUser'); location.reload(); }
     </script>
 </body>
 </html>

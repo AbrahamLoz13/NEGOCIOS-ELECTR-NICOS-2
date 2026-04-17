@@ -208,8 +208,11 @@
                     
                     const rolAsignado = data.data.rol ? data.data.rol.toLowerCase() : 'usuario';
                     
+                    // Lógica de redirección basada en roles
                     if (rolAsignado === 'admin' || rolAsignado === 'vendedor') {
                         window.location.href = 'admin/admin-panel.html';
+                    } else if (rolAsignado === 'soporte') {
+                        window.location.href = 'admin/clients.html';
                     } else if (rolAsignado === 'logistica') {
                         window.location.href = 'admin/erp-logistica.html';
                     } else if (rolAsignado === 'infraestructura') {
