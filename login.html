@@ -66,7 +66,7 @@
         .form-floating > .form-control {
             border-radius: 12px; border: 1px solid #e1e5eb; background: #f8f9fa; height: 50px;
         }
-        .form-floating > .form-control:focus { background: #fff; border-color: #D10024; box-shadow: none; }
+        .form-floating > .form-control:focus { background: #fff; border-color: #D10024; box-shadow: 0 0 5px rgba(209,0,36,0.2); }
         .form-floating > label { color: #888; font-size: 13px; padding-top: 13px; }
         
         .btn-custom {
@@ -84,6 +84,8 @@
 
         .auth-view { display: none; animation: slideUp 0.4s ease-out; }
         .auth-view.active { display: block; }
+
+        .is-invalid { border-color: #D10024 !important; }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -121,15 +123,15 @@
                     <input type="password" style="display:none">
 
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="logEmail" name="new_login_email_v2" placeholder="Correo" required autocomplete="off">
+                        <input type="email" class="form-control" id="logEmail" placeholder="Correo" required autocomplete="off">
                         <label>Correo Electrónico</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="logPass" name="new_login_pass_v2" placeholder="Contraseña" required autocomplete="off">
+                        <input type="password" class="form-control" id="logPass" placeholder="Contraseña" required autocomplete="off">
                         <label>Contraseña</label>
                     </div>
                     
-                    <button type="submit" class="btn-custom">INICIAR SESIÓN</button>
+                    <button type="submit" class="btn-custom" id="btnLoginSubmit">INICIAR SESIÓN</button>
                     
                     <div class="link-switch">
                         ¿No tienes cuenta? <span onclick="switchView('register')">Regístrate gratis</span>
@@ -147,19 +149,19 @@
                     <input type="password" style="display:none">
 
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="regName" name="new_reg_name_v2" placeholder="Nombre" required autocomplete="off">
+                        <input type="text" class="form-control" id="regName" placeholder="Nombre" required autocomplete="off">
                         <label>Nombre Completo</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="regEmail" name="new_reg_email_v2" placeholder="Correo" required autocomplete="off">
+                        <input type="email" class="form-control" id="regEmail" placeholder="Correo" required autocomplete="off">
                         <label>Correo Electrónico</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="regPass" name="new_reg_pass_v2" placeholder="Contraseña" required autocomplete="new-password">
-                        <label>Crear Contraseña</label>
+                        <input type="password" class="form-control" id="regPass" placeholder="Contraseña" required autocomplete="new-password">
+                        <label>Crear Contraseña (mínimo 6 caracteres)</label>
                     </div>
                     
-                    <button type="submit" class="btn-custom bg-success text-white">CREAR CUENTA</button>
+                    <button type="submit" class="btn-custom bg-success text-white" id="btnRegSubmit">CREAR CUENTA</button>
                     
                     <div class="link-switch">
                         ¿Ya estás registrado? <span onclick="switchView('login')">Inicia Sesión</span>
@@ -171,9 +173,13 @@
     </div>
 
     <script>
+        // Limpiamos sesiones antiguas
+        localStorage.removeItem('currentUser');
+
         function switchView(viewName) {
             document.querySelectorAll('.auth-view').forEach(el => el.classList.remove('active'));
             document.getElementById('alertBox').style.display = 'none';
+            document.querySelectorAll('.form-control').forEach(el => el.classList.remove('is-invalid'));
 
             const target = viewName.charAt(0).toUpperCase() + viewName.slice(1);
             document.getElementById('view' + target).classList.add('active');
@@ -189,11 +195,29 @@
             box.style.display = 'block';
         }
 
+        // Quitar marco rojo al escribir
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('input', () => input.classList.remove('is-invalid'));
+        });
+
+        // ==========================================
+        // LÓGICA DE INICIO DE SESIÓN
+        // ==========================================
         document.getElementById('formLogin').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('btnLoginSubmit');
+            const emailInput = document.getElementById('logEmail');
+            const passInput = document.getElementById('logPass');
             
-            const correo = document.getElementById('logEmail').value;
-            const password = document.getElementById('logPass').value;
+            const correo = emailInput.value.trim();
+            const password = passInput.value;
+
+            // Validación Frontend Básica
+            if (!correo.includes('@')) { emailInput.classList.add('is-invalid'); showAlert('Ingresa un correo válido.'); return; }
+            if (password.length < 1) { passInput.classList.add('is-invalid'); showAlert('Ingresa tu contraseña.'); return; }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> VERIFICANDO...';
 
             try {
                 const res = await fetch('api/login.php', {
@@ -208,7 +232,7 @@
                     
                     const rolAsignado = data.data.rol ? data.data.rol.toLowerCase() : 'usuario';
                     
-                    // Lógica de redirección basada en roles
+                    // Rutas de redirección por rol
                     if (rolAsignado === 'admin' || rolAsignado === 'vendedor') {
                         window.location.href = 'admin/admin-panel.html';
                     } else if (rolAsignado === 'soporte') {
@@ -222,21 +246,43 @@
                     }
                 } else {
                     showAlert(data.message, 'danger');
+                    passInput.value = ''; // Limpiar contraseña si falló
                 }
-            } catch (err) { showAlert("Error de conexión con el servidor", 'danger'); }
+            } catch (err) { 
+                showAlert("Error de conexión con el servidor", 'danger'); 
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'INICIAR SESIÓN';
+            }
         });
 
+        // ==========================================
+        // LÓGICA DE REGISTRO
+        // ==========================================
         document.getElementById('formRegister').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const nombre = document.getElementById('regName').value;
-            const correo = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPass').value;
+            const btn = document.getElementById('btnRegSubmit');
+            const nameInput = document.getElementById('regName');
+            const emailInput = document.getElementById('regEmail');
+            const passInput = document.getElementById('regPass');
+
+            const nombre = nameInput.value.trim();
+            const correo = emailInput.value.trim();
+            const password = passInput.value;
+
+            // Validaciones Frontend Estrictas
+            if (nombre.length < 3) { nameInput.classList.add('is-invalid'); showAlert('El nombre es muy corto.'); return; }
+            if (!correo.includes('@') || !correo.includes('.')) { emailInput.classList.add('is-invalid'); showAlert('Ingresa un correo real.'); return; }
+            if (password.length < 6) { passInput.classList.add('is-invalid'); showAlert('La contraseña debe tener al menos 6 caracteres.'); return; }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> CREANDO...';
 
             try {
                 const res = await fetch('api/register.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nombre, correo, password })
+                    body: JSON.stringify({ nombre, correo, password, rol: 'usuario' })
                 });
                 const data = await res.json();
 
@@ -245,12 +291,19 @@
                     setTimeout(() => {
                         switchView('login');
                         document.getElementById('logEmail').value = correo;
+                        document.getElementById('logPass').value = ''; // Obligar a escribirla para verificar
                         document.getElementById('logPass').focus();
+                        document.getElementById('formRegister').reset();
                     }, 2000);
                 } else {
                     showAlert(data.message, 'danger');
                 }
-            } catch (err) { showAlert("Error al intentar registrarse", 'danger'); }
+            } catch (err) { 
+                showAlert("Error al conectar con la base de datos.", 'danger'); 
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'CREAR CUENTA';
+            }
         });
     </script>
 

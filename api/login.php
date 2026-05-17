@@ -1,5 +1,9 @@
 <?php
-// api/login.php
+if (!isset($_SERVER['HTTP_REFERER'])) {
+    http_response_code(403);
+    die(json_encode(["status" => "error", "message" => "Acceso directo denegado 🚫. Solo el sistema puede hacer peticiones aquí."]));
+}
+
 require 'db.php';
 header('Content-Type: application/json; charset=utf-8');
 
@@ -9,7 +13,7 @@ error_reporting(E_ALL);
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 
-$correo = $data['correo'] ?? '';
+$correo = trim($data['correo'] ?? '');
 $pass   = $data['password'] ?? '';
 
 if (empty($correo) || empty($pass)) {
@@ -17,7 +21,6 @@ if (empty($correo) || empty($pass)) {
     exit;
 }
 
-// AHORA PEDIMOS TODAS LAS COLUMNAS A LA BASE DE DATOS
 $stmt = $conn->prepare("SELECT id, nombre, correo, telefono, password, rol, estado, calle, colonia, ciudad, numeroCasa, codigoPostal FROM usuarios WHERE correo = ?");
 $stmt->bind_param("s", $correo);
 $stmt->execute();
@@ -35,8 +38,13 @@ if ($result->num_rows > 0) {
         exit;
     }
 
-    // Se verifica la contraseña encriptada o la contraseña en texto plano
-    if (password_verify($pass, $user['password']) || $pass === $user['password']) {
+    // 🔥 VERIFICACIÓN ESTRICTA DE LA CONTRASEÑA ENCRIPTADA 🔥
+    // Se elimina el `|| $pass === $user['password']`. Si no está hasheada, no entra.
+    if (password_verify($pass, $user['password'])) {
+        
+        // Borramos el hash del arreglo para que nunca viaje al navegador del usuario
+        unset($user['password']);
+        
         echo json_encode([
             "status" => "success",
             "data"   => [

@@ -21,7 +21,12 @@
             padding-top: 25px; background-color: #15161D;
             width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
             transition: all 0.3s;
+            overflow-y: auto;
         }
+        
+        #sidebar::-webkit-scrollbar { width: 5px; }
+        #sidebar::-webkit-scrollbar-track { background: #15161D; }
+        #sidebar::-webkit-scrollbar-thumb { background: #495057; border-radius: 5px; }
         
         .sidebar-brand { text-align: center; margin-bottom: 35px; }
         .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
@@ -116,13 +121,35 @@
         .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
+    <script>
+    // ==========================================
+    // SEGURIDAD: BLOQUEO DE RUTAS NO AUTORIZADAS
+    // ==========================================
+    (function() {
+        const userData = localStorage.getItem('currentUser');
+        
+        if (!userData) {
+            window.location.replace('../login.html'); 
+            return;
+        }
+
+        const user = JSON.parse(userData);
+        const rol = (user.rol || '').toLowerCase();
+        const rolesPermitidos = ['admin', 'vendedor', 'soporte', 'logistica'];
+
+        if (!rolesPermitidos.includes(rol)) {
+            alert("🔒 ACCESO DENEGADO: Tu cuenta no tiene privilegios de administrador.");
+            window.location.replace('../index.html'); 
+        }
+    })();
+</script>
 </head>
 
 <body>
 
 <nav id="sidebar">
     <div class="sidebar-brand">
-        <img src="../img/logo6.png">
+        <img src="../img/logo6.png" onerror="this.src='https://via.placeholder.com/60/15161D/ffffff?text=PP'">
         <h5>Pet Palace</h5>
         <p id="rolDisplay">Administrador</p>
     </div>
@@ -133,9 +160,9 @@
         <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
         <li><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
         <li class="active"><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
-    <li class="active"><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
+    <li><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
     <li><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
-    <li class="active"><a href="erp-roles.html"><i class="fa fa-building"></i> Roles ERP</a></li>
+    <li><a href="erp-roles.html"><i class="fa fa-user-shield"></i> Roles ERP</a></li>
         <hr>
         <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
         <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
@@ -151,7 +178,6 @@
     </div>
 </div>
 
-<!-- TARJETAS DE ESTADÍSTICAS -->
 <div class="row mb-4">
     <div class="col-md-3">
         <div class="stats-card">
@@ -164,14 +190,14 @@
         <div class="stats-card">
             <div class="stats-icon"><i class="fa fa-arrow-up"></i></div>
             <div class="stats-number" id="totalRestocks">0</div>
-            <div class="stats-label">Restocks</div>
+            <div class="stats-label">Entradas</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stats-card">
             <div class="stats-icon"><i class="fa fa-arrow-down"></i></div>
             <div class="stats-number" id="totalVentas">0</div>
-            <div class="stats-label">Ventas</div>
+            <div class="stats-label">Salidas / Ventas</div>
         </div>
     </div>
     <div class="col-md-3">
@@ -183,7 +209,6 @@
     </div>
 </div>
 
-<!-- GRÁFICAS -->
 <div class="row mb-4">
     <div class="col-md-6">
         <div class="card-custom">
@@ -207,7 +232,6 @@
     </div>
 </div>
 
-<!-- GRÁFICA DE ESTRATEGIAS -->
 <div class="row mb-4">
     <div class="col-md-6">
         <div class="card-custom">
@@ -242,23 +266,21 @@
     </div>
 </div>
 
-<!-- FILTROS -->
 <div class="card-custom fade-in">
     <div class="card-body-custom">
         <div class="row">
             <div class="col-md-4 mb-2">
                 <div class="search-box">
                     <i class="fa fa-search"></i>
-                    <input type="text" id="filterSearch" class="form-control" placeholder="Buscar por producto o motivo..." onkeyup="filterTable()">
+                    <input type="text" id="filterSearch" class="form-control" placeholder="Buscar por producto, motivo o ID..." onkeyup="filterTable()">
                 </div>
             </div>
             <div class="col-md-4 mb-2">
                 <select id="filterTipo" class="form-control filter-select" onchange="filterTable()">
                     <option value="">Todos los Tipos</option>
-                    <option value="pedido_proveedor">Pedido a Proveedor</option>
-                    <option value="restock">Restock</option>
-                    <option value="stock_critico">Stock Crítico</option>
-                    <option value="recepcion_pedido">Recepción</option>
+                    <option value="entrada">Entrada / Restock</option>
+                    <option value="salida">Salida / Venta</option>
+                    <option value="ajuste">Ajuste / Alerta</option>
                 </select>
             </div>
             <div class="col-md-4 mb-2">
@@ -268,7 +290,6 @@
     </div>
 </div>
 
-<!-- TABLA DE MOVIMIENTOS -->
 <div class="card-custom fade-in">
     <div class="table-responsive">
         <table class="table table-hover mb-0">
@@ -292,7 +313,6 @@
 
 </main>
 
-<!-- MODAL DE DETALLE (Solo ver) -->
 <div class="modal fade" id="detalleModal" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content" style="border-radius: 12px; border:none;">
@@ -355,7 +375,6 @@
 
 <script src="../js/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 const API_MOVIMIENTOS = '../api/movimientos.php';
@@ -367,7 +386,6 @@ let productosData = [];
 let pedidosData = [];
 let userRole = '';
 
-// Gráficas
 let chartMasVendidos, chartMenosVendidos, chartEstrategias;
 
 $(document).ready(function(){
@@ -408,10 +426,43 @@ function loadMovimientos() {
         movimientosData = Array.isArray(data) ? data : [];
         renderTable(movimientosData);
         actualizarEstadisticas();
+        calcularVentas(); 
     }).fail(function(xhr) {
         console.error('Error cargando movimientos:', xhr.responseText);
         $('#movimientosTableBody').html('<tr><td colspan="7" class="text-center text-danger">Error al cargar movimientos</td></tr>');
     });
+}
+
+// -----------------------------------------------------
+// FUNCIÓN CENTRAL DE FILTRADO CORREGIDA
+// -----------------------------------------------------
+function filterTable() {
+    const search = $('#filterSearch').val().toLowerCase();
+    const tipo = $('#filterTipo').val().toLowerCase(); // Valores posibles: 'entrada', 'salida', 'ajuste', ''
+    const fecha = $('#filterFecha').val(); // Formato YYYY-MM-DD
+
+    const filtered = movimientosData.filter(m => {
+        // 1. Filtro de Búsqueda (Input Texto)
+        const productoNombre = obtenerNombreProducto(m.producto_id).toLowerCase();
+        const matchesSearch = search === '' || 
+            productoNombre.includes(search) ||
+            (m.motivo && m.motivo.toLowerCase().includes(search)) ||
+            m.id.toString().includes(search);
+        
+        // 2. Filtro de Tipo (Select Dropdown)
+        const matchesTipo = tipo === '' || (m.tipo && m.tipo.toLowerCase() === tipo);
+        
+        // 3. Filtro de Fecha (Date Input)
+        let matchesFecha = true;
+        if (fecha) {
+            let mFechaStr = m.fecha ? m.fecha.split(' ')[0] : '';
+            matchesFecha = (mFechaStr === fecha);
+        }
+        
+        return matchesSearch && matchesTipo && matchesFecha;
+    });
+
+    renderTable(filtered);
 }
 
 function renderTable(data) {
@@ -419,7 +470,7 @@ function renderTable(data) {
     $tbody.empty();
 
     if(!data || data.length === 0) {
-        $tbody.html('<tr><td colspan="7" class="text-center text-muted p-5">No hay movimientos registrados.</td></tr>');
+        $tbody.html('<tr><td colspan="7" class="text-center text-muted p-5">No hay movimientos registrados que coincidan con la búsqueda.</td></tr>');
         return;
     }
 
@@ -428,25 +479,21 @@ function renderTable(data) {
         let tipoDisplay = m.tipo || 'N/A';
         
         switch(m.tipo) {
-            case 'pedido_proveedor':
-            case 'pedido_push':
+            case 'entrada':
+                badgeClass = 'bg-restock';
+                tipoDisplay = 'Entrada';
+                break;
+            case 'salida':
                 badgeClass = 'bg-pedido';
-                tipoDisplay = 'Pedido';
+                tipoDisplay = 'Salida';
                 break;
-            case 'restock':
-                badgeClass = 'bg-restock';
-                tipoDisplay = 'Restock';
-                break;
-            case 'stock_critico':
+            case 'ajuste':
                 badgeClass = 'bg-stock';
-                tipoDisplay = 'Alerta Crítica';
-                break;
-            case 'recepcion_pedido':
-                badgeClass = 'bg-restock';
-                tipoDisplay = 'Recepción';
+                tipoDisplay = 'Ajuste';
                 break;
             default:
                 badgeClass = 'bg-secondary';
+                tipoDisplay = m.tipo || 'N/A';
         }
 
         let fecha = m.fecha ? m.fecha.split(' ')[0] : '-';
@@ -486,25 +533,21 @@ function verDetalle(movimiento) {
     let tipoDisplay = movimiento.tipo || 'N/A';
     
     switch(movimiento.tipo) {
-        case 'pedido_proveedor':
-        case 'pedido_push':
+        case 'entrada':
+            badgeClass = 'bg-restock';
+            tipoDisplay = 'Entrada (Restock)';
+            break;
+        case 'salida':
             badgeClass = 'bg-pedido';
-            tipoDisplay = 'Pedido a Proveedor';
+            tipoDisplay = 'Salida (Venta)';
             break;
-        case 'restock':
-            badgeClass = 'bg-restock';
-            tipoDisplay = 'Restock';
-            break;
-        case 'stock_critico':
+        case 'ajuste':
             badgeClass = 'bg-stock';
-            tipoDisplay = 'Ajustes';
-            break;
-        case 'recepcion_pedido':
-            badgeClass = 'bg-restock';
-            tipoDisplay = 'Recepción de Pedido';
+            tipoDisplay = 'Ajuste / Alerta';
             break;
         default:
             badgeClass = 'bg-secondary';
+            tipoDisplay = movimiento.tipo || 'N/A';
     }
     
     $('#detalleTipo').attr('class', `badge-tipo ${badgeClass}`).text(tipoDisplay);
@@ -515,10 +558,10 @@ function verDetalle(movimiento) {
 function actualizarEstadisticas() {
     $('#totalMovimientos').text(movimientosData.length);
     
-    const restocks = movimientosData.filter(m => m.tipo === 'entrada' || m.tipo === 'recepcion_pedido').length;
+    const restocks = movimientosData.filter(m => m.tipo === 'entrada').length;
     $('#totalRestocks').text(restocks);
     
-    const ventas = movimientosData.filter(m => m.tipo === 'salida' || m.motivo?.toLowerCase().includes('venta')).length;
+    const ventas = movimientosData.filter(m => m.tipo === 'salida').length;
     $('#totalVentas').text(ventas);
     
     const alertas = movimientosData.filter(m => m.tipo === 'ajuste').length;
@@ -533,7 +576,6 @@ function actualizarStockCritico() {
         html = '<tr><td colspan="4" class="text-center text-success">No hay productos con stock crítico</td></tr>';
     } else {
         productosCriticos.slice(0, 5).forEach(p => {
-            const porcentaje = ((p.stock / (p.stock_minimo || 5)) * 100).toFixed(0);
             html += `
                 <tr>
                     <td>${p.nombre}</td>
@@ -548,20 +590,10 @@ function actualizarStockCritico() {
 }
 
 function calcularVentas() {
-    // Calcular productos más vendidos basado en movimientos de tipo 'venta' o 'salida'
     const ventasPorProducto = {};
     
-    // Filtrar solo movimientos que representen ventas/salidas
-    const movimientosVentas = movimientosData.filter(m => {
-        return m.tipo === 'venta' || 
-               m.tipo === 'salida' || 
-               m.tipo?.toLowerCase().includes('venta') ||
-               m.motivo?.toLowerCase().includes('venta');
-    });
+    const movimientosVentas = movimientosData.filter(m => m.tipo === 'salida' || m.tipo === 'venta');
     
-    console.log('Movimientos de ventas encontrados:', movimientosVentas.length);
-    
-    // Procesar cada movimiento de venta
     movimientosVentas.forEach(m => {
         const prodId = m.producto_id;
         const producto = productosData.find(p => p.id == prodId);
@@ -575,25 +607,17 @@ function calcularVentas() {
             };
         }
         
-        // Sumar la cantidad vendida (positiva o negativa según cómo se guarde)
         let cantidadVendida = Math.abs(parseInt(m.cantidad) || 0);
         ventasPorProducto[prodId].cantidad += cantidadVendida;
     });
     
-    // Convertir a array y ordenar
     const ventasArray = Object.values(ventasPorProducto)
         .filter(v => v.cantidad > 0)
         .sort((a, b) => b.cantidad - a.cantidad);
     
-    console.log('Ventas por producto:', ventasArray);
-    
-    // Top 5 más vendidos
     const masVendidos = ventasArray.slice(0, 5);
-    
-    // Top 5 menos vendidos (los que tienen ventas pero en menor cantidad)
     const menosVendidos = ventasArray.slice(-5).reverse();
     
-    // Si hay menos de 5 productos con ventas, completar con productos sin ventas
     if (menosVendidos.length < 5) {
         const productosSinVentas = productosData
             .filter(p => !ventasPorProducto[p.id])
@@ -610,8 +634,6 @@ function calcularVentas() {
     
     actualizarGraficaMasVendidos(masVendidos);
     actualizarGraficaMenosVendidos(menosVendidos);
-    
-    // También actualizar tabla de productos con stock crítico
     actualizarStockCritico();
 }
 
@@ -621,7 +643,6 @@ function actualizarGraficaMasVendidos(datos) {
     if (chartMasVendidos) chartMasVendidos.destroy();
     
     if (datos.length === 0) {
-        // Mostrar gráfica vacía o mensaje
         chartMasVendidos = new Chart(ctx, {
             type: 'bar',
             data: {
@@ -636,10 +657,7 @@ function actualizarGraficaMasVendidos(datos) {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    title: {
-                        display: true,
-                        text: 'No hay ventas registradas'
-                    }
+                    title: { display: true, text: 'No hay ventas registradas' }
                 }
             }
         });
@@ -664,10 +682,7 @@ function actualizarGraficaMasVendidos(datos) {
             scales: {
                 y: { 
                     beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Unidades'
-                    }
+                    title: { display: true, text: 'Unidades' }
                 }
             },
             plugins: {
@@ -707,10 +722,7 @@ function actualizarGraficaMenosVendidos(datos) {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    title: {
-                        display: true,
-                        text: 'Productos sin ventas'
-                    }
+                    title: { display: true, text: 'Productos sin ventas' }
                 }
             }
         });
@@ -735,10 +747,7 @@ function actualizarGraficaMenosVendidos(datos) {
             scales: {
                 y: { 
                     beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Unidades'
-                    }
+                    title: { display: true, text: 'Unidades' }
                 }
             },
             plugins: {
@@ -758,18 +767,6 @@ function actualizarGraficaMenosVendidos(datos) {
     });
 }
 
-// También actualizar la función loadMovimientos para que recalcule ventas cuando cambien los datos
-function loadMovimientos() {
-    $.getJSON(API_MOVIMIENTOS, function(data) {
-        movimientosData = Array.isArray(data) ? data : [];
-        renderTable(movimientosData);
-        actualizarEstadisticas();
-        calcularVentas(); // Recalcular ventas cuando cambien los movimientos
-    }).fail(function(xhr) {
-        console.error('Error cargando movimientos:', xhr.responseText);
-        $('#movimientosTableBody').html('<tr><td colspan="7" class="text-center text-danger">Error al cargar movimientos</td></tr>');
-    });
-}
 function actualizarGraficaEstrategias() {
     const push = productosData.filter(p => p.estrategia_logistica === 'PUSH').length;
     const pull = productosData.filter(p => p.estrategia_logistica === 'PULL').length;
@@ -794,30 +791,6 @@ function actualizarGraficaEstrategias() {
             maintainAspectRatio: false
         }
     });
-}
-
-function filterTable() {
-    const search = $('#filterSearch').val().toLowerCase();
-    const tipo = $('#filterTipo').val().toLowerCase();
-    const fecha = $('#filterFecha').val();
-
-    const filtered = movimientosData.filter(m => {
-        const productoNombre = obtenerNombreProducto(m.producto_id).toLowerCase();
-        const matchesSearch = search === '' || 
-            productoNombre.includes(search) ||
-            (m.motivo && m.motivo.toLowerCase().includes(search));
-        
-        const matchesTipo = tipo === '' || (m.tipo && m.tipo.toLowerCase() === tipo);
-        
-        let matchesFecha = true;
-        if (fecha && m.fecha) {
-            matchesFecha = m.fecha.split(' ')[0] === fecha;
-        }
-        
-        return matchesSearch && matchesTipo && matchesFecha;
-    });
-
-    renderTable(filtered);
 }
 
 function cerrarSesion() {

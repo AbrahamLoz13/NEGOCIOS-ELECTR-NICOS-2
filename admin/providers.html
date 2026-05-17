@@ -2,15 +2,15 @@
 <html lang="es">
 
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Proveedores | Pet Palace Admin</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Proveedores | Pet Palace Admin</title>
 
-<link rel="stylesheet" href="../css/bootstrap.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
-<style>
+    <style>
         /* ESTILOS GENERALES (Mismo tema que Clients) */
         body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
 
@@ -20,7 +20,12 @@
             padding-top: 25px; background-color: #15161D;
             width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
             transition: all 0.3s;
+            overflow-y: auto; /* SCROLL PARA VER CERRAR SESIÓN */
         }
+        
+        #sidebar::-webkit-scrollbar { width: 5px; }
+        #sidebar::-webkit-scrollbar-track { background: #15161D; }
+        #sidebar::-webkit-scrollbar-thumb { background: #495057; border-radius: 5px; }
         
         .sidebar-brand { text-align: center; margin-bottom: 35px; }
         .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
@@ -58,21 +63,13 @@
         .search-box { position: relative; }
         .search-box i { position: absolute; left: 15px; top: 12px; color: #aaa; }
         .search-box input { padding-left: 40px; border-radius: 8px; border: 1px solid #e0e0e0; height: 40px; }
-        .filter-select { border-radius: 8px; border: 1px solid #e0e0e0; height: 40px; }
 
-        /* TABLA DE PEDIDOS */
+        /* TABLA DE PROVEEDORES */
         .table thead th { 
             background-color: #f8f9fa; color: #495057; border-bottom: 2px solid #e9ecef; 
             font-weight: 700; text-transform: uppercase; font-size: 11px; padding: 15px; 
         }
         .table tbody td { vertical-align: middle; padding: 15px; border-top: 1px solid #f0f0f0; }
-
-        /* BADGES DE ESTADO (Colores Modernos) */
-        .badge-status { font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .bg-pendiente { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        .bg-enviado { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
-        .bg-entregado { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .bg-cancelado { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
         /* BOTONES DE ACCIÓN */
         .btn-action { 
@@ -90,32 +87,60 @@
         /* ANIMACIONES */
         .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ESTILOS DE VALIDACIÓN */
+        .is-invalid { border-color: #D10024 !important; box-shadow: 0 0 5px rgba(209,0,36,0.2) !important; }
+        .is-valid { border-color: #28a745 !important; box-shadow: 0 0 5px rgba(40,167,69,0.2) !important; }
+        .error-msg { color: #D10024; font-size: 11px; font-weight: 600; margin-top: 4px; display: none; }
+        .asterisk { color: #D10024; }
     </style>
-</style>
+
+    <script>
+    // ==========================================
+    // SEGURIDAD: BLOQUEO DE RUTAS NO AUTORIZADAS
+    // ==========================================
+    (function() {
+        const userData = localStorage.getItem('currentUser');
+        
+        if (!userData) {
+            window.location.replace('../login.html'); 
+            return;
+        }
+
+        const user = JSON.parse(userData);
+        const rol = (user.rol || '').toLowerCase();
+        const rolesPermitidos = ['admin', 'vendedor', 'soporte', 'logistica'];
+
+        if (!rolesPermitidos.includes(rol)) {
+            alert("🔒 ACCESO DENEGADO: Tu cuenta no tiene privilegios de administrador.");
+            window.location.replace('../index.html'); 
+        }
+    })();
+    </script>
 </head>
 
 <body>
 
 <nav id="sidebar">
     <div class="sidebar-brand">
-        <img src="../img/logo6.png">
+        <img src="../img/logo6.png" onerror="this.src='https://via.placeholder.com/60/15161D/ffffff?text=PP'">
         <h5>Pet Palace</h5>
         <p id="rolDisplay">Administrador</p>
     </div>
     <ul class="nav-sidebar">
-            <li><a href="admin-panel.html"><i class="fa fa-chart-line"></i> Dashboard</a></li>
-            <li><a href="#"><i class="fa fa-users"></i> Clientes</a></li>
-            <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
-            <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
-            <li class="active"><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
-            <li><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
-    <li class="active"><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
-    <li><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
-    <li class="active"><a href="erp-roles.html"><i class="fa fa-building"></i> Roles ERP</a></li>
-            <hr>
-            <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
-            <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
-        </ul>
+        <li><a href="admin-panel.html"><i class="fa fa-chart-line"></i> Dashboard</a></li>
+        <li><a href="clients.html"><i class="fa fa-users"></i> Clientes</a></li>
+        <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
+        <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
+        <li class="active"><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
+        <li><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
+        <li><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
+        <li><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
+        <li><a href="erp-roles.html"><i class="fa fa-user-shield"></i> Roles ERP</a></li>
+        <hr>
+        <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
+        <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+    </ul>
 </nav>
 
 <main>
@@ -132,88 +157,99 @@
 </div>
 
 <div class="card-custom">
-<div class="table-responsive">
-<table class="table table-hover mb-0">
-<thead>
-<tr>
-<th>ID</th>
-<th>Nombre</th>
-<th>Contacto</th>
-<th>Teléfono</th>
-<th>Email</th>
-<th>Acciones</th>
-</tr>
-</thead>
-<tbody id="providersTableBody"></tbody>
-</table>
-</div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Contacto</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="providersTableBody"></tbody>
+        </table>
+    </div>
 </div>
 
 </main>
 
-<!-- MODAL -->
-<div class="modal fade" id="providerModal">
-<div class="modal-dialog">
-<div class="modal-content">
+<div class="modal fade" id="providerModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 12px; border:none;">
 
-<form id="providerForm">
+            <form id="providerForm" novalidate>
 
-<div class="modal-header bg-dark text-white">
-<h4 id="modalTitle">Proveedor</h4>
-<button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-</div>
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #15161D, #2c3e50); border-radius: 12px 12px 0 0;">
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                    <h4 id="modalTitle" class="modal-title m-0"><i class="fa fa-truck"></i> Proveedor</h4>
+                </div>
 
-<div class="modal-body">
-<input type="hidden" id="providerId" name="id">
+                <div class="modal-body" style="background: #fdfdfd; padding: 25px;">
+                    <input type="hidden" id="providerId" name="id">
 
-<div class="form-group">
-<label>Nombre</label>
-<input type="text" class="form-control" name="nombre" required>
-</div>
+                    <div class="form-group">
+                        <label class="font-weight-bold small text-muted">Nombre del Proveedor / Empresa <span class="asterisk">*</span></label>
+                        <input type="text" class="form-control" name="nombre" id="provNombre" placeholder="Ej. Purina S.A. de C.V.">
+                        <small class="error-msg" id="error-nombre"></small>
+                    </div>
 
-<div class="form-group">
-<label>Contacto</label>
-<input type="text" class="form-control" name="contacto">
-</div>
+                    <div class="form-group">
+                        <label class="font-weight-bold small text-muted">Persona de Contacto</label>
+                        <input type="text" class="form-control" name="contacto" id="provContacto" placeholder="Nombre del agente">
+                        <small class="error-msg" id="error-contacto"></small>
+                    </div>
 
-<div class="form-group">
-<label>Teléfono</label>
-<input type="number" class="form-control" name="telefono">
-</div>
+                    <div class="form-group">
+                        <label class="font-weight-bold small text-muted">Teléfono <span class="asterisk">*</span></label>
+                        <input type="text" class="form-control" name="telefono" id="provTelefono" maxlength="10" placeholder="10 dígitos" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        <small class="error-msg" id="error-telefono"></small>
+                    </div>
 
-<div class="form-group">
-<label>Email</label>
-<input type="email" class="form-control" name="correo">
-</div>
+                    <div class="form-group">
+                        <label class="font-weight-bold small text-muted">Correo Electrónico <span class="asterisk">*</span></label>
+                        <input type="email" class="form-control" name="correo" id="provCorreo" placeholder="ventas@proveedor.com">
+                        <small class="error-msg" id="error-correo"></small>
+                    </div>
+                </div>
 
-</div>
+                <div class="modal-footer" style="border-top: 1px solid #eee;">
+                    <button type="button" class="btn btn-link text-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="background: #6610f2; border:none; border-radius:8px; padding: 8px 20px;">
+                        <i class="fa fa-save"></i> Guardar
+                    </button>
+                </div>
 
-<div class="modal-footer">
-<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-<button type="submit" class="btn btn-primary">Guardar</button>
-</div>
-
-</form>
-</div>
-</div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script src="../js/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 
 <script>
-
 const API_URL = '../api/providers.php';
 let proveedores = [];
 
 $(document).ready(function(){
     loadProviders();
+    
+    // Quitar alertas rojas en cuanto el usuario empiece a escribir
+    $('.form-control').on('input', function() {
+        $(this).removeClass('is-invalid');
+        $(this).siblings('.error-msg').hide();
+    });
 });
 
 function loadProviders(){
     $.getJSON(API_URL, function(data){
-        proveedores = data;
+        proveedores = Array.isArray(data) ? data : [];
         renderTable();
+    }).fail(function(){
+        $('#providersTableBody').html('<tr><td colspan="6" class="text-center text-danger py-4">Error al conectar con la base de datos</td></tr>');
     });
 }
 
@@ -222,23 +258,23 @@ function renderTable(){
     tbody.empty();
 
     if(proveedores.length === 0){
-        tbody.html('<tr><td colspan="6" class="text-center">No hay proveedores</td></tr>');
+        tbody.html('<tr><td colspan="6" class="text-center py-4 text-muted">No hay proveedores registrados</td></tr>');
         return;
     }
 
     proveedores.forEach(p => {
         tbody.append(`
             <tr>
-                <td>${p.id}</td>
-                <td>${p.nombre}</td>
-                <td>${p.contacto || ''}</td>
-                <td>${p.telefono || ''}</td>
-                <td>${p.correo || ''}</td>
-                <td>
-                    <button class="btn-action btn-edit" onclick="editProvider(${p.id})">
+                <td class="font-weight-bold">#${p.id}</td>
+                <td><strong class="text-dark">${p.nombre}</strong></td>
+                <td>${p.contacto || '<span class="text-muted small">N/A</span>'}</td>
+                <td>${p.telefono || '<span class="text-muted small">N/A</span>'}</td>
+                <td>${p.correo || '<span class="text-muted small">N/A</span>'}</td>
+                <td class="text-center">
+                    <button class="btn-action btn-edit" onclick="editProvider(${p.id})" title="Editar">
                         <i class="fa fa-pencil-alt"></i>
                     </button>
-                    <button class="btn-action btn-delete" onclick="deleteProvider(${p.id})">
+                    <button class="btn-action btn-delete" onclick="deleteProvider(${p.id})" title="Eliminar">
                         <i class="fa fa-trash"></i>
                     </button>
                 </td>
@@ -247,10 +283,84 @@ function renderTable(){
     });
 }
 
+// ─── LÓGICA DE VALIDACIÓN FRONTEND ──────────────────────────────────
+function limpiarValidaciones() {
+    $('.form-control').removeClass('is-invalid is-valid');
+    $('.error-msg').hide().text('');
+}
+
+function mostrarError(campoId, mensaje) {
+    $(`#${campoId}`).addClass('is-invalid');
+    $(`#error-${campoId.replace('prov', '').toLowerCase()}`).text(mensaje).fadeIn(200);
+}
+
+function marcarValido(campoId) {
+    $(`#${campoId}`).addClass('is-valid');
+}
+
+function validarFormulario() {
+    let esValido = true;
+    limpiarValidaciones();
+
+    const nombre = $('#provNombre').val().trim();
+    const contacto = $('#provContacto').val().trim();
+    const telefono = $('#provTelefono').val().trim();
+    const correo = $('#provCorreo').val().trim();
+
+    // Validar Nombre (Obligatorio, min 3 chars)
+    if (nombre === '') {
+        mostrarError('provNombre', 'El nombre del proveedor es obligatorio.');
+        esValido = false;
+    } else if (nombre.length < 3) {
+        mostrarError('provNombre', 'El nombre debe tener al menos 3 caracteres.');
+        esValido = false;
+    } else {
+        marcarValido('provNombre');
+    }
+
+    // Validar Contacto (Opcional, pero si escribe debe ser mayor a 2 chars)
+    if (contacto !== '') {
+        if (contacto.length < 3) {
+            mostrarError('provContacto', 'El nombre de contacto es muy corto.');
+            esValido = false;
+        } else {
+            marcarValido('provContacto');
+        }
+    }
+
+    // Validar Teléfono (Obligatorio, exactamente 10 dígitos)
+    const phoneRegex = /^[0-9]{10}$/;
+    if (telefono === '') {
+        mostrarError('provTelefono', 'El teléfono es obligatorio.');
+        esValido = false;
+    } else if (!phoneRegex.test(telefono)) {
+        mostrarError('provTelefono', 'Debe contener exactamente 10 números.');
+        esValido = false;
+    } else {
+        marcarValido('provTelefono');
+    }
+
+    // Validar Correo (Obligatorio, formato email válido)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (correo === '') {
+        mostrarError('provCorreo', 'El correo electrónico es obligatorio.');
+        esValido = false;
+    } else if (!emailRegex.test(correo)) {
+        mostrarError('provCorreo', 'Ingresa un formato de correo válido (ej. correo@empresa.com).');
+        esValido = false;
+    } else {
+        marcarValido('provCorreo');
+    }
+
+    return esValido;
+}
+// ───────────────────────────────────────────────────────────────────
+
 function openAddModal(){
     $('#providerForm')[0].reset();
     $('#providerId').val('');
-    $('#modalTitle').text('Nuevo Proveedor');
+    limpiarValidaciones(); // Limpiamos rastro rojo
+    $('#modalTitle').html('<i class="fa fa-truck"></i> Nuevo Proveedor');
     $('#providerModal').modal('show');
 }
 
@@ -258,18 +368,30 @@ function editProvider(id){
     const p = proveedores.find(x => x.id == id);
     if(!p) return;
 
-    $('#providerId').val(p.id);
-    $('input[name="nombre"]').val(p.nombre);
-    $('input[name="contacto"]').val(p.contacto);
-    $('input[name="telefono"]').val(p.telefono);
-    $('input[name="correo"]').val(p.correo);
+    limpiarValidaciones(); // Limpiamos rastro rojo
 
-    $('#modalTitle').text('Editar Proveedor');
+    $('#providerId').val(p.id);
+    $('#provNombre').val(p.nombre);
+    $('#provContacto').val(p.contacto);
+    $('#provTelefono').val(p.telefono);
+    $('#provCorreo').val(p.correo);
+
+    $('#modalTitle').html('<i class="fa fa-edit"></i> Editar Proveedor');
     $('#providerModal').modal('show');
 }
 
 $('#providerForm').on('submit', function(e){
     e.preventDefault();
+
+    // 1. DISPARAR VALIDACIÓN ANTES DEL AJAX
+    if(!validarFormulario()) {
+        return; // Si no pasa, muere aquí el proceso.
+    }
+
+    // 2. Si pasa, bloqueamos botón para no enviar doble
+    const btnSubmit = $(this).find('button[type="submit"]');
+    const originalBtnHTML = btnSubmit.html();
+    btnSubmit.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Guardando...');
 
     const id = $('#providerId').val();
     const formData = $(this).serialize();
@@ -282,16 +404,15 @@ $('#providerForm').on('submit', function(e){
             data: formData,
             success: function(res){
                 if(typeof res === "string") res = JSON.parse(res);
-
                 if(res.status === 'success'){
                     $('#providerModal').modal('hide');
                     loadProviders();
                 } else {
-                    alert(res.message || "Error al actualizar");
+                    alert(res.message || "Error al actualizar la base de datos.");
                 }
-            }
+            },
+            complete: function() { btnSubmit.prop('disabled', false).html(originalBtnHTML); }
         });
-
     } else {
         // ===== CREAR (POST) =====
         $.ajax({
@@ -300,31 +421,43 @@ $('#providerForm').on('submit', function(e){
             data: formData,
             success: function(res){
                 if(typeof res === "string") res = JSON.parse(res);
-
                 if(res.status === 'success'){
                     $('#providerModal').modal('hide');
                     loadProviders();
                 } else {
-                    alert(res.message || "Error al crear");
+                    alert(res.message || "Error al guardar en la base de datos.");
                 }
-            }
+            },
+            complete: function() { btnSubmit.prop('disabled', false).html(originalBtnHTML); }
         });
     }
 });
 
-
 function deleteProvider(id){
-    if(!confirm('¿Eliminar proveedor?')) return;
+    if(!confirm('¿Estás seguro de que deseas eliminar a este proveedor de forma permanente?')) return;
 
     $.ajax({
         url: API_URL,
         type: 'DELETE',
-        data: JSON.stringify({id:id}),
+        data: JSON.stringify({id: id}),
         contentType: "application/json",
-        success: function(){
-            loadProviders();
+        success: function(res){
+            if(typeof res === "string") res = JSON.parse(res);
+            if(res.status === 'success' || !res.status) {
+                loadProviders();
+            } else {
+                alert("Error al intentar eliminar.");
+            }
+        },
+        error: function() {
+            alert("No se pudo eliminar, verifica que no tenga productos asociados en inventario.");
         }
     });
+}
+
+function cerrarSesion() {
+    localStorage.removeItem('currentUser');
+    window.location.href = '../login.html';
 }
 
 </script>

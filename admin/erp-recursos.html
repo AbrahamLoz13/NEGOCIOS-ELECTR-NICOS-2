@@ -100,6 +100,32 @@
 
 </style>
 </head>
+<script>
+    // ==========================================
+    // SEGURIDAD: BLOQUEO DE RUTAS NO AUTORIZADAS
+    // ==========================================
+    (function() {
+        const userData = localStorage.getItem('currentUser');
+        
+        // 1. Si ni siquiera ha iniciado sesión, pa' fuera
+        if (!userData) {
+            window.location.replace('../login.html'); // Cambia la ruta si tu login está en otra carpeta
+            return;
+        }
+
+        const user = JSON.parse(userData);
+        const rol = (user.rol || '').toLowerCase();
+
+        // 2. Definimos quién SÍ puede entrar a esta zona VIP
+        const rolesPermitidos = ['admin', 'vendedor', 'soporte', 'logistica'];
+
+        // 3. Si el rol del usuario no está en la lista (ej. es un simple 'usuario')
+        if (!rolesPermitidos.includes(rol)) {
+            alert("🔒 ACCESO DENEGADO: Tu cuenta no tiene privilegios de administrador.");
+            window.location.replace('../index.html'); // Lo regresamos a la tienda principal
+        }
+    })();
+</script>
 <body>
 
 <nav id="sidebar">
@@ -264,5 +290,6 @@ function cerrarSesion() {
   window.location.href = '../login.html';
 }
 </script>
+
 </body>
 </html>

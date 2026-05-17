@@ -1,481 +1,551 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Dashboard ERP | Pet Palace Admin</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pedidos Proveedores | Pet Palace Admin</title>
+    
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700,800" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/bootstrap.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700,800" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
 
-<style>
-  body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
+        /* SIDEBAR EXACTO AL DISEÑO REQUERIDO */
+        #sidebar {
+            position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
+            padding-top: 25px; background-color: #15161D;
+            width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            overflow-y: auto;
+        }
 
-  /* SIDEBAR */
-  #sidebar {
-    position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
-    padding-top: 25px; background-color: #15161D;
-    width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
-  }
-  .sidebar-brand { text-align: center; margin-bottom: 35px; }
-  .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
-  .sidebar-brand h5 { color: #fff; letter-spacing: 1px; font-weight: 700; font-size: 16px; margin: 0; }
-  .sidebar-brand p  { color: #6c757d; font-size: 11px; text-transform: uppercase; margin-top: 5px; }
-  .nav-sidebar { list-style: none; padding: 0; margin: 0; }
-  .nav-sidebar li a {
-    display: flex; align-items: center; padding: 14px 25px;
-    color: #aeb4be; text-decoration: none; font-weight: 500; font-size: 13px;
-    transition: all 0.2s; border-left: 4px solid transparent;
-  }
-  .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
-  .nav-sidebar li a:hover,
-  .nav-sidebar li.active a { background-color: #1e2029; color: #fff; border-left-color: #D10024; }
-  .nav-sidebar hr { border-color: #2c2e3e; margin: 20px 25px; opacity: 0.5; }
-  .nav-sidebar li a.locked { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
-  .nav-sidebar li a.locked::after { content: '\f023'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-left: auto; font-size: 11px; }
+        #sidebar::-webkit-scrollbar { width: 5px; }
+        #sidebar::-webkit-scrollbar-track { background: #15161D; }
+        #sidebar::-webkit-scrollbar-thumb { background: #495057; border-radius: 5px; }
+        
+        .sidebar-brand { text-align: center; margin-bottom: 35px; }
+        .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
+        .sidebar-brand h5 { color: #fff; letter-spacing: 1px; font-weight: 700; font-size: 16px; margin: 0; }
+        .sidebar-brand p { color: #6c757d; font-size: 11px; text-transform: uppercase; margin-top: 5px; letter-spacing: 0.5px; }
 
-  main { margin-left: 240px; padding: 30px; }
+        .nav-sidebar { list-style: none; padding: 0; margin: 0; }
+        .nav-sidebar li a {
+            display: flex; align-items: center; padding: 14px 25px;
+            color: #aeb4be; text-decoration: none; font-weight: 500; font-size: 15px;
+            transition: all 0.2s ease-in-out; border-left: 4px solid transparent;
+        }
+        .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
+        .nav-sidebar li a:hover, .nav-sidebar li.active a {
+            background-color: #1e2029; color: #fff; border-left-color: #D10024;
+        }
+        .nav-sidebar hr { border-color: #2c2e3e; margin: 20px 25px; opacity: 0.5; }
 
-  /* CARDS */
-  .card-custom {
-    background: white; border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-    border: 1px solid rgba(0,0,0,0.02);
-    margin-bottom: 24px; overflow: hidden;
-  }
-  .card-body-custom { padding: 22px; }
-  .card-title { font-weight: 700; font-size: 14px; color: #15161D; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
-  .card-title i { color: #6610f2; }
+        main { margin-left: 240px; padding: 30px; transition: all 0.3s; }
 
-  /* KPI GRID */
-  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-  .kpi-card {
-    background: white; border-radius: 12px; padding: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-    display: flex; align-items: center; gap: 16px;
-    border-left: 4px solid transparent; transition: transform 0.2s;
-  }
-  .kpi-card:hover { transform: translateY(-2px); }
-  .kpi-card.purple { border-left-color: #6610f2; }
-  .kpi-card.green  { border-left-color: #28a745; }
-  .kpi-card.blue   { border-left-color: #4ea3f1; }
-  .kpi-card.red    { border-left-color: #D10024; }
-  .kpi-card.orange { border-left-color: #fd7e14; }
-  .kpi-card.teal   { border-left-color: #20c997; }
-  .kpi-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; flex-shrink: 0; }
-  .kpi-icon.purple { background: #6610f2; }
-  .kpi-icon.green  { background: #28a745; }
-  .kpi-icon.blue   { background: #4ea3f1; }
-  .kpi-icon.red    { background: #D10024; }
-  .kpi-icon.orange { background: #fd7e14; }
-  .kpi-icon.teal   { background: #20c997; }
-  .kpi-label { font-size: 11px; color: #9aa5b4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-  .kpi-value { font-size: 24px; font-weight: 800; color: #15161D; margin-top: 2px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .top-bar h2 { margin: 0; font-weight: 800; color: #15161D; font-size: 24px; }
 
-  /* ERP LEVEL */
-  .nivel-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
-  .nivel-btn {
-    border: 2px solid #e0e0e0; border-radius: 10px; padding: 14px 10px;
-    text-align: center; cursor: pointer; transition: all 0.25s; background: white;
-  }
-  .nivel-btn:hover { border-color: #6610f2; transform: translateY(-2px); }
-  .nivel-btn.active { border-color: #6610f2; background: #f3e8ff; }
-  .nivel-btn .nivel-icon { font-size: 24px; margin-bottom: 6px; }
-  .nivel-btn .nivel-name { font-weight: 700; font-size: 12px; color: #15161D; }
-  .nivel-btn .nivel-desc { font-size: 10px; color: #9aa5b4; margin-top: 3px; }
-  .nivel-btn.active .nivel-name { color: #6610f2; }
+        .card-custom {
+            background: white; border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
+            overflow: hidden; margin-bottom: 25px;
+        }
+        .card-body-custom { padding: 20px; }
 
-  /* PROGRESS BAR ERP */
-  .erp-progress-wrap { background: #e9ecef; border-radius: 20px; height: 12px; overflow: hidden; margin: 14px 0 6px; }
-  .erp-progress-bar {
-    height: 12px; border-radius: 20px;
-    background: linear-gradient(90deg, #6610f2, #D10024);
-    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
-  }
-  .erp-progress-labels { display: flex; justify-content: space-between; font-size: 10px; color: #9aa5b4; font-weight: 600; }
+        .search-box { position: relative; }
+        .search-box i { position: absolute; left: 15px; top: 12px; color: #aaa; }
+        .search-box input { padding-left: 40px; border-radius: 8px; border: 1px solid #e0e0e0; height: 40px; }
+        .filter-select { border-radius: 8px; border: 1px solid #e0e0e0; height: 40px; }
 
-  /* TABLA MOVIMIENTOS */
-  .table thead th {
-    background: #f8f9fa; color: #495057; border-bottom: 2px solid #e9ecef;
-    font-weight: 700; text-transform: uppercase; font-size: 10px; padding: 12px 14px;
-  }
-  .table tbody td { vertical-align: middle; padding: 12px 14px; border-top: 1px solid #f0f0f0; font-size: 13px; }
-  .badge-salida  { background: #f8d7da; color: #721c24; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; text-transform: uppercase;}
-  .badge-entrada { background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; text-transform: uppercase;}
-  .badge-ajuste  { background: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; text-transform: uppercase;}
+        .table thead th { 
+            background-color: #f8f9fa; color: #495057; border-bottom: 2px solid #e9ecef; 
+            font-weight: 700; text-transform: uppercase; font-size: 11px; padding: 15px; 
+        }
+        .table tbody td { vertical-align: middle; padding: 15px; border-top: 1px solid #f0f0f0; }
 
-  /* STOCK CRÍTICO */
-  .stock-critico-badge { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700; }
+        .badge-status { font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .bg-pendiente { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .bg-enviado { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .bg-entregado { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .bg-cancelado { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
-  /* GRÁFICA CONTAINER */
-  .chart-container { position: relative; height: 220px; }
+        .btn-action { 
+            width: 32px; height: 32px; border-radius: 8px; border: none; 
+            display: inline-flex; align-items: center; justify-content: center; 
+            margin: 0 2px; transition: 0.2s; color: white;
+        }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-edit { background: #4ea3f1; }
+        .btn-delete { background: #ff4b5c; }
+        
+        .btn-add { background: #6610f2; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; color: white; display: flex; align-items: center; gap: 8px; }
+        .btn-add:hover { background: #520dc2; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(102,16,242,0.3); color: white; text-decoration: none; }
 
-  /* TWO COLUMN GRID */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+    <script>
+    // ==========================================
+    // SEGURIDAD: COMPROBACIÓN DE SESIÓN REAL
+    // ==========================================
+    (function() {
+        const userData = localStorage.getItem('currentUser');
+        if (!userData) {
+            window.location.replace('../login.html'); 
+            return;
+        }
 
-  .fade-in { animation: fadeIn 0.5s ease-out; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        const user = JSON.parse(userData);
+        const rol = (user.rol || '').toLowerCase();
+        const rolesPermitidos = ['admin', 'vendedor', 'logistica'];
 
-  .section-divider { 
-    display: flex; align-items: center; gap: 12px; margin: 28px 0 20px;
-    font-weight: 800; font-size: 13px; color: #15161D; text-transform: uppercase; letter-spacing: 1px;
-  }
-  .section-divider::after { content:''; flex:1; height:1px; background:#e9ecef; }
-  .section-divider span { background: #6610f2; color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; }
-</style>
+        if (!rolesPermitidos.includes(rol)) {
+            alert("ACCESO DENEGADO: Tu cuenta no tiene privilegios para acceder a los pedidos de proveedores.");
+            window.location.replace('../index.html'); 
+        }
+    })();
+    </script>
 </head>
+
 <body>
 
-<nav id="sidebar">
-  <div class="sidebar-brand">
-    <img src="../img/logo6.png" onerror="this.src='https://via.placeholder.com/60/15161D/ffffff?text=PP'">
-    <h5>Pet Palace</h5>
-    <p id="rolDisplay">Administrador</p>
-  </div>
-  <ul class="nav-sidebar" id="sidebarMenu">
-    </ul>
-</nav>
-
-<main>
-
-  <div class="d-flex justify-content-between align-items-center mb-4 fade-in">
-    <div>
-      <h2 style="font-weight:800; color:#15161D; font-size:24px; margin:0;">Dashboard ERP</h2>
-      <small class="text-muted">Visión centralizada de todas las operaciones empresariales</small>
-    </div>
-    <div style="font-size:12px; color:#9aa5b4;">
-      <i class="fa fa-sync-alt mr-1"></i> Actualizado ahora
-    </div>
-  </div>
-
-  <div class="section-divider"><span>3.4</span> Métricas Empresariales</div>
-
-  <div class="kpi-grid fade-in">
-    <div class="kpi-card purple">
-      <div class="kpi-icon purple"><i class="fa fa-dollar-sign"></i></div>
-      <div><div class="kpi-label">Ventas Totales ERP</div><div class="kpi-value" id="kpi-ventas">$0.00</div></div>
-    </div>
-    <div class="kpi-card green">
-      <div class="kpi-icon green"><i class="fa fa-check-circle"></i></div>
-      <div><div class="kpi-label">Órdenes Procesadas</div><div class="kpi-value" id="kpi-ordenes">0</div></div>
-    </div>
-    <div class="kpi-card blue">
-      <div class="kpi-icon blue"><i class="fa fa-box"></i></div>
-      <div><div class="kpi-label">Productos Vendidos</div><div class="kpi-value" id="kpi-productos">0</div></div>
-    </div>
-    <div class="kpi-card teal">
-      <div class="kpi-icon teal"><i class="fa fa-users"></i></div>
-      <div><div class="kpi-label">Clientes Activos</div><div class="kpi-value" id="kpi-clientes">0</div></div>
-    </div>
-    <div class="kpi-card orange">
-      <div class="kpi-icon orange"><i class="fa fa-warehouse"></i></div>
-      <div><div class="kpi-label">Inventario Disponible</div><div class="kpi-value" id="kpi-inventario">0</div></div>
-    </div>
-    <div class="kpi-card red">
-      <div class="kpi-icon red"><i class="fa fa-exclamation-triangle"></i></div>
-      <div><div class="kpi-label">Stock Crítico</div><div class="kpi-value" id="kpi-critico">0</div></div>
-    </div>
-  </div>
-
-  <div class="two-col fade-in">
-    <div class="card-custom">
-      <div class="card-body-custom">
-        <div class="card-title"><i class="fa fa-chart-bar"></i> Ventas por Mes</div>
-        <div class="chart-container">
-          <canvas id="chartVentas"></canvas>
-          <div id="vacio-chartVentas" style="display:none; align-items:center; justify-content:center; height:220px; color:#9aa5b4; font-size:13px;"></div>
+    <nav id="sidebar">
+        <div class="sidebar-brand">
+            <img src="../img/logo6.png" alt="Logo" onerror="this.src='https://via.placeholder.com/60'">
+            <h5>Pet Palace</h5>
+            <p id="rolDisplay">Verificando...</p>
         </div>
-      </div>
-    </div>
-    <div class="card-custom">
-      <div class="card-body-custom">
-        <div class="card-title"><i class="fa fa-chart-pie"></i> Top Productos Vendidos</div>
-        <div class="chart-container">
-          <canvas id="chartProductos"></canvas>
-          <div id="vacio-chartProductos" style="display:none; align-items:center; justify-content:center; height:220px; color:#9aa5b4; font-size:13px;"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+        <ul class="nav-sidebar" id="sidebarMenu"></ul>
+    </nav>
 
-  <div class="card-custom fade-in">
-    <div class="card-body-custom">
-      <div class="card-title"><i class="fa fa-history"></i> Movimientos de Inventario Recientes</div>
-      <div class="table-responsive">
-        <table class="table mb-0">
-          <thead>
-            <tr><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Motivo</th><th>Fecha</th></tr>
-          </thead>
-          <tbody id="tablaMovimientos">
-            <tr><td colspan="5" class="text-center text-muted py-3"><i class="fa fa-spinner fa-spin"></i> Cargando...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <div class="section-divider"><span>3.3</span> Nivel de Madurez ERP</div>
-
-  <div class="card-custom fade-in">
-    <div class="card-body-custom">
-      <div class="card-title"><i class="fa fa-layer-group"></i> Etapa de Adopción ERP — <span id="nivelActualTexto" style="color:#6610f2;">Cargando...</span></div>
-
-      <div class="erp-progress-wrap">
-        <div class="erp-progress-bar" id="erp-bar" style="width:0%"></div>
-      </div>
-      <div class="erp-progress-labels">
-        <span>Básico</span><span>Integrado</span><span>Automatizado</span><span>Optimizado</span>
-      </div>
-
-      <div id="nivelDescripcion" style="background:#f8f9fa; border-radius:8px; padding:14px; margin-top:16px; font-size:13px; color:#495057; line-height:1.6;">
-        Cargando descripción...
-      </div>
-
-      <div class="nivel-grid mt-3">
-        <div class="nivel-btn" id="nivel-btn-Basico" onclick="cambiarNivel('Básico')">
-          <div class="nivel-icon">🌱</div>
-          <div class="nivel-name">Básico</div>
-          <div class="nivel-desc">Digitalización inicial</div>
-        </div>
-        <div class="nivel-btn" id="nivel-btn-Integrado" onclick="cambiarNivel('Integrado')">
-          <div class="nivel-icon">🔗</div>
-          <div class="nivel-name">Integrado</div>
-          <div class="nivel-desc">Módulos conectados</div>
-        </div>
-        <div class="nivel-btn" id="nivel-btn-Automatizado" onclick="cambiarNivel('Automatizado')">
-          <div class="nivel-icon">⚙️</div>
-          <div class="nivel-name">Automatizado</div>
-          <div class="nivel-desc">Procesos automáticos</div>
-        </div>
-        <div class="nivel-btn" id="nivel-btn-Optimizado" onclick="cambiarNivel('Optimizado')">
-          <div class="nivel-icon">🚀</div>
-          <div class="nivel-name">Optimizado</div>
-          <div class="nivel-desc">BI y toma de decisiones</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</main>
-
-<script src="../js/jquery.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-
-<script>
-const API = '../api/erp/';
-let chartVentasObj = null;
-let chartProdObj = null;
-
-// LÓGICA DEL MENÚ DINÁMICO POR ROL - CORREGIDA
-const MENUS = {
-  admin: [
-    { href: 'admin-panel.html',   icon: 'fa-chart-line',  label: 'Dashboard' },
-    { href: 'clients.html',       icon: 'fa-users',       label: 'Clientes' },
-    { href: 'products.html',      icon: 'fa-box-open',    label: 'Inventario' },
-    { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
-    { href: 'providers.html',     icon: 'fa-truck',       label: 'Proveedores' },
-    { href: 'movimientos.html',   icon: 'fa-history',     label: 'Movimientos' },
-    { href: 'erp-dashboard.html', icon: 'fa-building',    label: 'Dashboard ERP', active: true },
-    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
-    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
-    { divider: true },
-    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
-    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
-  ],
-  vendedor: [
-    { href: 'erp-dashboard.html', icon: 'fa-building',  label: 'Dashboard ERP', active: true },
-    { href: 'clients.html',       icon: 'fa-users',       label: 'Clientes' },
-    { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
-    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
-    { href: 'products.html',      icon: 'fa-box-open',    label: 'Inventario', locked: true },
-    { href: 'providers.html',     icon: 'fa-truck',       label: 'Proveedores', locked: true },
-    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
-    { divider: true },
-    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
-    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
-  ],
-  logistica: [
-    { href: 'erp-dashboard.html', icon: 'fa-building',    label: 'Dashboard ERP', active: true },
-    { href: 'erp-logistica.html', icon: 'fa-truck-loading', label: 'Panel Logístico' },
-    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP', locked: true },
-    { href: 'erp-procesos.html',  icon: 'fa-cogs',        label: 'Procesos' },
-    { href: 'erp-recursos.html',  icon: 'fa-users-cog',   label: 'Recursos' },
-    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
-    { divider: true },
-    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
-    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
-  ],
-  usuario: [
-    { href: '../index.html',       icon: 'fa-store', label: 'Tienda' },
-    { href: '../userprofile.html', icon: 'fa-user',  label: 'Mi Perfil' },
-    { divider: true },
-    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
-  ],
-};
-
-function renderSidebar(rol) {
-  const menu = MENUS[rol] || MENUS['admin'];
-  const ul = $('#sidebarMenu');
-  ul.empty();
-  menu.forEach(item => {
-    if (item.divider) { ul.append('<hr>'); return; }
-    const lockClass   = item.locked ? 'locked' : '';
-    const activeClass = item.active ? 'active' : '';
-    const onclick     = item.onclick ? `onclick="${item.onclick}"` : '';
-    ul.append(`<li class="${activeClass}"><a href="${item.href}" class="${lockClass}" ${onclick}><i class="fa ${item.icon}"></i> ${item.label}</a></li>`);
-  });
-}
-
-const NIVEL_INFO = {
-  'Básico':       { pct: 25, idBtn: 'Basico', desc: '🌱 <strong>Etapa Básica:</strong> La empresa ha comenzado a digitalizar sus procesos. Se cuenta con módulos individuales para gestión de clientes, inventario y pedidos, pero aún operan de forma separada.' },
-  'Integrado':    { pct: 50, idBtn: 'Integrado', desc: '🔗 <strong>Etapa Integrada:</strong> Los módulos CRM, SCM y ERP están conectados. La información fluye entre ellos sin duplicación. Pet Palace opera como una sola plataforma digital.' },
-  'Automatizado': { pct: 75, idBtn: 'Automatizado', desc: '⚙️ <strong>Etapa Automatizada:</strong> Los procesos clave ocurren sin intervención manual. Al procesar una orden, el stock se descuenta y los movimientos se registran automáticamente en tiempo real.' },
-  'Optimizado':   { pct: 100, idBtn: 'Optimizado', desc: '🚀 <strong>Etapa Optimizada:</strong> El ERP genera métricas, KPIs y reportes que apoyan la toma de decisiones estratégicas. La empresa opera con inteligencia de negocio integrada.' },
-};
-
-$(document).ready(function () {
-  const rol = localStorage.getItem('rol') || 'admin';
-  $('#rolDisplay').text(rol.charAt(0).toUpperCase() + rol.slice(1));
-  
-  // Renderizamos el menú lateral basado en el rol actual
-  renderSidebar(rol);
-
-  cargarMetricas();
-  cargarNivel();
-});
-
-// ─── MÉTRICAS (AHORA A PRUEBA DE FALLOS) ───────────────────
-function cargarMetricas() {
-  $.ajax({
-    url: API + 'metricas.php',
-    dataType: 'json',
-    success: function(d) {
-      $('#kpi-ventas').text('$' + parseFloat(d.ventas_totales || 0).toLocaleString('en-US', { minimumFractionDigits: 2 }));
-      $('#kpi-ordenes').text(d.ordenes_procesadas || 0);
-      $('#kpi-productos').text(d.productos_vendidos || 0);
-      $('#kpi-clientes').text(d.clientes_activos || 0);
-      $('#kpi-inventario').text(d.inventario_disponible || 0);
-      $('#kpi-critico').text(d.stock_critico || 0);
-
-      const tbody = $('#tablaMovimientos');
-      tbody.empty();
-      if (d.movimientos_recientes && d.movimientos_recientes.length > 0) {
-        d.movimientos_recientes.forEach(m => {
-          let fechaFormat = '—';
-          if (m.fecha) {
-              const safeDate = m.fecha.replace(' ', 'T'); 
-              fechaFormat = new Date(safeDate).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-          }
-          const tipoClase = m.tipo ? m.tipo.toLowerCase() : 'ajuste';
-          const badge = `<span class="badge-${tipoClase}">${m.tipo}</span>`;
-          
-          tbody.append(`<tr>
-            <td><strong>${m.producto}</strong></td><td>${badge}</td>
-            <td>${m.cantidad}</td><td><span class="text-muted" style="font-size:11px;">${m.motivo || '—'}</span></td><td>${fechaFormat}</td>
-          </tr>`);
-        });
-      } else {
-        tbody.html('<tr><td colspan="5" class="text-center text-muted py-4">Sin movimientos recientes</td></tr>');
-      }
-
-      if (d.ventas_por_mes && d.ventas_por_mes.length > 0) {
-        const labels = d.ventas_por_mes.map(v => v.mes);
-        const values = d.ventas_por_mes.map(v => parseFloat(v.total || 0));
+    <main>
         
-        $('#chartVentas').show();
-        $('#vacio-chartVentas').hide();
-        if (chartVentasObj) chartVentasObj.destroy();
+        <div class="top-bar fade-in">
+            <div>
+                <h2 class="fw-bold m-0" style="color: #15161D;">Pedidos a Proveedores</h2>
+                <small class="text-muted">Administra las compras y reposiciones</small>
+            </div>
+            <button class="btn btn-add shadow-sm" onclick="openAddModal()">
+                <i class="fa fa-plus-circle"></i> Nuevo Pedido
+            </button>
+        </div>
+
+        <div class="card-custom fade-in">
+            <div class="card-body-custom">
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <div class="search-box">
+                            <i class="fa fa-search"></i>
+                            <input type="text" id="filterSearch" class="form-control" placeholder="Buscar por Producto, Proveedor o ID..." onkeyup="filterTable()">
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <select id="filterStatus" class="form-control filter-select" onchange="filterTable()">
+                            <option value="">Todos los Estados</option>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="enviado">Enviado</option>
+                            <option value="completado">Completado</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-custom fade-in">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Producto</th>
+                            <th>Proveedor</th>
+                            <th>Cantidad</th>
+                            <th>Costo Total</th>
+                            <th>Fecha</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <tr><td colspan="8" class="text-center py-5"><i class="fa fa-spinner fa-spin text-primary"></i> Cargando pedidos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="modal fade" id="orderModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 12px; border:none;">
+                <form id="orderForm">
+                    <div class="modal-header text-white" style="background: linear-gradient(135deg, #15161D, #2c3e50); border-radius: 12px 12px 0 0;">
+                        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" id="modalTitle"><i class="fa fa-clipboard-list"></i> Pedido a Proveedor</h4>
+                    </div>
+                    
+                    <div class="modal-body" style="background: #f8f9fa; padding: 25px;">
+                        <input type="hidden" id="orderId">
+                        
+                        <div class="form-group">
+                            <label class="font-weight-bold text-dark">Proveedor</label>
+                            <select class="form-control" id="orderProvider" required style="border-radius:8px;">
+                                <option value="">Seleccionar proveedor</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="font-weight-bold text-dark">Producto</label>
+                            <select class="form-control" id="orderProduct" required style="border-radius:8px;">
+                                <option value="">Seleccionar producto</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold text-dark">Cantidad</label>
+                                <input type="number" class="form-control" id="orderQty" required min="1" value="1" style="border-radius:8px;">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold text-dark">Costo Total</label>
+                                <input type="number" class="form-control" id="orderTotal" readonly step="0.01" style="border-radius:8px; background-color:#e9ecef;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="font-weight-bold text-dark">Estado</label>
+                            <select class="form-control" id="orderStatus" style="border-radius:8px;">
+                                <option value="pendiente">Pendiente</option>
+                                <option value="enviado">Enviado</option>
+                                <option value="completado">Completado</option>
+                                <option value="cancelado">Cancelado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer" style="border-top: 1px solid #eee;">
+                        <button type="button" class="btn btn-link text-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" style="background: #4ea3f1; border:none; border-radius:8px; padding: 8px 20px;">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+
+    <script>
+        const MENUS = {
+            admin: [
+                { href: 'admin-panel.html',   icon: 'fa-chart-line',   label: 'Dashboard' },
+                { href: 'clients.html',       icon: 'fa-users',        label: 'Clientes' },
+                { href: 'products.html',      icon: 'fa-box-open',     label: 'Inventario' },
+                { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
+                { href: 'providers.html',     icon: 'fa-truck',        label: 'Proveedores' },
+                { href: 'movimientos.html',   icon: 'fa-history',      label: 'Movimientos' },
+                { href: 'erp-dashboard.html', icon: 'fa-building',     label: 'Dashboard ERP' },
+                { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
+                { href: 'erp-roles.html',     icon: 'fa-user-shield',  label: 'Roles ERP' },
+            ],
+            vendedor: [
+                { href: 'admin-panel.html',   icon: 'fa-chart-line',   label: 'Dashboard' },
+                { href: 'clients.html',       icon: 'fa-users',        label: 'Clientes' },
+                { href: 'products.html',      icon: 'fa-box-open',     label: 'Inventario' },
+                { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
+                { href: 'providers.html',     icon: 'fa-truck',        label: 'Proveedores' },
+                { href: 'movimientos.html',   icon: 'fa-history',      label: 'Movimientos' },
+                { href: 'erp-dashboard.html', icon: 'fa-building',     label: 'Dashboard ERP' },
+                { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
+                { href: 'erp-roles.html',     icon: 'fa-user-shield',  label: 'Roles ERP' },
+            ],
+            logistica: [
+                { href: 'erp-dashboard.html', icon: 'fa-building',       label: 'Dashboard ERP' },
+                { href: 'erp-logistica.html', icon: 'fa-truck-loading',  label: 'Panel Logístico' },
+                { href: 'erp-ordenes.html',   icon: 'fa-file-invoice',   label: 'Órdenes ERP', locked: true },
+                { href: 'erp-procesos.html',  icon: 'fa-cogs',           label: 'Procesos' },
+                { href: 'erp-recursos.html',  icon: 'fa-users-cog',      label: 'Recursos' },
+                { href: 'erp-roles.html',     icon: 'fa-user-shield',    label: 'Roles ERP' },
+            ],
+            soporte: [
+                { href: 'clients.html',       icon: 'fa-users',        label: 'Clientes' },
+                { href: 'erp-roles.html',     icon: 'fa-user-shield',  label: 'Roles ERP' },
+            ]
+        };
+
+        const API_URL = '../api/orders.php';
+        const PRODUCTS_API = '../api/products.php';
+        const PROVIDERS_API = '../api/providers.php';
         
-        chartVentasObj = new Chart(document.getElementById('chartVentas'), {
-          type: 'bar',
-          data: { labels, datasets: [{ label: 'Ventas ($)', data: values, backgroundColor: '#6610f2', borderRadius: 6 }] },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        let ordersData = [];
+        let productsData = [];
+        let providersData = [];
+        let userRole = '';
+        let isEditing = false;
+
+        $(document).ready(function() {
+            verificarPermisosYMenu();
+            loadProviders();
+            loadProducts();
+            loadOrders();
         });
-      } else {
-        renderChartVacio('chartVentas', 'No hay registros de ventas mensuales');
-      }
 
-      if (d.top_productos && d.top_productos.length > 0) {
-        const labels = d.top_productos.map(p => p.nombre);
-        const values = d.top_productos.map(p => parseInt(p.vendidos || 0));
-        
-        $('#chartProductos').show();
-        $('#vacio-chartProductos').hide();
-        if (chartProdObj) chartProdObj.destroy();
+        function verificarPermisosYMenu() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            userRole = (user.rol || 'admin').toLowerCase();
+            
+            const nombres = { admin: 'Administrador', vendedor: 'Vendedor Autorizado', soporte: 'Soporte Técnico', logistica: 'Logística', usuario: 'Usuario' };
+            $('#rolDisplay').text(nombres[userRole] ? nombres[userRole].toUpperCase() : userRole.toUpperCase());
 
-        chartProdObj = new Chart(document.getElementById('chartProductos'), {
-          type: 'doughnut',
-          data: { labels, datasets: [{ data: values, backgroundColor: ['#6610f2','#28a745','#4ea3f1','#fd7e14','#D10024'], borderWidth: 2, borderColor: '#fff' }] },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels:{font:{size:11}} } } }
+            const sidebarUl = $('#sidebarMenu');
+            sidebarUl.empty();
+            
+            const menuItems = MENUS[userRole] || MENUS['admin'];
+            
+            let currentPage = window.location.pathname.split("/").pop();
+            if(!currentPage) currentPage = 'erp-ordenes.html';
+
+            menuItems.forEach(item => {
+                let isActive = (item.href === currentPage) ? 'active' : '';
+                sidebarUl.append(`
+                    <li class="${isActive}">
+                        <a href="${item.href}">
+                            <i class="fa ${item.icon}"></i> ${item.label}
+                        </a>
+                    </li>
+                `);
+            });
+
+            sidebarUl.append(`<hr>`);
+            sidebarUl.append(`<li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>`);
+            sidebarUl.append(`<li><a href="#" onclick="cerrarSesionGlobal()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>`);
+        }
+
+        function cerrarSesionGlobal() {
+            localStorage.removeItem('currentUser');
+            window.location.href = '../login.html';
+        }
+
+        function loadProviders() {
+            $.getJSON(PROVIDERS_API, function(data){
+                providersData = data;
+                let select = $('#orderProvider');
+                select.empty();
+                select.append('<option value="">Seleccionar proveedor</option>');
+                data.forEach(p => {
+                    select.append(`<option value="${p.id}">${p.nombre}</option>`);
+                });
+            }).fail(function() {
+                console.error('Error cargando proveedores');
+            });
+        }
+
+        function loadProducts() {
+            $.getJSON(PRODUCTS_API, function(data){
+                productsData = data;
+                updateProductSelect();
+            }).fail(function() {
+                console.error('Error cargando productos');
+            });
+        }
+
+        function updateProductSelect(selectedProviderId = null) {
+            let select = $('#orderProduct');
+            select.empty();
+            select.append('<option value="">Seleccionar producto</option>');
+            
+            let filteredProducts = productsData;
+            if (selectedProviderId) {
+                filteredProducts = productsData.filter(p => p.proveedor_id == selectedProviderId);
+            }
+            
+            filteredProducts.forEach(p => {
+                select.append(`<option value="${p.id}" data-price="${p.precio}">${p.nombre}</option>`);
+            });
+        }
+
+        $('#orderProvider').on('change', function() {
+            let providerId = $(this).val();
+            updateProductSelect(providerId);
+            $('#orderTotal').val('');
         });
-      } else {
-        renderChartVacio('chartProductos', 'No hay productos vendidos aún');
-      }
-    },
-    error: function(xhr, status, error) {
-      console.error("API Error (metricas.php):", error);
-      
-      $('#kpi-ventas').text('$0.00');
-      $('#kpi-ordenes, #kpi-productos, #kpi-clientes, #kpi-inventario, #kpi-critico').text('0');
-      
-      $('#tablaMovimientos').html(`
-        <tr>
-          <td colspan="5" class="text-center text-danger py-4" style="background:#f8d7da;">
-            <i class="fa fa-exclamation-triangle"></i> ¡Aviso! La API falló. Revisa que exista la tabla <b>estado_erp</b> en la Base de Datos.
-          </td>
-        </tr>
-      `);
-      
-      renderChartVacio('chartVentas', 'Error de conexión con la BD');
-      renderChartVacio('chartProductos', 'Error de conexión con la BD');
-    }
-  });
-}
 
-function renderChartVacio(id, msg) {
-  $('#' + id).hide();
-  $('#vacio-' + id).text(msg).css('display', 'flex');
-}
+        $('#orderProduct, #orderQty').on('change keyup', function() {
+            const selectedOption = $('#orderProduct option:selected');
+            const price = selectedOption.data('price');
+            const qty = parseInt($('#orderQty').val());
+            
+            if(price && qty) {
+                const total = (price * qty).toFixed(2);
+                $('#orderTotal').val(total);
+            } else {
+                $('#orderTotal').val('');
+            }
+        });
 
-function cargarNivel() {
-  $.ajax({
-    url: API + 'estado.php',
-    dataType: 'json',
-    success: function(d) { aplicarNivel(d.nivel || 'Básico'); },
-    error: function() { aplicarNivel('Básico'); } 
-  });
-}
+        function loadOrders() {
+            $.getJSON(API_URL, function(data) {
+                ordersData = Array.isArray(data) ? data : [];
+                renderTable(ordersData);
+            }).fail(function(xhr, status, error) {
+                console.error('Error cargando pedidos:', error);
+                $('#ordersTableBody').html('<tr><td colspan="8" class="text-center text-danger">Error al cargar pedidos</td></tr>');
+            });
+        }
 
-function aplicarNivel(nivel) {
-  const info = NIVEL_INFO[nivel] || NIVEL_INFO['Básico'];
-  $('#nivelActualTexto').text(nivel);
-  $('#erp-bar').css('width', info.pct + '%');
-  $('#nivelDescripcion').html(info.desc);
+        function renderTable(data) {
+            const $tbody = $('#ordersTableBody');
+            $tbody.empty();
 
-  $('.nivel-btn').removeClass('active');
-  const boton = document.getElementById('nivel-btn-' + info.idBtn);
-  if (boton) boton.classList.add('active');
-}
+            if(!data || data.length === 0) {
+                $tbody.html('<tr><td colspan="8" class="text-center text-muted p-5">No hay pedidos a proveedores.</td></tr>');
+                return;
+            }
 
-function cambiarNivel(nivel) {
-  $.ajax({
-    url: API + 'estado.php',
-    type: 'PUT',
-    contentType: 'application/json',
-    data: JSON.stringify({ nivel }),
-    success: function (res) {
-      if (typeof res === 'string') res = JSON.parse(res);
-      if (res.ok) aplicarNivel(nivel);
-    }
-  });
-}
+            data.forEach(o => {
+                let badgeClass = '';
+                let estadoDisplay = o.estado ? o.estado.charAt(0).toUpperCase() + o.estado.slice(1) : 'Pendiente';
+                
+                switch(o.estado) {
+                    case 'pendiente': badgeClass = 'bg-pendiente'; break;
+                    case 'enviado': badgeClass = 'bg-enviado'; break;
+                    case 'completado': badgeClass = 'bg-entregado'; break; 
+                    case 'cancelado': badgeClass = 'bg-cancelado'; break;
+                    default: badgeClass = 'bg-pendiente';
+                }
 
-function cerrarSesion() {
-  localStorage.removeItem('currentUser');
-  window.location.href = '../login.html';
-}
-</script>
+                let fecha = o.fecha_pedido ? o.fecha_pedido.split(' ')[0] : '-';
+
+                let deleteBtn = userRole === 'admin' ? 
+                    `<button class="btn-action btn-delete" onclick="deleteOrder(${o.id})" title="Eliminar"><i class="fa fa-trash-alt"></i></button>` : '';
+
+                const row = `
+                    <tr>
+                        <td class="font-weight-bold">#${o.id}</td>
+                        <td>${o.producto || 'N/A'}</td>
+                        <td>${o.proveedor || 'N/A'}</td>
+                        <td class="text-center">${o.cantidad}</td>
+                        <td class="font-weight-bold text-primary">$${parseFloat(o.costo_total).toFixed(2)}</td>
+                        <td>${fecha}</td>
+                        <td class="text-center"><span class="badge-status ${badgeClass}">${estadoDisplay}</span></td>
+                        <td class="text-center">
+                            <button class="btn-action btn-edit" onclick="openEditModal(${o.id})" title="Editar"><i class="fa fa-pencil-alt"></i></button>
+                            ${deleteBtn}
+                        </td>
+                    </tr>
+                `;
+
+                $tbody.append(row);
+            });
+        }
+
+        function openAddModal() {
+            isEditing = false;
+            $('#orderForm')[0].reset();
+            $('#orderId').val('');
+            $('#modalTitle').html('<i class="fa fa-plus-circle"></i> Nuevo Pedido');
+            $('#orderProvider').val('');
+            updateProductSelect();
+            $('#orderModal').modal('show');
+        }
+
+        function openEditModal(id) {
+            isEditing = true;
+            const o = ordersData.find(item => parseInt(item.id) === id);
+            if(!o) return;
+
+            $('#orderId').val(o.id);
+            $('#orderProvider').val(o.proveedor_id);
+            updateProductSelect(o.proveedor_id);
+            
+            setTimeout(() => {
+                $('#orderProduct').val(o.producto_id);
+                $('#orderQty').val(o.cantidad);
+                $('#orderTotal').val(o.costo_total);
+                $('#orderStatus').val(o.estado);
+            }, 300);
+
+            $('#modalTitle').html('<i class="fa fa-edit"></i> Editar Pedido #' + o.id);
+            $('#orderModal').modal('show');
+        }
+
+        $('#orderForm').on('submit', function(e) {
+            e.preventDefault();
+
+            const data = {
+                producto_id: parseInt($('#orderProduct').val()),
+                proveedor_id: parseInt($('#orderProvider').val()),
+                cantidad: parseInt($('#orderQty').val()),
+                costo_total: parseFloat($('#orderTotal').val() || 0), 
+                estado: $('#orderStatus').val()
+            };
+
+            if (isEditing) {
+                data.id = parseInt($('#orderId').val());
+            }
+
+            const method = isEditing ? 'PUT' : 'POST';
+
+            $.ajax({
+                url: API_URL,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(res) {
+                    if(res.status === 'success') {
+                        $('#orderModal').modal('hide');
+                        loadOrders();
+                    } else {
+                        alert('Error: ' + res.message);
+                    }
+                },
+                error: function(xhr) {
+                    alert('Error en el servidor al guardar los datos.');
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
+        function deleteOrder(id) {
+            if(!confirm('¿Estás seguro de eliminar este pedido?')) return;
+
+            $.ajax({
+                url: API_URL,
+                type: 'DELETE',
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id }),
+                success: function(res) {
+                    if(res.status === 'success') {
+                        loadOrders();
+                    } else {
+                        alert('Error al eliminar');
+                    }
+                }
+            });
+        }
+
+        function filterTable() {
+            const search = $('#filterSearch').val().toLowerCase();
+            const status = $('#filterStatus').val().toLowerCase();
+
+            const filtered = ordersData.filter(o => {
+                const matchesSearch = 
+                    (o.producto && o.producto.toLowerCase().includes(search)) ||
+                    (o.proveedor && o.proveedor.toLowerCase().includes(search)) ||
+                    o.id.toString().includes(search);
+                    
+                const matchesStatus = status === '' || (o.estado && o.estado.toLowerCase() === status);
+                
+                return matchesSearch && matchesStatus;
+            });
+
+            renderTable(filtered);
+        }
+    </script>
+    
 </body>
 </html>

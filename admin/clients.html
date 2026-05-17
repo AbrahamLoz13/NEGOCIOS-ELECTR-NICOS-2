@@ -20,7 +20,14 @@
             padding-top: 25px; background-color: #15161D;
             width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
             transition: all 0.3s;
+            overflow-y: auto; /* AÑADIDO: SCROLL PARA VER CERRAR SESIÓN */
         }
+
+        /* AÑADIDO: Estilo elegante para el scroll del sidebar */
+        #sidebar::-webkit-scrollbar { width: 5px; }
+        #sidebar::-webkit-scrollbar-track { background: #15161D; }
+        #sidebar::-webkit-scrollbar-thumb { background: #495057; border-radius: 5px; }
+
         .sidebar-brand { text-align: center; margin-bottom: 35px; }
         .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
         .sidebar-brand h5 { color: #fff; letter-spacing: 1px; font-weight: 700; font-size: 16px; margin: 0; }
@@ -137,6 +144,32 @@
         .chat-meta { display: flex; justify-content: flex-end; align-items: center; gap: 4px; font-size: 10px; color: #999; margin-top: 4px; }
         .leido { color: #34b7f1; } 
     </style>
+    <script>
+    // ==========================================
+    // SEGURIDAD: BLOQUEO DE RUTAS NO AUTORIZADAS
+    // ==========================================
+    (function() {
+        const userData = localStorage.getItem('currentUser');
+        
+        // 1. Si ni siquiera ha iniciado sesión, pa' fuera
+        if (!userData) {
+            window.location.replace('../login.html'); // Cambia la ruta si tu login está en otra carpeta
+            return;
+        }
+
+        const user = JSON.parse(userData);
+        const rol = (user.rol || '').toLowerCase();
+
+        // 2. Definimos quién SÍ puede entrar a esta zona VIP
+        const rolesPermitidos = ['admin', 'vendedor', 'soporte', 'logistica'];
+
+        // 3. Si el rol del usuario no está en la lista (ej. es un simple 'usuario')
+        if (!rolesPermitidos.includes(rol)) {
+            alert("🔒 ACCESO DENEGADO: Tu cuenta no tiene privilegios de administrador.");
+            window.location.replace('../index.html'); // Lo regresamos a la tienda principal
+        }
+    })();
+</script>
 </head>
 
 <body>
@@ -760,4 +793,5 @@
     </script>
 
 </body>
+
 </html>

@@ -18,7 +18,12 @@
             padding-top: 25px; background-color: #15161D;
             width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
             transition: all 0.3s;
+            overflow-y: auto; /* SCROLL PARA VER CERRAR SESIÓN */
         }
+        
+        #sidebar::-webkit-scrollbar { width: 5px; }
+        #sidebar::-webkit-scrollbar-track { background: #15161D; }
+        #sidebar::-webkit-scrollbar-thumb { background: #495057; border-radius: 5px; }
         
         .sidebar-brand { text-align: center; margin-bottom: 35px; }
         .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
@@ -81,6 +86,29 @@
         .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
+    <script>
+    // ==========================================
+    // SEGURIDAD: BLOQUEO DE RUTAS NO AUTORIZADAS
+    // ==========================================
+    (function() {
+        const userData = localStorage.getItem('currentUser');
+        
+        if (!userData) {
+            window.location.replace('../login.html'); 
+            return;
+        }
+
+        const user = JSON.parse(userData);
+        const rol = (user.rol || '').toLowerCase();
+
+        const rolesPermitidos = ['admin', 'vendedor', 'soporte', 'logistica'];
+
+        if (!rolesPermitidos.includes(rol)) {
+            alert("🔒 ACCESO DENEGADO: Tu cuenta no tiene privilegios de administrador.");
+            window.location.replace('../index.html'); 
+        }
+    })();
+</script>
 </head>
 
 <body>
@@ -469,5 +497,6 @@
             window.location.href = '../login.html';
         }
     </script>
+    
 </body>
 </html>

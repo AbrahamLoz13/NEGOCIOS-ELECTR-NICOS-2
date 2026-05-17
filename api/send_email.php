@@ -1,4 +1,8 @@
 <?php
+if (!isset($_SERVER['HTTP_REFERER'])) {
+    http_response_code(403);
+    die(json_encode(["status" => "error", "message" => "Acceso directo denegado 🚫. Solo el sistema puede hacer peticiones aquí."]));
+}
 // api/send_email.php
 header('Content-Type: application/json');
 

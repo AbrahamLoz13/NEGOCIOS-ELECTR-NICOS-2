@@ -12,36 +12,47 @@
 <style>
   body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
 
+  /* SIDEBAR ORIGINAL ESTILO CLEAN UI */
   #sidebar {
-    position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
-    padding-top: 25px; background-color: #15161D;
-    width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+      position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
+      padding-top: 25px; background-color: #15161D;
+      width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+      transition: all 0.3s;
+      overflow-y: auto;
   }
+
+  #sidebar::-webkit-scrollbar { width: 5px; }
+  #sidebar::-webkit-scrollbar-track { background: #15161D; }
+  #sidebar::-webkit-scrollbar-thumb { background: #495057; border-radius: 5px; }
+  
   .sidebar-brand { text-align: center; margin-bottom: 35px; }
   .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
   .sidebar-brand h5 { color: #fff; letter-spacing: 1px; font-weight: 700; font-size: 16px; margin: 0; }
-  .sidebar-brand p  { color: #6c757d; font-size: 11px; text-transform: uppercase; margin-top: 5px; }
+  .sidebar-brand p { color: #6c757d; font-size: 11px; text-transform: uppercase; margin-top: 5px; letter-spacing: 0.5px; }
+
   .nav-sidebar { list-style: none; padding: 0; margin: 0; }
   .nav-sidebar li a {
-    display: flex; align-items: center; padding: 14px 25px;
-    color: #aeb4be; text-decoration: none; font-weight: 500; font-size: 13px;
-    transition: all 0.2s; border-left: 4px solid transparent;
+      display: flex; align-items: center; padding: 14px 25px;
+      color: #aeb4be; text-decoration: none; font-weight: 500; font-size: 13px;
+      transition: all 0.2s ease-in-out; border-left: 4px solid transparent;
   }
   .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
-  .nav-sidebar li a:hover,
-  .nav-sidebar li.active a { background-color: #1e2029; color: #fff; border-left-color: #D10024; }
+  .nav-sidebar li a:hover, .nav-sidebar li.active a {
+      background-color: #1e2029; color: #fff; border-left-color: #D10024;
+  }
   .nav-sidebar hr { border-color: #2c2e3e; margin: 20px 25px; opacity: 0.5; }
   .nav-sidebar li a.locked { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
   .nav-sidebar li a.locked::after { content: '\f023'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-left: auto; font-size: 11px; }
 
-  main { margin-left: 240px; padding: 30px; }
+  main { margin-left: 240px; padding: 30px; transition: all 0.3s; }
 
   .card-custom {
     background: white; border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-    border: 1px solid rgba(0,0,0,0.02); margin-bottom: 24px;
+    border: 1px solid rgba(0,0,0,0.02);
+    margin-bottom: 24px; overflow: hidden;
   }
-  .card-body-custom { padding: 24px; }
+  .card-body-custom { padding: 22px; }
 
   .rol-selector { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
   .rol-btn {
@@ -57,71 +68,57 @@
   .rol-panel.visible { display: block; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
-  .rol-header {
-    border-radius: 12px; padding: 24px 28px; margin-bottom: 24px;
-    display: flex; align-items: center; gap: 20px; color: white;
-  }
+  .rol-header { border-radius: 12px; padding: 24px 28px; margin-bottom: 24px; display: flex; align-items: center; gap: 20px; color: white; }
   .rol-header.admin     { background: linear-gradient(135deg, #15161D, #3d0f6e); }
   .rol-header.vendedor  { background: linear-gradient(135deg, #155724, #1a6b3c); }
-  .rol-header.logistica { background: linear-gradient(135deg, #0b0f19, #1e3a8a); } 
-  .rol-header.usuario   { background: linear-gradient(135deg, #7d4500, #b85c00); }
-  
+  .rol-header.logistica { background: linear-gradient(135deg, #0b0f19, #1e3a8a); }
+  .rol-header.soporte   { background: linear-gradient(135deg, #fd7e14, #e65c00); }
+  .rol-header.usuario   { background: linear-gradient(135deg, #5a3a00, #7a5200); }
   .rol-header-icon { font-size: 40px; }
   .rol-header h3 { font-size: 20px; font-weight: 800; margin: 0 0 4px; }
   .rol-header p  { margin: 0; font-size: 12px; opacity: 0.75; }
 
   .modulos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
-  .modulo-card {
-    border-radius: 10px; padding: 16px; display: flex; flex-direction: column;
-    align-items: center; text-align: center; gap: 8px; border: 2px solid; transition: transform 0.2s;
-  }
+  .modulo-card { border-radius: 10px; padding: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; border: 2px solid; transition: transform 0.2s; text-decoration: none !important;}
   .modulo-card.permitido { border-color: #c3e6cb; background: #f0fff4; cursor: pointer; }
-  .modulo-card.permitido:hover { transform: translateY(-2px); }
-  .modulo-card.bloqueado { border-color: #f0f0f0; background: #fafafa; opacity: 0.5; }
+  .modulo-card.permitido:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(21, 87, 36, 0.1); }
+  .modulo-card.bloqueado { border-color: #f0f0f0; background: #fafafa; opacity: 0.5; cursor: pointer; }
+  .modulo-card.bloqueado:hover { border-color: #f5c6cb; background: #fdf3f4; }
   .modulo-card .mod-icon { font-size: 24px; color: #495057; }
   .modulo-card.permitido .mod-icon { color: #155724; }
-  .modulo-card .mod-name { font-weight: 700; font-size: 12px; }
+  .modulo-card .mod-name { font-weight: 700; font-size: 12px; color: #15161D;}
   .modulo-card .mod-estado { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
   .modulo-card.permitido .mod-estado { background: #d4edda; color: #155724; }
   .modulo-card.bloqueado .mod-estado { background: #e9ecef; color: #9aa5b4; }
 
-  .acciones-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .accion-btn {
-    display: flex; align-items: center; gap: 12px; padding: 14px 18px;
-    border-radius: 10px; border: 1px solid #e0e0e0; background: white;
-    text-decoration: none; color: #495057; font-weight: 600; font-size: 13px;
-    transition: all 0.2s; cursor: pointer;
+  .sim-banner {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    border: 1px solid #ffc107; border-radius: 10px;
+    padding: 12px 18px; font-size: 12px; color: #856404;
+    margin-bottom: 20px; display: none; align-items: center; gap: 10px;
+    font-weight: 600;
   }
-  .accion-btn:hover { background: #f3e8ff; border-color: #6610f2; color: #6610f2; text-decoration: none; }
-  .accion-btn.bloqueado { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
-  .accion-btn .accion-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; flex-shrink: 0; }
+  .sim-banner.visible { display: flex; }
 
-  .table thead th {
-    background: #f8f9fa; color: #495057; border-bottom: 2px solid #e9ecef;
-    font-weight: 700; text-transform: uppercase; font-size: 10px; padding: 12px 14px;
-  }
-  .table tbody td { vertical-align: middle; padding: 12px 14px; border-top: 1px solid #f0f0f0; font-size: 13px; }
+  .rol-info-bar { background: #f3e8ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 10px 16px; font-size: 12px; color: #6610f2; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
 
-  .badge-rol { padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; display: inline-block; text-transform: uppercase; }
-  .badge-rol.admin     { background: #3d0f6e; color: white; }
-  .badge-rol.vendedor  { background: #155724; color: white; }
-  .badge-rol.logistica { background: #1e3a8a; color: white; }
-  .badge-rol.usuario   { background: #7d4500; color: white; }
-
-  .badge-activo     { background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; display: inline-block; text-transform: uppercase; }
-  .badge-suspendido { background: #f8d7da; color: #721c24; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; display: inline-block; text-transform: uppercase; }
-  .badge-pendiente  { background: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; display: inline-block; text-transform: uppercase; }
-
-  .section-title { font-weight: 700; font-size: 13px; color: #15161D; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-  .section-title i { color: #6610f2; }
-
-  .rol-info-bar {
-    background: #f3e8ff; border: 1px solid #d8b4fe; border-radius: 8px;
-    padding: 10px 16px; font-size: 12px; color: #6610f2; margin-bottom: 20px;
-    display: flex; align-items: center; gap: 8px;
-  }
   .fade-in { animation: fadeIn 0.5s ease-out; }
 </style>
+
+<script>
+    (function() {
+        const userData = localStorage.getItem('currentUser');
+        if (!userData) { window.location.replace('../login.html'); return; }
+        
+        const user = JSON.parse(userData);
+        const verdaderoPoder = (user.rol_real || user.rol).toLowerCase();
+
+        if (verdaderoPoder !== 'admin') {
+            alert("ACCESO DENEGADO: Solo el administrador del sistema puede usar la auditoría de roles.");
+            window.location.replace('admin-panel.html'); 
+        }
+    })();
+</script>
 </head>
 <body>
 
@@ -139,26 +136,34 @@
   <div class="d-flex justify-content-between align-items-center mb-4 fade-in">
     <div>
       <h2 style="font-weight:800; color:#15161D; font-size:24px; margin:0;">Control de Roles ERP</h2>
-      <small class="text-muted">Simulación de ERP comercial — acceso por perfil empresarial</small>
+      <small class="text-muted">Simulación inmersiva de ERP comercial — acceso por perfil empresarial</small>
     </div>
+  </div>
+
+  <div class="sim-banner" id="simBanner">
+    <i class="fa fa-flask" style="font-size:16px;"></i>
+    <span>Modo Simulación: Tu identidad cambió a <strong id="simRolNombre">---</strong>. Puedes navegar libremente, el sistema te tratará como este usuario.</span>
   </div>
 
   <div class="rol-info-bar fade-in">
-    <i class="fa fa-info-circle"></i>
-    <span>Sesión activa como: <strong id="rolActualInfo">—</strong>. Cambia el rol para simular diferentes vistas.</span>
+    <i class="fa fa-info-circle fa-lg"></i>
+    <span>Estás navegando en modo Auditoría como: <strong id="rolActualInfo">---</strong>. Los clics a los módulos te llevarán a las páginas reales bajo este perfil. Regresa aquí usando el menú lateral.</span>
   </div>
 
-  <div class="rol-selector fade-in">
-    <div class="rol-btn" id="btn-admin"     onclick="cambiarRol('admin')">
+  <div class="rol-selector fade-in" id="rolSelectorAdmin">
+    <div class="rol-btn" id="btn-admin"     onclick="ejecutarCambioRol('admin')">
       <span class="rol-icon"><i class="fa fa-user-tie"></i></span> Administrador
     </div>
-    <div class="rol-btn" id="btn-vendedor"  onclick="cambiarRol('vendedor')">
+    <div class="rol-btn" id="btn-vendedor"  onclick="ejecutarCambioRol('vendedor')">
       <span class="rol-icon"><i class="fa fa-briefcase"></i></span> Vendedor
     </div>
-    <div class="rol-btn" id="btn-logistica" onclick="cambiarRol('logistica')">
+    <div class="rol-btn" id="btn-logistica" onclick="ejecutarCambioRol('logistica')">
       <span class="rol-icon"><i class="fa fa-truck"></i></span> Logística
     </div>
-    <div class="rol-btn" id="btn-usuario"   onclick="cambiarRol('usuario')">
+    <div class="rol-btn" id="btn-soporte" onclick="ejecutarCambioRol('soporte')">
+      <span class="rol-icon"><i class="fa fa-headset"></i></span> Soporte
+    </div>
+    <div class="rol-btn" id="btn-usuario"   onclick="ejecutarCambioRol('usuario')">
       <span class="rol-icon"><i class="fa fa-user"></i></span> Usuario
     </div>
   </div>
@@ -166,35 +171,24 @@
   <div class="rol-panel" id="panel-admin">
     <div class="rol-header admin">
       <div class="rol-header-icon"><i class="fa fa-user-tie"></i></div>
-      <div>
-        <h3>Administrador General</h3>
-        <p>Acceso total al sistema</p>
-      </div>
+      <div><h3>Administrador General</h3><p>Acceso total al sistema — sin restricciones</p></div>
     </div>
     <div class="card-custom">
       <div class="card-body-custom">
         <div class="section-title"><i class="fa fa-th"></i> Módulos disponibles</div>
         <div class="modulos-grid">
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-chart-pie"></i></div><div class="mod-name">Dashboard ERP</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-users"></i></div><div class="mod-name">Clientes</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-box-open"></i></div><div class="mod-name">Inventario</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-shopping-bag"></i></div><div class="mod-name">Pedidos</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-building"></i></div><div class="mod-name">Órdenes ERP</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-truck"></i></div><div class="mod-name">Proveedores</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-history"></i></div><div class="mod-name">Movimientos</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-user-shield"></i></div><div class="mod-name">Roles y Usuarios</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-cog"></i></div><div class="mod-name">Configuración</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-        </div>
-        <div class="section-title mt-2"><i class="fa fa-bolt"></i> Acciones rápidas</div>
-        <div class="acciones-grid">
-          <a href="erp-dashboard.html" class="accion-btn"><div class="accion-icon" style="background:#6610f2;"><i class="fa fa-chart-line"></i></div>Dashboard ERP</a>
-          <a href="erp-ordenes.html"   class="accion-btn"><div class="accion-icon" style="background:#28a745;"><i class="fa fa-file-invoice"></i></div>Gestionar Órdenes</a>
-          <a href="products.html"      class="accion-btn"><div class="accion-icon" style="background:#4ea3f1;"><i class="fa fa-box-open"></i></div>Inventario</a>
-          <a href="providers.html"     class="accion-btn"><div class="accion-icon" style="background:#fd7e14;"><i class="fa fa-truck"></i></div>Proveedores</a>
+          <a href="admin-panel.html" class="modulo-card muerto permitido"><div class="mod-icon"><i class="fa fa-chart-line"></i></div><div class="mod-name">Dashboard</div></a>
+          <a href="clients.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-users"></i></div><div class="mod-name">Clientes</div></a>
+          <a href="products.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-box-open"></i></div><div class="mod-name">Inventario</div></a>
+          <a href="orders.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-shopping-bag"></i></div><div class="mod-name">Pedidos</div></a>
+          <a href="providers.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-truck"></i></div><div class="mod-name">Proveedores</div></a>
+          <a href="movimientos.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-history"></i></div><div class="mod-name">Movimientos</div></a>
+          <a href="erp-dashboard.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-building"></i></div><div class="mod-name">Dashboard ERP</div></a>
+          <a href="erp-ordenes.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-file-invoice"></i></div><div class="mod-name">Órdenes ERP</div></a>
+          <a class="modulo-card permitido" style="border-color:#D10024;"><div class="mod-icon" style="color:#D10024;"><i class="fa fa-user-shield"></i></div><div class="mod-name">Roles ERP</div></a>
         </div>
       </div>
     </div>
-    
     <div class="card-custom">
       <div class="card-body-custom">
         <div class="section-title"><i class="fa fa-users-cog"></i> Usuarios del sistema</div>
@@ -213,31 +207,21 @@
   <div class="rol-panel" id="panel-vendedor">
     <div class="rol-header vendedor">
       <div class="rol-header-icon"><i class="fa fa-briefcase"></i></div>
-      <div>
-        <h3>Módulo Vendedor</h3>
-        <p>Gestión de clientes, pedidos y órdenes</p>
-      </div>
+      <div><h3>Módulo Vendedor Autorizado</h3><p>Gestión operativa completa de ventas, clientes y flujos del sistema.</p></div>
     </div>
     <div class="card-custom">
       <div class="card-body-custom">
         <div class="section-title"><i class="fa fa-th"></i> Módulos disponibles</div>
         <div class="modulos-grid">
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-chart-pie"></i></div><div class="mod-name">Dashboard ERP</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-users"></i></div><div class="mod-name">Clientes</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-shopping-bag"></i></div><div class="mod-name">Pedidos</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-building"></i></div><div class="mod-name">Órdenes ERP</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-box-open"></i></div><div class="mod-name">Inventario</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-truck"></i></div><div class="mod-name">Proveedores</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-history"></i></div><div class="mod-name">Movimientos</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-user-shield"></i></div><div class="mod-name">Roles y Usuarios</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-cog"></i></div><div class="mod-name">Configuración</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-        </div>
-        <div class="section-title mt-2"><i class="fa fa-bolt"></i> Acciones rápidas</div>
-        <div class="acciones-grid">
-          <a href="erp-ordenes.html"   class="accion-btn"><div class="accion-icon" style="background:#28a745;"><i class="fa fa-plus"></i></div>Nueva Orden</a>
-          <a href="erp-dashboard.html" class="accion-btn"><div class="accion-icon" style="background:#6610f2;"><i class="fa fa-chart-bar"></i></div>Ver Métricas</a>
-          <span class="accion-btn bloqueado"><div class="accion-icon" style="background:#aaa;"><i class="fa fa-lock"></i></div>Inventario (sin acceso)</span>
-          <span class="accion-btn bloqueado"><div class="accion-icon" style="background:#aaa;"><i class="fa fa-lock"></i></div>Proveedores (sin acceso)</span>
+          <a href="admin-panel.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-chart-line"></i></div><div class="mod-name">Dashboard</div></a>
+          <a href="clients.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-users"></i></div><div class="mod-name">Clientes</div></a>
+          <a href="products.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-box-open"></i></div><div class="mod-name">Inventario</div></a>
+          <a href="orders.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-shopping-bag"></i></div><div class="mod-name">Pedidos</div></a>
+          <a href="providers.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-truck"></i></div><div class="mod-name">Proveedores</div></a>
+          <a href="movimientos.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-history"></i></div><div class="mod-name">Movimientos</div></a>
+          <a href="erp-dashboard.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-building"></i></div><div class="mod-name">Dashboard ERP</div></a>
+          <a href="erp-ordenes.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-file-invoice"></i></div><div class="mod-name">Órdenes ERP</div></a>
+          <a class="modulo-card permitido" style="border-color:#D10024;"><div class="mod-icon" style="color:#D10024;"><i class="fa fa-user-shield"></i></div><div class="mod-name">Roles ERP</div></a>
         </div>
       </div>
     </div>
@@ -246,32 +230,41 @@
   <div class="rol-panel" id="panel-logistica">
     <div class="rol-header logistica">
       <div class="rol-header-icon"><i class="fa fa-truck"></i></div>
-      <div>
-        <h3>Módulo de Logística (WMS / SCM)</h3>
-        <p>Gestión de despachos, control de recursos y flujos de procesos internos.</p>
-      </div>
+      <div><h3>Módulo de Logística (WMS / SCM)</h3><p>Gestión de almacén, procesos y despachos de producto.</p></div>
     </div>
     <div class="card-custom">
       <div class="card-body-custom">
         <div class="section-title"><i class="fa fa-th"></i> Módulos disponibles</div>
         <div class="modulos-grid">
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-chart-line"></i></div><div class="mod-name">Dashboard ERP</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-truck-loading"></i></div><div class="mod-name">Panel Logístico</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-cogs"></i></div><div class="mod-name">Procesos Internos</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-users-cog"></i></div><div class="mod-name">Recursos</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-building"></i></div><div class="mod-name">Órdenes ERP</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-shopping-bag"></i></div><div class="mod-name">Pedidos Tienda</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-users"></i></div><div class="mod-name">Clientes CRM</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-user-shield"></i></div><div class="mod-name">Usuarios Admin</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
+          <a href="erp-dashboard.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-building"></i></div><div class="mod-name">Dashboard ERP</div></a>
+          <a href="erp-logistica.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-truck-loading"></i></div><div class="mod-name">Panel Logístico</div></a>
+          <a onclick="alert('ACCESO DENEGADO: Módulo bloqueado con llave.')" class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-file-invoice"></i></div><div class="mod-name">Órdenes ERP</div></a>
+          <a href="erp-procesos.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-cogs"></i></div><div class="mod-name">Procesos</div></a>
+          <a href="erp-recursos.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-users-cog"></i></div><div class="mod-name">Recursos</div></a>
+          <a class="modulo-card permitido" style="border-color:#D10024;"><div class="mod-icon" style="color:#D10024;"><i class="fa fa-user-shield"></i></div><div class="mod-name">Roles ERP</div></a>
         </div>
-        <div class="section-title mt-2"><i class="fa fa-bolt"></i> Acciones rápidas</div>
-        <div class="acciones-grid">
-          <a href="erp-dashboard.html" class="accion-btn"><div class="accion-icon" style="background:#6610f2;"><i class="fa fa-chart-line"></i></div>Dashboard ERP</a>
-          <a href="erp-logistica.html" class="accion-btn"><div class="accion-icon" style="background:#1e3a8a;"><i class="fa fa-truck-loading"></i></div>Panel Logístico</a>
-          <a href="erp-procesos.html" class="accion-btn"><div class="accion-icon" style="background:#f59e0b;"><i class="fa fa-cogs"></i></div>Ver Procesos</a>
-          <a href="erp-recursos.html" class="accion-btn"><div class="accion-icon" style="background:#10b981;"><i class="fa fa-users-cog"></i></div>Ver Recursos</a>
-          <span class="accion-btn bloqueado"><div class="accion-icon" style="background:#aaa;"><i class="fa fa-file-invoice"></i></div>Órdenes ERP (sin acceso)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rol-panel" id="panel-soporte">
+    <div class="rol-header soporte">
+      <div class="rol-header-icon"><i class="fa fa-headset"></i></div>
+      <div><h3>Módulo Soporte Técnico</h3><p>Atención y gestión de tickets de clientes.</p></div>
+    </div>
+    <div class="card-custom">
+      <div class="card-body-custom">
+        <div class="section-title"><i class="fa fa-th"></i> Módulos disponibles</div>
+        <div class="modulos-grid">
+          <a href="clients.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-users"></i></div><div class="mod-name">Clientes</div></a>
+          <a class="modulo-card permitido" style="border-color:#D10024;"><div class="mod-icon" style="color:#D10024;"><i class="fa fa-user-shield"></i></div><div class="mod-name">Roles ERP</div></a>
+          
+          <a onclick="alert('ACCESO DENEGADO')" class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-chart-line"></i></div><div class="mod-name">Dashboard</div></a>
+          <a onclick="alert('ACCESO DENEGADO')" class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-box-open"></i></div><div class="mod-name">Inventario</div></a>
+          <a onclick="alert('ACCESO DENEGADO')" class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-shopping-bag"></i></div><div class="mod-name">Pedidos</div></a>
+          <a onclick="alert('ACCESO DENEGADO')" class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-truck"></i></div><div class="mod-name">Proveedores</div></a>
+          <a onclick="alert('ACCESO DENEGADO')" class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-history"></i></div><div class="mod-name">Movimientos</div></a>
+          <a onclick="alert('ACCESO DENEGADO')" class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-building"></i></div><div class="mod-name">Dashboard ERP</div></a>
         </div>
       </div>
     </div>
@@ -280,31 +273,16 @@
   <div class="rol-panel" id="panel-usuario">
     <div class="rol-header usuario">
       <div class="rol-header-icon"><i class="fa fa-user"></i></div>
-      <div>
-        <h3>Usuario / Cliente</h3>
-        <p>Acceso únicamente a la tienda y perfil personal</p>
-      </div>
+      <div><h3>Usuario / Cliente</h3><p>Acceso a compras y perfil en la tienda virtual.</p></div>
     </div>
     <div class="card-custom">
       <div class="card-body-custom">
         <div class="section-title"><i class="fa fa-th"></i> Módulos disponibles</div>
         <div class="modulos-grid">
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-store"></i></div><div class="mod-name">Tienda Online</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-user"></i></div><div class="mod-name">Mi Perfil</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-box-open"></i></div><div class="mod-name">Mis Pedidos</div><div class="mod-estado"><i class="fa fa-check"></i> Permitido</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-chart-pie"></i></div><div class="mod-name">Dashboard ERP</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-building"></i></div><div class="mod-name">Órdenes ERP</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-box"></i></div><div class="mod-name">Inventario</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-truck"></i></div><div class="mod-name">Proveedores</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-user-shield"></i></div><div class="mod-name">Roles y Usuarios</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-          <div class="modulo-card bloqueado"><div class="mod-icon"><i class="fa fa-cog"></i></div><div class="mod-name">Configuración</div><div class="mod-estado"><i class="fa fa-lock"></i> Bloqueado</div></div>
-        </div>
-        <div class="section-title mt-2"><i class="fa fa-bolt"></i> Lo que puede hacer</div>
-        <div class="acciones-grid">
-          <a href="../index.html"       class="accion-btn"><div class="accion-icon" style="background:#fd7e14;"><i class="fa fa-store"></i></div>Ir a la Tienda</a>
-          <a href="../userprofile.html" class="accion-btn"><div class="accion-icon" style="background:#4ea3f1;"><i class="fa fa-user"></i></div>Mi Perfil</a>
-          <span class="accion-btn bloqueado"><div class="accion-icon" style="background:#aaa;"><i class="fa fa-lock"></i></div>Panel Admin (sin acceso)</span>
-          <span class="accion-btn bloqueado"><div class="accion-icon" style="background:#aaa;"><i class="fa fa-lock"></i></div>Órdenes ERP (sin acceso)</span>
+          <a href="../index.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-store"></i></div><div class="mod-name">Tienda Online</div></a>
+          <a href="../userprofile.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-user"></i></div><div class="mod-name">Mi Perfil</div></a>
+          <a href="../userprofile.html" class="modulo-card permitido"><div class="mod-icon"><i class="fa fa-shopping-bag"></i></div><div class="mod-name">Mis Pedidos</div></a>
+          <a class="modulo-card permitido" style="border-color:#D10024;"><div class="mod-icon" style="color:#D10024;"><i class="fa fa-user-shield"></i></div><div class="mod-name">Roles ERP</div></a>
         </div>
       </div>
     </div>
@@ -315,111 +293,164 @@
 <script src="../js/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script>
-const API_USR = '../api/clients.php'; // Cambia esto si tienes otra ruta para listar usuarios
 
+// MENÚS LATERALES CONFIGURADOS EXACTAMENTE COMO LAS CAPTURAS
 const MENUS = {
-  admin: [
-    { href: 'admin-panel.html',   icon: 'fa-chart-line',  label: 'Dashboard' },
-    { href: 'clients.html',       icon: 'fa-users',       label: 'Clientes' },
-    { href: 'products.html',      icon: 'fa-box-open',    label: 'Inventario' },
-    { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
-    { href: 'providers.html',     icon: 'fa-truck',       label: 'Proveedores' },
-    { href: 'movimientos.html',   icon: 'fa-history',     label: 'Movimientos' },
-    { href: 'erp-dashboard.html', icon: 'fa-building',    label: 'Dashboard ERP' },
-    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
-    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP', active: true },
-    { divider: true },
-    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
-    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
-  ],
-  vendedor: [
-    { href: 'erp-dashboard.html', icon: 'fa-chart-line',  label: 'Dashboard ERP' },
-    { href: 'clients.html',       icon: 'fa-users',       label: 'Clientes' },
-    { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
-    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
-    { href: 'products.html',      icon: 'fa-box-open',    label: 'Inventario', locked: true },
-    { href: 'providers.html',     icon: 'fa-truck',       label: 'Proveedores', locked: true },
-    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP', active: true },
-    { divider: true },
-    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
-    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
-  ],
-  logistica: [
-    { href: 'erp-dashboard.html', icon: 'fa-chart-line',  label: 'Dashboard ERP' },
-    { href: 'erp-logistica.html', icon: 'fa-truck-loading', label: 'Panel Logístico' },
-    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP', locked: true }, // <--- Bloqueado
-    { href: 'erp-procesos.html',  icon: 'fa-cogs',        label: 'Procesos' },
-    { href: 'erp-recursos.html',  icon: 'fa-users-cog',   label: 'Recursos' },
-    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP', active: true },
-    { divider: true },
-    { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
-    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
-  ],
-  usuario: [
-    { href: '../index.html',       icon: 'fa-store', label: 'Tienda' },
-    { href: '../userprofile.html', icon: 'fa-user',  label: 'Mi Perfil' },
-    { divider: true },
-    { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' },
-  ],
+    admin: [
+        { href: 'admin-panel.html',   icon: 'fa-chart-line',   label: 'Dashboard' },
+        { href: 'clients.html',       icon: 'fa-users',        label: 'Clientes' },
+        { href: 'products.html',      icon: 'fa-box-open',     label: 'Inventario' },
+        { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
+        { href: 'providers.html',     icon: 'fa-truck',        label: 'Proveedores' },
+        { href: 'movimientos.html',   icon: 'fa-history',      label: 'Movimientos' },
+        { href: 'erp-dashboard.html', icon: 'fa-building',     label: 'Dashboard ERP' },
+        { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
+        { href: 'erp-roles.html',     icon: 'fa-user-shield',  label: 'Roles ERP', active: true },
+        { divider: true },
+        { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
+        { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' }
+    ],
+    vendedor: [
+        { href: 'admin-panel.html',   icon: 'fa-chart-line',   label: 'Dashboard' },
+        { href: 'clients.html',       icon: 'fa-users',        label: 'Clientes' },
+        { href: 'products.html',      icon: 'fa-box-open',     label: 'Inventario' },
+        { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
+        { href: 'providers.html',     icon: 'fa-truck',        label: 'Proveedores' },
+        { href: 'movimientos.html',   icon: 'fa-history',      label: 'Movimientos' },
+        { href: 'erp-dashboard.html', icon: 'fa-building',     label: 'Dashboard ERP' },
+        { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
+        { href: 'erp-roles.html',     icon: 'fa-user-shield',  label: 'Roles ERP', active: true },
+        { divider: true },
+        { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
+        { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' }
+    ],
+    logistica: [
+        { href: 'erp-dashboard.html', icon: 'fa-building',       label: 'Dashboard ERP' },
+        { href: 'erp-logistica.html', icon: 'fa-truck-loading',  label: 'Panel Logístico' },
+        { href: 'erp-ordenes.html',   icon: 'fa-file-invoice',   label: 'Órdenes ERP', locked: true },
+        { href: 'erp-procesos.html',  icon: 'fa-cogs',           label: 'Procesos' },
+        { href: 'erp-recursos.html',  icon: 'fa-users-cog',      label: 'Recursos' },
+        { href: 'erp-roles.html',     icon: 'fa-user-shield',    label: 'Roles ERP', active: true },
+        { divider: true },
+        { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
+        { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' }
+    ],
+    soporte: [
+        { href: 'clients.html',       icon: 'fa-users',        label: 'Clientes' },
+        { href: 'erp-roles.html',     icon: 'fa-user-shield',  label: 'Roles ERP', active: true },
+        { divider: true },
+        { href: '../index.html', icon: 'fa-store', label: 'Ver Tienda' },
+        { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' }
+    ],
+    usuario: [
+        { href: '../index.html',       icon: 'fa-store', label: 'Ver Tienda' },
+        { href: '../userprofile.html', icon: 'fa-user',  label: 'Mi Perfil' },
+        { href: 'erp-roles.html',      icon: 'fa-user-shield', label: 'Roles ERP', active: true },
+        { divider: true },
+        { href: '#', icon: 'fa-sign-out-alt', label: 'Cerrar Sesión', onclick: 'cerrarSesion()' }
+    ]
 };
 
-$(document).ready(function () {
-  const rolGuardado = localStorage.getItem('rol') || 'admin';
-  cambiarRol(rolGuardado);
-  cargarUsuarios();
+const NOMBRES_ROL = {
+    admin: 'ADMINISTRADOR', vendedor: 'VENDEDOR AUTORIZADO',
+    soporte: 'SOPORTE TÉCNICO', logistica: 'LOGÍSTICA', usuario: 'Usuario / Cliente'
+};
+
+$(document).ready(function() {
+    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const rolActual = (user.rol || 'admin').toLowerCase();
+
+    cambiarRolUI(rolActual);
+    cargarUsuarios();
 });
 
-function cambiarRol(rol) {
-  localStorage.setItem('rol', rol);
-  const nombres = { admin: 'Administrador', vendedor: 'Vendedor', logistica: 'Logística', usuario: 'Usuario' };
-  $('#rolDisplay').text(nombres[rol] || rol);
-  $('#rolActualInfo').text(nombres[rol] || rol);
-  
-  $('.rol-btn').removeClass('active');
-  $('#btn-' + rol).addClass('active');
-  
-  $('.rol-panel').removeClass('visible');
-  $('#panel-' + rol).addClass('visible');
-  
-  renderSidebar(rol);
+function ejecutarCambioRol(rolDeseado) {
+    let user = JSON.parse(localStorage.getItem('currentUser'));
+
+    if (rolDeseado === 'admin') {
+        user.rol = 'admin';
+        delete user.rol_real;
+    } else {
+        if (!user.rol_real) {
+            user.rol_real = user.rol; 
+        }
+        user.rol = rolDeseado;
+    }
+
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    cambiarRolUI(rolDeseado);
+}
+
+function cambiarRolUI(rol) {
+    const nombreRol = NOMBRES_ROL[rol] || rol.toUpperCase();
+    $('#rolDisplay').text(nombreRol);
+    $('#rolActualInfo').text(nombreRol);
+
+    $('.rol-btn').removeClass('active');
+    $(`#btn-${rol}`).addClass('active');
+
+    $('.rol-panel').removeClass('visible');
+    $(`#panel-${rol}`).addClass('visible');
+
+    if (rol !== 'admin') {
+        $('#simBanner').addClass('visible');
+        $('#simRolNombre').text(nombreRol);
+    } else {
+        $('#simBanner').removeClass('visible');
+    }
+
+    renderSidebar(rol);
 }
 
 function renderSidebar(rol) {
-  const menu = MENUS[rol] || MENUS['admin'];
-  const ul = $('#sidebarMenu');
-  ul.empty();
-  menu.forEach(item => {
-    if (item.divider) { ul.append('<hr>'); return; }
-    const lockClass   = item.locked ? 'locked' : '';
-    const activeClass = item.active ? 'active' : '';
-    const onclick     = item.onclick ? `onclick="${item.onclick}"` : '';
-    ul.append(`<li class="${activeClass}"><a href="${item.href}" class="${lockClass}" ${onclick}><i class="fa ${item.icon}"></i> ${item.label}</a></li>`);
-  });
+    const menu = MENUS[rol] || MENUS['admin'];
+    const ul = $('#sidebarMenu');
+    ul.empty();
+    menu.forEach(item => {
+        if (item.divider) { ul.append('<hr>'); return; }
+        
+        const activeClass = item.active ? 'active' : '';
+        const lockClass = item.locked ? 'locked' : '';
+        
+        if (item.active) {
+            ul.append(`<li class="active"><a href="javascript:void(0)"><i class="fa ${item.icon}"></i> ${item.label}</a></li>`);
+        } else {
+            const onClickAction = item.locked ? `onclick="alert('ACCESO DENEGADO: Módulo bloqueado para este rol.')"` : `href="${item.href}"`;
+            const clickFunction = item.onclick ? `onclick="${item.onclick}"` : '';
+            ul.append(`<li><a class="${lockClass}" ${onClickAction} ${clickFunction}><i class="fa ${item.icon}"></i> ${item.label}</a></li>`);
+        }
+    });
 }
 
 function cargarUsuarios() {
-  $.getJSON(API_USR, function (data) {
-    const tbody = $('#tablaUsuarios');
-    tbody.empty();
-    if (!data || !data.length) {
-      tbody.html('<tr><td colspan="5" class="text-center text-muted py-3">Sin usuarios</td></tr>');
-      return;
-    }
-    data.slice(0, 10).forEach(u => {
-      const rol = u.rol ? u.rol.toLowerCase() : 'usuario';
-      const rolBadge    = `<span class="badge-rol ${rol}">${rol}</span>`;
-      const est         = u.estado ? u.estado.toLowerCase() : 'activo';
-      const estadoBadge = `<span class="badge-${est}">${est}</span>`;
-      tbody.append(`<tr><td>${u.id}</td><td>${u.nombre}</td><td>${u.correo}</td><td>${rolBadge}</td><td>${estadoBadge}</td></tr>`);
+    $.getJSON('../api/clients.php', function(data) {
+        const tbody = $('#tablaUsuarios');
+        tbody.empty();
+        if (!data || !data.length) {
+            tbody.html('<tr><td colspan="5" class="text-center text-muted py-3">Sin usuarios</td></tr>');
+            return;
+        }
+        data.slice(0, 10).forEach(u => {
+            const rol = (u.rol || 'usuario').toLowerCase();
+            const rolBadge = `<span class="badge-rol ${rol}">${rol}</span>`;
+            const est = (u.estado || 'activo').toLowerCase();
+            const estadoBadge = `<span class="badge-${est}">${est}</span>`;
+            tbody.append(`<tr><td>${u.id}</td><td>${u.nombre}</td><td>${u.correo}</td><td>${rolBadge}</td><td>${estadoBadge}</td></tr>`);
+        });
+    }).fail(function() {
+        $('#tablaUsuarios').html('<tr><td colspan="5" class="text-center text-danger py-3">No se pudieron cargar usuarios.</td></tr>');
     });
-  }).fail(function () {
-    $('#tablaUsuarios').html('<tr><td colspan="5" class="text-center text-danger py-3">No se pudieron cargar usuarios. Verifica la API.</td></tr>');
-  });
 }
 
 function cerrarSesion() {
-  localStorage.removeItem('currentUser');
-  window.location.href = '../login.html';
+    let user = JSON.parse(localStorage.getItem('currentUser'));
+    if (user && user.rol_real) {
+        user.rol = user.rol_real;
+        delete user.rol_real;
+        localStorage.setItem('currentUser', JSON.stringify(user));
+    }
+    localStorage.removeItem('currentUser');
+    window.location.href = '../login.html';
 }
 </script>
 </body>
