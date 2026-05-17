@@ -1,4 +1,11 @@
 <?php
+// ==========================================
+// SEGURIDAD: BLOQUEAR ACCESO DIRECTO POR URL
+// ==========================================
+if (!isset($_SERVER['HTTP_REFERER'])) {
+    http_response_code(403);
+    die(json_encode(["status" => "error", "message" => "Acceso directo denegado 🚫. Solo el sistema puede hacer peticiones aquí."]));
+}
 require 'db.php';
 header('Content-Type: application/json');
 error_reporting(0);

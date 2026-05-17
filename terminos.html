@@ -1,94 +1,238 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Términos y Condiciones - Pet Palace</title>
+    <title>Términos y Condiciones | Pet Palace</title>
+    
+    <!-- FUENTES E ICONOS DE PET PALACE -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 2rem;
-            background-color: #f9f9f9;
-            color: #333;
+        :root {
+            --primary: #D10024;
+            --dark: #15161D;
+            --light-bg: #f4f6f9;
+            --text-color: #333;
+            --text-muted: #666;
         }
 
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+
+        /* HEADER ESTILO PET PALACE */
         header {
-            background-color: #fff;
-            padding: 1rem 2rem;
+            background-color: var(--dark);
+            padding: 15px 5%;
             display: flex;
             align-items: center;
-            border-bottom: 1px solid #ddd;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        header img {
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .header-brand img {
             height: 50px;
-            margin-right: 1rem;
+            border-radius: 4px;
         }
 
-        h1 {
-            font-size: 24px;
-            margin: 1rem 0;
-        }
-
-        h2 {
+        .header-brand h1 {
             font-size: 20px;
-            margin-top: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
-        p {
-            line-height: 1.6;
+        /* BOTÓN DE VOLVER AL CHECKOUT */
+        .btn-back {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid transparent;
+        }
+
+        .btn-back:hover {
+            background-color: transparent;
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .container {
+            max-width: 850px;
+            margin: 50px auto;
+            padding: 0 20px;
         }
 
         .contenido {
-            max-width: 800px;
-            margin: auto;
             background: #fff;
-            padding: 2rem;
+            padding: 45px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary);
+        }
+
+        .update-date {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-align: right;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-top: 35px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 i {
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        p {
+            line-height: 1.7;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        a.link-custom {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 1px dashed var(--primary);
+            transition: 0.2s;
+        }
+
+        a.link-custom:hover {
+            color: var(--dark);
+            border-color: var(--dark);
+        }
+
+        .contact-box {
+            background-color: #f8f9fa;
+            padding: 20px 25px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            margin-top: 40px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .contact-box p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        /* RESPONSIVO MÓVIL */
+        @media (max-width: 768px) {
+            .contenido {
+                padding: 25px;
+            }
+            header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            .header-brand h1 {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<header>
-    <img src="img/LOGO PET PALACE.jpg" alt="Logo Pet Palace">
-    <h1>Pet Palace - Términos y Condiciones</h1>
-</header>
+    <!-- ENCABEZADO CON BOTÓN DE RETORNO -->
+    <header>
+        <a href="index.html" class="header-brand">
+            <img src="img/logo6.png" alt="Logo Pet Palace" onerror="this.src='img/LOGO PET PALACE.jpg'">
+            <h1>Términos y Condiciones</h1>
+        </a>
+        <a href="checkout.html" class="btn-back">
+            <i class="fa fa-arrow-left"></i> Volver al Checkout
+        </a>
+    </header>
 
-<div class="contenido">
-    <p>Última actualización: 23 de julio de 2025</p>
+    <!-- DOCUMENTO LEGAL -->
+    <div class="container">
+        <div class="contenido">
+            
+            <div class="update-date">
+                <i class="fa fa-calendar-alt"></i> Última actualización: 23 de julio de 2025
+            </div>
 
-    <h2>1. Aceptación de los Términos</h2>
-    <p>Al acceder y utilizar el sitio web de Pet Palace, aceptas cumplir y estar legalmente sujeto a estos Términos y Condiciones. Si no estás de acuerdo con alguno de estos términos, te recomendamos no utilizar el sitio.</p>
+            <h2><i class="fa fa-check-circle"></i> 1. Aceptación de los Términos</h2>
+            <p>Al acceder y utilizar el sitio web de Pet Palace, aceptas cumplir y estar legalmente sujeto a estos Términos y Condiciones. Si no estás de acuerdo con alguno de estos términos, te recomendamos no utilizar el sitio ni nuestros servicios de compra.</p>
 
-    <h2>2. Registro del Usuario</h2>
-    <p>Para realizar compras o acceder a ciertas funciones, deberás registrarte proporcionando información verídica y actualizada. Pet Palace se reserva el derecho de suspender cuentas que contengan información falsa o fraudulenta.</p>
+            <h2><i class="fa fa-user-circle"></i> 2. Registro del Usuario</h2>
+            <p>Para realizar compras o acceder a ciertas funciones de la tienda, deberás registrarte proporcionando información verídica, exacta y actualizada. Pet Palace se reserva el derecho de suspender o eliminar cuentas que contengan información falsa, fraudulenta o que violen nuestras políticas de seguridad.</p>
 
-    <h2>3. Uso del Sitio</h2>
-    <p>Este sitio está destinado al uso personal y no comercial. No se permite copiar, distribuir, modificar o utilizar los contenidos con fines comerciales sin autorización previa por escrito.</p>
+            <h2><i class="fa fa-desktop"></i> 3. Uso del Sitio</h2>
+            <p>Este sitio está destinado única y exclusivamente al uso personal y no comercial. No se permite copiar, distribuir, modificar, extraer o utilizar los contenidos (imágenes, descripciones, estructura) con fines comerciales sin autorización previa por escrito de nuestro equipo legal.</p>
 
-    <h2>4. Productos y Precios</h2>
-    <p>Los precios y descripciones de productos pueden cambiar sin previo aviso. Nos reservamos el derecho de corregir errores tipográficos o técnicos que afecten precios, disponibilidad u otra información.</p>
+            <h2><i class="fa fa-tags"></i> 4. Productos y Precios</h2>
+            <p>Los precios y descripciones de nuestros productos para mascotas pueden cambiar sin previo aviso dependiendo del stock y los proveedores. Nos reservamos el derecho de corregir errores tipográficos o técnicos que afecten precios, promociones, disponibilidad u otra información al momento del checkout.</p>
 
-    <h2>5. Envíos y Devoluciones</h2>
-    <p>Las condiciones de envío y políticas de devolución están detalladas en nuestra sección de Preguntas Frecuentes. Revisa estas políticas antes de realizar una compra.</p>
+            <h2><i class="fa fa-truck"></i> 5. Envíos y Devoluciones</h2>
+            <p>Las condiciones de envío, tiempos de entrega y políticas de devolución están sujetas a la ubicación geográfica del cliente. Para mayor detalle, te invitamos a consultar nuestra sección de Preguntas Frecuentes. Revisa estas políticas cuidadosamente antes de concretar tu pago.</p>
 
-    <h2>6. Protección de Datos</h2>
-    <p>Pet Palace garantiza la protección de los datos personales conforme a la <a href="privacidad.html" style="color: blue; font-weight: bold;">Política de Privacidad</a>. Al usar el sitio, aceptas la recopilación y tratamiento de tus datos conforme a dicha política.</p>
+            <h2><i class="fa fa-shield-alt"></i> 6. Protección de Datos Personales</h2>
+            <p>Pet Palace garantiza la protección y encriptación de tus datos personales conforme a nuestra <a href="#" class="link-custom">Política de Privacidad</a>. Al usar el sitio, aceptas la recopilación y tratamiento de tu información únicamente para fines de logística y facturación.</p>
 
-    <h2>7. Propiedad Intelectual</h2>
-    <p>Todos los contenidos del sitio (logos, imágenes, textos, código fuente) son propiedad de Pet Palace o se usan con permiso. Está prohibida su reproducción sin autorización.</p>
+            <h2><i class="fa fa-copyright"></i> 7. Propiedad Intelectual</h2>
+            <p>Todos los contenidos mostrados en la tienda (logos, imágenes de productos, textos, diseño UI y código fuente) son propiedad exclusiva de Pet Palace o se utilizan bajo el permiso de los fabricantes. Queda estrictamente prohibida su reproducción o plagio.</p>
 
-    <h2>8. Modificaciones</h2>
-    <p>Nos reservamos el derecho de modificar estos términos en cualquier momento. Los cambios serán publicados en esta página con su respectiva fecha de actualización.</p>
+            <h2><i class="fa fa-sync-alt"></i> 8. Modificaciones del Servicio</h2>
+            <p>Nos reservamos el derecho de actualizar, modificar o reemplazar cualquier parte de estos términos en cualquier momento. Las actualizaciones importantes serán notificadas a través de este mismo medio y aplicarán a partir de su fecha de publicación.</p>
 
-    <h2>9. Legislación Aplicable</h2>
-    <p>Estos Términos y Condiciones se rigen por las leyes mexicanas. Cualquier controversia será resuelta en los tribunales competentes del estado de Aguascalientes, México.</p>
+            <h2><i class="fa fa-balance-scale"></i> 9. Legislación Aplicable</h2>
+            <p>Estos Términos y Condiciones se rigen e interpretan bajo las leyes federales mexicanas. Cualquier controversia, reclamo o disputa legal será resuelta de manera exclusiva en los tribunales competentes del estado de Aguascalientes, México.</p>
 
-    <p>Si tienes dudas sobre estos Términos, puedes contactarnos a través de nuestro correo: <strong>soporte@petpalace.mx</strong>.</p>
-</div>
+            <!-- CAJA DE CONTACTO -->
+            <div class="contact-box">
+                <p><strong><i class="fa fa-envelope"></i> ¿Tienes alguna duda legal?</strong><br>
+                Si tienes preguntas sobre cómo aplicamos estos Términos, puedes contactar a nuestro equipo legal y de soporte a través del correo: <a href="mailto:soporte@petpalace.mx" class="link-custom">soporte@petpalace.mx</a>.</p>
+            </div>
+
+        </div>
+    </div>
 
 </body>
 </html>

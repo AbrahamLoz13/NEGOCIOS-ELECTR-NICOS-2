@@ -19,76 +19,115 @@
         /* =========================================
            CORRECCIONES DE LAYOUT HEADER
            ========================================= */
-        .header-ctn > div > a { width: 70px !important; display: block; }
-        .header-ctn > div + div { margin-left: 5px !important; }
+        .header-ctn > div > a { width: 70px !important; display: block; position: relative;}
+        .header-ctn > div + div { margin-left: 10px !important; }
 
         /* Badge de Notificaciones */
         .qty-msg {
-            position: absolute; top: -10px; right: 15px; width: 20px; height: 20px;
-            line-height: 20px; text-align: center; border-radius: 50%; font-size: 10px;
+            position: absolute; top: -10px; right: 15px; width: 18px; height: 18px;
+            line-height: 18px; text-align: center; border-radius: 50%; font-size: 10px;
             color: #FFF; background-color: #D10024; display: none; border: 2px solid #15161D;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3); animation: popIn 0.3s ease;
         }
         @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
 
         /* =========================================
-           WIDGET DE CHAT Y SOPORTE (CSS COMPLETO)
+           WIDGETS DE CHAT (VENTAS Y SOPORTE)
            ========================================= */
-        .chat-widget-container { 
-            position: fixed; bottom: 25px; right: 25px; width: 380px; height: 600px; 
-            background: #ffffff; border-radius: 20px; box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1); 
-            z-index: 10000; display: none; flex-direction: column; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); transition: all 0.3s ease; 
+        .chat-widget-container {
+            position: fixed; bottom: 25px; right: 25px; 
+            width: 380px; height: 600px;
+            background: #ffffff; 
+            border-radius: 20px; 
+            box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+            z-index: 10000; display: none;
+            flex-direction: column; 
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
         }
-        .chat-header { background: #ffffff; padding: 15px 20px; height: 75px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f0f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); cursor: pointer; }
+        .chat-header {
+            background: #ffffff; padding: 15px 20px; height: 75px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid #f0f0f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            cursor: pointer;
+        }
         .chat-header-left { display: flex; align-items: center; gap: 15px; }
         .chat-back-btn { font-size: 18px; color: #333; cursor: pointer; display: none; padding: 8px; border-radius: 50%; transition: 0.2s; }
         .chat-back-btn:hover { background: #f5f5f5; }
+        
         .chat-avatar-wrapper { position: relative; }
         
-        /* AVATARES */
-        .avatar-chat { width: 45px; height: 45px; background: linear-gradient(135deg, #D10024, #ff4d4d); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 2px 5px rgba(209, 0, 36, 0.3); }
-        .avatar-support { width: 45px; height: 45px; background: linear-gradient(135deg, #fd7e14, #e65c00); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 2px 5px rgba(253, 126, 20, 0.3); }
+        /* Avatar Ventas */
+        .avatar-ventas { 
+            width: 45px; height: 45px; background: linear-gradient(135deg, #6610f2, #8b4cf8); 
+            color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: 20px; box-shadow: 0 2px 5px rgba(102, 16, 242, 0.3);
+        }
+        /* Avatar Soporte */
+        .avatar-soporte { 
+            width: 45px; height: 45px; background: linear-gradient(135deg, #fd7e14, #e65c00); 
+            color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: 20px; box-shadow: 0 2px 5px rgba(253, 126, 20, 0.3);
+        }
 
         .status-dot { position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: #31a24c; border: 2px solid #fff; border-radius: 50%; }
-        .chat-info h4 { margin: 0; color: #1c1e21; font-size: 17px; font-weight: 800; letter-spacing: -0.3px; }
-        .chat-info small { font-size: 13px; font-weight: 600; color: #65676b; }
+        .chat-info h4 { margin: 0; color: #1c1e21; font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+        .chat-info small { font-size: 13px; color: #65676b; }
         .close-chat { font-size: 24px; color: #bcc0c4; cursor: pointer; transition: 0.2s; padding: 5px; }
         .close-chat:hover { color: #D10024; }
         
-        .chat-body { flex-grow: 1; background-color: #f4f7f6; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 2px; }
-        .message-row { display: flex; margin-bottom: 10px; width: 100%; }
-        .message-content-wrapper { max-width: 80%; display: flex; flex-direction: column; }
+        .chat-body {
+            flex-grow: 1; background-color: #fff; overflow-y: auto; padding: 20px;
+            display: flex; flex-direction: column; gap: 2px; 
+        }
+        .chat-body::-webkit-scrollbar { width: 6px; }
+        .chat-body::-webkit-scrollbar-thumb { background-color: #e4e6eb; border-radius: 10px; }
+        
+        .message-row { display: flex; margin-bottom: 8px; width: 100%; }
+        .message-content-wrapper { max-width: 75%; display: flex; flex-direction: column; }
         .message-row.incoming { justify-content: flex-start; }
-        .message-row.incoming .message-bubble { background-color: #fff; color: #2B2D42; border-bottom-left-radius: 4px; border: 1px solid #eaeaea; }
-        .message-row.incoming .msg-name-label { display: block; font-size: 11px; font-weight: 700; color: #8D99AE; margin-left: 12px; margin-bottom: 4px; }
+        .message-row.incoming .message-bubble { background-color: #f0f2f5; color: #050505; border-bottom-left-radius: 4px; }
+        .message-row.incoming .msg-name-label { display: block; font-size: 11px; color: #65676b; margin-left: 12px; margin-bottom: 2px; }
+        .message-row.incoming .msg-time { color: rgba(0,0,0,0.45); }
         .message-row.outgoing { justify-content: flex-end; }
         
-        /* BURBUJAS */
-        .message-row.outgoing .bubble-chat { background-color: #D10024; color: #ffffff; border-bottom-right-radius: 4px; box-shadow: 0 2px 5px rgba(209,0,36,0.2); }
-        .message-row.outgoing .bubble-support { background-color: #fd7e14; color: #ffffff; border-bottom-right-radius: 4px; box-shadow: 0 2px 5px rgba(253,126,20,0.2); }
-
-        .message-bubble { padding: 12px 16px; border-radius: 18px; font-size: 14px; font-weight: 600; line-height: 1.4; position: relative; word-wrap: break-word; animation: fadeIn 0.3s ease; display: inline-block; min-width: 60px; }
-        .msg-time { font-size: 10px; margin-top: 5px; margin-left: 10px; float: right; white-space: nowrap; vertical-align: bottom; opacity: 0.7; }
+        /* Burbujas Ventas */
+        .message-row.outgoing .bubble-ventas { background-color: #6610f2; color: #ffffff; border-bottom-right-radius: 4px; }
+        /* Burbujas Soporte (solo para visualización) */
+        .message-row.outgoing .bubble-soporte { background-color: #fd7e14; color: #ffffff; border-bottom-right-radius: 4px; }
+        
+        .message-row.outgoing .msg-time { color: rgba(255,255,255,0.7); }
+        .message-bubble {
+            padding: 8px 12px; border-radius: 18px; font-size: 15px; line-height: 1.4;
+            position: relative; word-wrap: break-word; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            animation: fadeIn 0.3s ease; display: inline-block; min-width: 60px; 
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .msg-time {
+            font-size: 10px; margin-top: 5px; margin-left: 8px; float: right; 
+            white-space: nowrap; vertical-align: bottom; line-height: 1;
+        }
         
         .chat-footer { padding: 15px; background: #fff; border-top: 1px solid #f0f0f0; display: none; align-items: center; gap: 10px; }
-        .chat-input-wrapper { flex: 1; background: #f4f7f6; border-radius: 25px; padding: 10px 20px; display: flex; align-items: center; }
-        .chat-input { width: 100%; background: transparent; border: none; outline: none; font-size: 14px; font-weight: 600; color: #2B2D42; }
+        .chat-input-wrapper { flex: 1; background: #f0f2f5; border-radius: 20px; padding: 8px 15px; display: flex; align-items: center; }
+        .chat-input { width: 100%; background: transparent; border: none; outline: none; font-size: 15px; color: #050505; }
         
-        .btn-chat-send { color: #fff; background: #D10024; border: none; font-size: 16px; cursor: pointer; transition: 0.2s; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(209,0,36,0.3); }
-        .btn-chat-send:hover { transform: scale(1.05); background: #15161D; }
-
+        /* Boton enviar Ventas */
+        .btn-send-ventas { color: #6610f2; background: none; border: none; font-size: 20px; cursor: pointer; transition: 0.2s; padding: 5px; }
+        .btn-send-ventas:hover { transform: scale(1.1); color: #4d0cb5; }
+        
         .inbox-list { list-style: none; padding: 0; margin: 0; }
-        .inbox-item { padding: 15px; display: flex; align-items: center; cursor: pointer; border-radius: 12px; transition: 0.2s; background: #fff; margin-bottom: 10px; border: 1px solid #eee; }
-        .inbox-item:hover { background-color: #fdfdfd; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .inbox-avatar { width: 50px; height: 50px; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 15px; }
+        .inbox-item { padding: 15px; display: flex; align-items: center; cursor: pointer; border-radius: 10px; transition: 0.2s; }
+        .inbox-item:hover { background-color: #f2f2f2; }
         .inbox-details { flex: 1; overflow: hidden; }
-        .inbox-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
-        .inbox-name { font-weight: 800; font-size: 15px; color: #15161D; }
-        .inbox-time { font-size: 11px; font-weight: 700; color: #8D99AE; }
-        .inbox-msg { font-size: 13px; font-weight: 600; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .unread-dot { width: 12px; height: 12px; background: #D10024; border-radius: 50%; margin-left: 10px; box-shadow: 0 0 5px rgba(209,0,36,0.5); }
+        .inbox-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .inbox-name { font-weight: 600; font-size: 16px; color: #050505; }
+        .inbox-time { font-size: 12px; color: #65676b; }
+        .inbox-msg { font-size: 14px; color: #65676b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .unread-dot { width: 10px; height: 10px; background: #D10024; border-radius: 50%; margin-left: 10px; }
 
-        /* MOVIL CHAT */
         @media (max-width: 480px) {
             .chat-widget-container { width: 100%; height: 100%; bottom: 0; right: 0; border-radius: 0; }
             .chat-header { height: 60px; }
@@ -99,6 +138,7 @@
            ========================================= */
         body { font-family: 'Montserrat', sans-serif; background-color: #fcfcfc; }
         .sticky-header { position: fixed !important; top: 0; width: 100%; z-index: 9999; background: #15161D !important; box-shadow: 0 4px 15px rgba(0,0,0,0.5); animation: slideDown 0.4s ease; }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
         .product { background: #fff; border: 1px solid #eee; margin-bottom: 30px; transition: 0.3s all; height: 100%; display: flex; flex-direction: column; border-radius: 8px; overflow: hidden; position: relative; }
         .product:hover { box-shadow: 0px 10px 25px -5px rgba(0,0,0,0.15); border-color: #D10024; transform: translateY(-5px); }
@@ -179,19 +219,20 @@
 
                     <div class="col-md-3 clearfix">
                         <div class="header-ctn">
-                            
+                            <!-- Soporte Icon -->
                             <div id="support-wrapper" style="display:none; position: relative;">
                                 <a href="#" onclick="toggleSupportWidget(event)">
                                     <i class="fa fa-bell"></i>
-                                    <span>Notificaciones</span>
+                                    <span>Soporte</span>
                                     <div class="qty-msg" id="support-badge" style="background-color: #fd7e14;">0</div>
                                 </a>
                             </div>
 
+                            <!-- Ventas Icon -->
                             <div id="msg-wrapper" style="display:none; position: relative;">
                                 <a href="#" onclick="toggleChatWidget(event)">
-                                    <i class="fa fa-envelope"></i>
-                                    <span>Mensajes</span>
+                                    <i class="fa fa-comments"></i>
+                                    <span>Ventas</span>
                                     <div class="qty-msg" id="msg-badge">0</div>
                                 </a>
                             </div>
@@ -211,7 +252,7 @@
                                         <h5 id="cart-subtotal">TOTAL: $0.00</h5>
                                     </div>
                                     <div class="cart-btns">
-                                        <a href="#">Ver Carrito</a>
+                                        <a href="api/carrito.php">Ver Carrito</a>
                                         <a href="checkout.html" onclick="return verificarLoginParaCheckout()">Pagar <i class="fa fa-arrow-circle-right"></i></a>
                                     </div>
                                 </div>
@@ -242,16 +283,17 @@
         </div>
     </nav>
 
+    <!-- ================= WIDGET DE VENTAS ================= -->
     <div id="chat-widget" class="chat-widget-container">
-        <div class="chat-header" onclick="if(currentView==='chat') mostrarBandeja();">
+        <div class="chat-header" onclick="if(currentViewVentas==='chat') mostrarBandejaVentas();">
             <div class="chat-header-left">
                 <i class="fa fa-arrow-left chat-back-btn" id="chatBackBtn"></i>
                 <div class="chat-avatar-wrapper">
-                    <div class="avatar-chat" id="headerAvatar"><i class="fa fa-envelope"></i></div>
+                    <div class="avatar-ventas" id="headerAvatar"><i class="fa fa-shopping-bag"></i></div>
                     <div class="status-dot"></div>
                 </div>
                 <div class="chat-info">
-                    <h4 id="chatTitle">Mensajes</h4>
+                    <h4 id="chatTitle">Ventas Pet Palace</h4>
                     <small id="chatSubtitle">Haga clic para ver bandeja</small>
                 </div>
             </div>
@@ -260,28 +302,28 @@
         <div class="chat-body" id="chatBody"></div>
         <div class="chat-footer" id="chatFooter">
             <div class="chat-input-wrapper">
-                <input type="text" class="chat-input" id="chatInputMain" placeholder="Escribe un mensaje..." autocomplete="off">
+                <input type="text" class="chat-input" id="chatInputMain" placeholder="Escribe al vendedor..." autocomplete="off">
             </div>
-            <button class="btn-chat-send" onclick="enviarMensajeChat()"><i class="fa fa-paper-plane"></i></button>
+            <button class="btn-send-ventas" onclick="enviarMensajeVentas()"><i class="fa fa-paper-plane"></i></button>
         </div>
     </div>
 
+    <!-- ================= WIDGET DE SOPORTE ================= -->
     <div id="support-widget" class="chat-widget-container">
-        <div class="chat-header" onclick="if(currentViewSupport==='chat') mostrarBandejaSupport();">
+        <div class="chat-header" onclick="if(currentViewSoporte==='chat') mostrarBandejaSoporte();">
             <div class="chat-header-left">
                 <i class="fa fa-arrow-left chat-back-btn" id="supportBackBtn"></i>
                 <div class="chat-avatar-wrapper">
-                    <div class="avatar-support" id="supportHeaderAvatar"><i class="fa fa-bell"></i></div>
+                    <div class="avatar-soporte" id="supportHeaderAvatar"><i class="fa fa-bell"></i></div>
                     <div class="status-dot" style="background:#ffc107;"></div>
                 </div>
                 <div class="chat-info">
                     <h4 id="supportTitle">Notificaciones</h4>
-                    <small id="supportSubtitle">Soporte y Quejas</small>
+                    <small id="supportSubtitle">Respuestas a tus tickets</small>
                 </div>
             </div>
             <i class="fa fa-times close-chat" onclick="toggleSupportWidget(event)"></i>
         </div>
-        
         <div class="chat-body" id="supportBody" style="background-color: #fcfcfc;"></div>
     </div>
 
@@ -327,10 +369,6 @@
 
                     <div class="store-filter clearfix">
                         <span class="store-qty" id="result-count">Mostrando productos</span>
-                        <ul class="store-pagination">
-                            <li class="active">1</li>
-                            <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-                        </ul>
                     </div>
                 </div>
             </div>
@@ -409,31 +447,30 @@
         let allProducts = []; 
         let filteredProducts = [];
         
-        let currentView = 'inbox'; 
-        let currentViewSupport = 'inbox'; 
+        let currentViewVentas = 'inbox'; 
+        let currentViewSoporte = 'inbox'; 
         
-        let chatPollInterval = null;
-        let supportPollInterval = null;
+        let pollIntervalVentas = null;
+        let pollIntervalSoporte = null;
 
         $(document).ready(function() {
-            // 1. CARGAR USUARIO
+            // 1. CARGAR USUARIO Y AJUSTAR HEADER
             currentUser = JSON.parse(localStorage.getItem('currentUser'));
             
             if (currentUser) {
                 $('#auth-container').html(`
-                    <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1; margin-right: 15px;">
-                        <i class="fa fa-user"></i> ${currentUser.nombre.split(' ')[0]}
+                    <a href="userprofile.html" style="font-weight: bold; color: #4ea3f1; margin-right: 8px;">
+                        <i class="fa fa-user"></i> Mi Cuenta ${currentUser.nombre.split(' ')[0]}
                     </a>
-                    <a href="#" onclick="cerrarSesionIndex()" style="font-size:12px; color:#D10024;">(Salir)</a>
+                    <a href="#" onclick="cerrarSesionIndex()" style="font-size:12px; color:#D10024; font-weight: bold;">(Salir)</a>
                 `);
 
                 // MOSTRAR ICONOS DE MENSAJE Y SOPORTE
-                $('#msg-wrapper').css('display', 'inline-block');
+                $('#msg-wrapper').css('display', 'inline-block'); 
                 $('#support-wrapper').css('display', 'inline-block');
                 
-                // INICIAR POLLING DE BADGES
                 verificarBadges();
-                setInterval(verificarBadges, 5000);
+                setInterval(verificarBadges, 5000); 
 
                 const savedCart = localStorage.getItem(`cart_${currentUser.id}`);
                 if (savedCart) {
@@ -451,29 +488,27 @@
             cargarTodosLosProductos(); 
         });
 
-
         // =================================================================
-        // VERIFICADOR GLOBAL DE BADGES (SEPARA MENSAJES DE QUEJAS)
+        // VERIFICADOR GLOBAL DE BADGES (SEPARA VENTAS DE QUEJAS)
         // =================================================================
         function verificarBadges() {
             if(!currentUser) return;
             $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
                 const unread = data.filter(n => n.estado !== 'leido' && n.origen === 'admin');
                 
-                const unreadMensajes = unread.filter(n => n.tipo !== 'queja'); 
-                const unreadQuejas = unread.filter(n => n.tipo === 'queja');
+                const unreadSoporte = unread.filter(n => n.tipo === 'queja');
+                const unreadVentas = unread.filter(n => n.tipo !== 'queja');
 
-                if(unreadMensajes.length > 0) $('#msg-badge').text(unreadMensajes.length).show(); 
+                if(unreadVentas.length > 0) $('#msg-badge').text(unreadVentas.length).show(); 
                 else $('#msg-badge').hide();
 
-                if(unreadQuejas.length > 0) $('#support-badge').text(unreadQuejas.length).show(); 
+                if(unreadSoporte.length > 0) $('#support-badge').text(unreadSoporte.length).show(); 
                 else $('#support-badge').hide();
             });
         }
 
-
         // =================================================================
-        // LÓGICA DEL CHAT DE MENSAJES NORMALES (VENTAS / HISTORIAL ORIGINAL)
+        // LÓGICA DEL CHAT DE VENTAS
         // =================================================================
         function toggleChatWidget(e) {
             if(e) { e.preventDefault(); e.stopPropagation(); }
@@ -483,58 +518,60 @@
             if (widget.is(':visible')) {
                 widget.css('opacity', '0');
                 setTimeout(() => widget.hide(), 300);
-                if(chatPollInterval) clearInterval(chatPollInterval);
+                if(pollIntervalVentas) clearInterval(pollIntervalVentas);
             } else {
                 widget.show();
                 setTimeout(() => widget.css('opacity', '1'), 10);
                 widget.css('display', 'flex'); 
-                mostrarBandeja(); 
+                mostrarBandejaVentas(); 
             }
         }
 
-        function mostrarBandeja() {
-            currentView = 'inbox';
+        function mostrarBandejaVentas() {
+            currentViewVentas = 'inbox';
             $('#chatBackBtn').hide();
-            $('#headerAvatar').html('<i class="fa fa-envelope"></i>');
-            $('#chatTitle').text('Mensajes');
+            $('#headerAvatar').html('<i class="fa fa-shopping-bag"></i>');
+            $('#chatTitle').text('Ventas Pet Palace');
             $('#chatSubtitle').text('Bandeja de Entrada');
             $('#chatFooter').hide();
             
-            if(chatPollInterval) clearInterval(chatPollInterval);
-            cargarBandejaChat();
-            chatPollInterval = setInterval(cargarBandejaChat, 5000);
+            if(pollIntervalVentas) clearInterval(pollIntervalVentas);
+            cargarBandejaVentas();
+            pollIntervalVentas = setInterval(cargarBandejaVentas, 5000);
         }
 
-        function cargarBandejaChat() {
-            if(!currentUser || currentView !== 'inbox') return;
+        function cargarBandejaVentas() {
+            if(!currentUser || currentViewVentas !== 'inbox') return;
+
             $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
                 const $box = $('#chatBody');
-
                 const chatsOnly = data.filter(m => m.tipo !== 'queja');
 
                 if(chatsOnly.length === 0) {
-                    $box.html('<div class="text-center py-5 text-muted" style="margin-top:50px;">Aún no tienes mensajes.<br><button class="btn btn-chat-send mx-auto mt-3" style="width:auto; padding:10px 20px; border-radius:20px; font-size:14px; font-weight:bold;" onclick="entrarAlChat()">Contactar Vendedor</button></div>');
+                    $box.html('<div class="text-center py-5 text-muted" style="margin-top:50px;">¿Dudas con tu compra?<br><button class="btn btn-default btn-sm mt-3" style="color:#6610f2; border-color:#6610f2;" onclick="entrarAlChatVentas()">Contactar Ventas</button></div>');
                     return;
                 }
 
                 const adminMsgs = chatsOnly.filter(m => m.origen === 'admin');
                 const unreadCount = adminMsgs.filter(n => n.estado !== 'leido').length;
-                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
                 
+                adminMsgs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
                 let senderName = "Vendedor Pet Palace"; 
-                if (adminMsgs.length > 0 && adminMsgs[0].remitente) senderName = adminMsgs[0].remitente;
+                if (adminMsgs.length > 0 && adminMsgs[0].remitente) {
+                    senderName = adminMsgs[0].remitente;
+                }
 
                 chatsOnly.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
                 const lastMsg = chatsOnly[0];
                 const time = lastMsg.fecha.substring(11, 16);
                 const preview = (lastMsg.origen === 'cliente' ? 'Tú: ' : '') + lastMsg.mensaje;
                 const unreadDot = unreadCount > 0 ? '<div class="unread-dot"></div>' : '';
-                const boldStyle = unreadCount > 0 ? 'font-weight:800; color:#15161D;' : '';
+                const boldStyle = unreadCount > 0 ? 'font-weight:700; color:#000;' : '';
 
                 const html = `
                     <ul class="inbox-list">
-                        <li class="inbox-item" onclick="entrarAlChat()">
-                            <div class="inbox-avatar avatar-chat"><i class="fa fa-envelope"></i></div>
+                        <li class="inbox-item" onclick="entrarAlChatVentas()">
+                            <div class="inbox-avatar avatar-ventas"><i class="fa fa-shopping-bag"></i></div>
                             <div class="inbox-details">
                                 <div class="inbox-top">
                                     <span class="inbox-name">${senderName}</span>
@@ -549,26 +586,26 @@
             });
         }
 
-        function entrarAlChat() {
-            currentView = 'chat';
+        function entrarAlChatVentas() {
+            currentViewVentas = 'chat';
             $('#chatBackBtn').show();
             $('#chatFooter').css('display', 'flex'); 
-            cargarConversacion(false);
-            if(chatPollInterval) clearInterval(chatPollInterval);
-            chatPollInterval = setInterval(() => cargarConversacion(true), 3000);
-            marcarTodoLeido();
+            
+            cargarConversacionVentas(false);
+            if(pollIntervalVentas) clearInterval(pollIntervalVentas);
+            pollIntervalVentas = setInterval(() => cargarConversacionVentas(true), 3000);
+            marcarLeidoVentas();
         }
 
-        function cargarConversacion(silent = false) {
-            if(!currentUser || currentView !== 'chat') return;
+        function cargarConversacionVentas(silent = false) {
+            if(!currentUser || currentViewVentas !== 'chat') return;
             const $box = $('#chatBody');
             const isAtBottom = ($box.scrollTop() + $box.innerHeight() >= $box[0].scrollHeight - 60);
 
-            if(!silent) $box.html('<div class="text-center py-5"><i class="fa fa-circle-o-notch fa-spin text-muted fa-2x"></i></div>');
+            if(!silent) $box.html('<div class="text-center py-5"><i class="fa fa-circle-o-notch fa-spin text-muted"></i></div>');
 
             $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
                 let finalTitle = "Vendedor Pet Palace";
-                
                 const chatsOnly = data.filter(m => m.tipo !== 'queja');
 
                 const adminMsgs = chatsOnly.filter(m => m.origen === 'admin');
@@ -577,21 +614,22 @@
                 
                 $('#chatTitle').text(finalTitle);
                 $('#chatSubtitle').text('En línea');
+
                 chatsOnly.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
 
                 let html = '<div style="margin-top:auto;">'; 
-                if(chatsOnly.length === 0) html += '<div class="text-center text-muted small mt-3 font-weight-bold">¡Hola! ¿En qué podemos ayudarte hoy?</div>';
+                if(chatsOnly.length === 0) html += '<div class="text-center text-muted small mt-3 font-weight-bold">¡Hola! ¿En qué te puedo ayudar con tu pedido?</div>';
 
                 chatsOnly.forEach(n => {
                     const isMe = (n.origen === 'cliente');
                     const rowClass = isMe ? 'outgoing' : 'incoming';
-                    const nameLabel = !isMe ? `<span class="msg-name-label">${n.remitente || 'Vendedor'}</span>` : '';
+                    const nameLabel = !isMe ? `<span class="msg-name-label">${n.remitente || 'Ventas'}</span>` : '';
 
                     html += `
                         <div class="message-row ${rowClass}">
                             <div class="message-content-wrapper">
                                 ${nameLabel}
-                                <div class="message-bubble ${isMe ? 'bubble-chat' : ''}">
+                                <div class="message-bubble ${isMe ? 'bubble-ventas' : ''}">
                                     ${n.mensaje}
                                     <span class="msg-time">${n.fecha.substring(11, 16)}</span>
                                 </div>
@@ -613,16 +651,17 @@
             });
         }
 
-        function enviarMensajeChat() {
+        function enviarMensajeVentas() {
             const txt = $('#chatInputMain').val().trim();
             if(!txt) return;
+            
             $('#chatInputMain').val('').focus(); 
             
             const tiempoActual = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             const tempMsg = `
                 <div class="message-row outgoing">
                     <div class="message-content-wrapper">
-                        <div class="message-bubble bubble-chat" style="opacity:0.7;">
+                        <div class="message-bubble bubble-ventas" style="opacity:0.7;">
                             ${txt}
                             <span class="msg-time">${tiempoActual}</span>
                         </div>
@@ -635,16 +674,23 @@
                 url: 'api/notifications.php', 
                 type: 'POST', 
                 contentType: 'application/json',
-                data: JSON.stringify({ user_id: currentUser.id, sender_id: currentUser.id, message: txt, origen: 'cliente', type: 'mensaje' }),
-                success: function() { cargarConversacion(true); }
+                data: JSON.stringify({
+                    user_id: currentUser.id, 
+                    sender_id: currentUser.id, 
+                    message: txt,
+                    origen: 'cliente',
+                    type: 'mensaje'
+                }),
+                success: function() { cargarConversacionVentas(true); },
+                error: function(err) { alert("No se pudo enviar el mensaje."); }
             });
         }
 
         $('#chatInputMain').on('keypress', function(e) { 
-            if(e.which === 13) { e.preventDefault(); enviarMensajeChat(); }
+            if(e.which === 13) { e.preventDefault(); enviarMensajeVentas(); }
         });
 
-        function marcarTodoLeido() {
+        function marcarLeidoVentas() {
             if(!currentUser) return;
             $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
                 data.filter(n => n.estado !== 'leido' && n.origen === 'admin' && n.tipo !== 'queja').forEach(m => {
@@ -653,7 +699,6 @@
                 verificarBadges();
             });
         }
-
 
         // =================================================================
         // LÓGICA DEL WIDGET DE SOPORTE (CAMPANA - SOLO LECTURA)
@@ -666,29 +711,29 @@
             if (widget.is(':visible')) {
                 widget.css('opacity', '0');
                 setTimeout(() => widget.hide(), 300);
-                if(supportPollInterval) clearInterval(supportPollInterval);
+                if(pollIntervalSoporte) clearInterval(pollIntervalSoporte);
             } else {
                 widget.show();
                 setTimeout(() => widget.css('opacity', '1'), 10);
                 widget.css('display', 'flex'); 
-                mostrarBandejaSupport(); 
+                mostrarBandejaSoporte(); 
             }
         }
 
-        function mostrarBandejaSupport() {
-            currentViewSupport = 'inbox';
+        function mostrarBandejaSoporte() {
+            currentViewSoporte = 'inbox';
             $('#supportBackBtn').hide();
             $('#supportHeaderAvatar').html('<i class="fa fa-bell"></i>');
             $('#supportTitle').text('Notificaciones');
             $('#supportSubtitle').text('Respuestas a tus tickets');
             
-            if(supportPollInterval) clearInterval(supportPollInterval);
-            cargarBandejaSupport();
-            supportPollInterval = setInterval(cargarBandejaSupport, 5000);
+            if(pollIntervalSoporte) clearInterval(pollIntervalSoporte);
+            cargarBandejaSoporte();
+            pollIntervalSoporte = setInterval(cargarBandejaSoporte, 5000);
         }
 
-        function cargarBandejaSupport() {
-            if(!currentUser || currentViewSupport !== 'inbox') return;
+        function cargarBandejaSoporte() {
+            if(!currentUser || currentViewSoporte !== 'inbox') return;
 
             $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
                 const $box = $('#supportBody');
@@ -724,8 +769,8 @@
 
                 const html = `
                     <ul class="inbox-list">
-                        <li class="inbox-item" onclick="entrarAlChatSupport()">
-                            <div class="inbox-avatar avatar-support"><i class="fa fa-ticket"></i></div>
+                        <li class="inbox-item" onclick="entrarAlChatSoporte()">
+                            <div class="inbox-avatar avatar-soporte"><i class="fa fa-ticket"></i></div>
                             <div class="inbox-details">
                                 <div class="inbox-top">
                                     <span class="inbox-name">${senderName}</span>
@@ -740,18 +785,18 @@
             });
         }
 
-        function entrarAlChatSupport() {
-            currentViewSupport = 'chat';
+        function entrarAlChatSoporte() {
+            currentViewSoporte = 'chat';
             $('#supportBackBtn').show();
             
-            cargarConversacionSupport(false);
-            if(supportPollInterval) clearInterval(supportPollInterval);
-            supportPollInterval = setInterval(() => cargarConversacionSupport(true), 3000);
-            marcarLeidoSupport();
+            cargarConversacionSoporte(false);
+            if(pollIntervalSoporte) clearInterval(pollIntervalSoporte);
+            pollIntervalSoporte = setInterval(() => cargarConversacionSoporte(true), 3000);
+            marcarLeidoSoporte();
         }
 
-        function cargarConversacionSupport(silent = false) {
-            if(!currentUser || currentViewSupport !== 'chat') return;
+        function cargarConversacionSoporte(silent = false) {
+            if(!currentUser || currentViewSoporte !== 'chat') return;
             const $box = $('#supportBody');
             const isAtBottom = ($box.scrollTop() + $box.innerHeight() >= $box[0].scrollHeight - 60);
 
@@ -759,7 +804,6 @@
 
             $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
                 let finalTitle = "Soporte Pet Palace";
-                
                 const quejasOnly = data.filter(m => m.tipo === 'queja');
 
                 const adminMsgs = quejasOnly.filter(m => m.origen === 'admin');
@@ -782,7 +826,7 @@
                         <div class="message-row ${rowClass}">
                             <div class="message-content-wrapper" style="max-width:85%;">
                                 ${nameLabel}
-                                <div class="message-bubble ${isMe ? 'bubble-support' : ''}" style="white-space:pre-wrap;">
+                                <div class="message-bubble ${isMe ? 'bubble-soporte' : ''}" style="white-space:pre-wrap;">
                                     ${n.mensaje}
                                     <span class="msg-time">${n.fecha.substring(11, 16)}</span>
                                 </div>
@@ -804,7 +848,7 @@
             });
         }
 
-        function marcarLeidoSupport() {
+        function marcarLeidoSoporte() {
             if(!currentUser) return;
             $.getJSON('api/notifications.php', { user_id: currentUser.id }, function(data) {
                 data.filter(n => n.estado !== 'leido' && n.origen === 'admin' && n.tipo === 'queja').forEach(m => {
@@ -815,12 +859,13 @@
         }
 
         // =================================================================
-        // LÓGICA DE PRODUCTOS (CATÁLOGO)
+        // LÓGICA DE PRODUCTOS (CATÁLOGO Y FILTROS)
         // =================================================================
         function cargarTodosLosProductos() {
             $.getJSON('api/products.php', function(data) {
                 allProducts = data;
                 
+                // Lee las búsquedas que vienen desde el index
                 const urlParams = new URLSearchParams(window.location.search);
                 const q = urlParams.get('q');
                 const cat = urlParams.get('categoria');
@@ -881,7 +926,7 @@
                                 <img src="${p.imagen}" onerror="this.src='img/logo6.png'" alt="${p.nombre}">
                                 <button class="add-btn-icon" 
                                         onclick="agregarAlCarrito(${p.id}, '${nombreSafe}', ${p.precio}, '${imagenSafe}')" 
-                                        ${isAgotado ? 'disabled' : ''} title="${isAgotado ? 'Agotado' : 'Añadir'}">
+                                        ${isAgotado ? 'disabled' : ''} title="${isAgotado ? 'Agotado' : 'Añadir al Carrito'}">
                                     <i class="fa ${isAgotado ? 'fa-ban' : 'fa-cart-plus'}"></i>
                                 </button>
                             </div>
@@ -914,13 +959,16 @@
         }
 
         // =================================================================
-        // CARRITO Y UTILIDADES
+        // CARRITO Y UTILIDADES FLOTANTES
         // =================================================================
         function agregarAlCarrito(id, nombre, precio, imagen) {
             if (!validarLogin()) return;
             const existente = cart.find(p => p.id === id);
             if(existente) { existente.cantidad++; } else { cart.push({ id, nombre, precio, imagen, cantidad: 1 }); }
             guardarCarrito();
+            
+            $('.cart-qty').addClass('popIn');
+            setTimeout(() => $('.cart-qty').removeClass('popIn'), 300);
             $('#cart-icon-btn').dropdown('toggle');
         }
 
@@ -961,6 +1009,7 @@
 
         function eliminarDelCarrito(index) { cart.splice(index, 1); guardarCarrito(); }
 
+        // ====== BOTÓN FLOTANTE Y LOGIN ======
         function validarLogin() {
             if (!currentUser) {
                 alert("Debes iniciar sesión para comprar.");
@@ -978,9 +1027,7 @@
         }
 
         function verificarLoginParaCheckout() { return validarLogin(); }
-
         function cerrarSesionIndex() { localStorage.removeItem('currentUser'); location.reload(); }
-
         function aceptarCookies() { localStorage.setItem('cookiesPetPalace', 'true'); $('#cookieBanner').fadeOut(); }
 
         $(window).scroll(function() {

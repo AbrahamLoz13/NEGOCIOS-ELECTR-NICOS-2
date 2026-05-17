@@ -1,131 +1,121 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dashboard | Pet Palace Admin</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dashboard ERP | Pet Palace Admin</title>
+
+<link rel="stylesheet" href="../css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700,800" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+<style>
+  body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
+
+  /* SIDEBAR ORIGINAL ESTILO CLEAN UI */
+  #sidebar {
+      position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
+      padding-top: 25px; background-color: #15161D;
+      width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+      transition: all 0.3s;
+      overflow-y: auto;
+  }
+
+  #sidebar::-webkit-scrollbar { width: 5px; }
+  #sidebar::-webkit-scrollbar-track { background: #15161D; }
+  #sidebar::-webkit-scrollbar-thumb { background: #495057; border-radius: 5px; }
+  
+  .sidebar-brand { text-align: center; margin-bottom: 35px; }
+  .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
+  .sidebar-brand h5 { color: #fff; letter-spacing: 1px; font-weight: 700; font-size: 16px; margin: 0; }
+  .sidebar-brand p { color: #6c757d; font-size: 11px; text-transform: uppercase; margin-top: 5px; letter-spacing: 0.5px; }
+
+  .nav-sidebar { list-style: none; padding: 0; margin: 0; }
+  .nav-sidebar li a {
+      display: flex; align-items: center; padding: 14px 25px;
+      color: #aeb4be; text-decoration: none; font-weight: 500; font-size: 13px;
+      transition: all 0.2s ease-in-out; border-left: 4px solid transparent;
+  }
+  .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
+  .nav-sidebar li a:hover, .nav-sidebar li.active a {
+      background-color: #1e2029; color: #fff; border-left-color: #D10024;
+  }
+  .nav-sidebar hr { border-color: #2c2e3e; margin: 20px 25px; opacity: 0.5; }
+
+  main { margin-left: 240px; padding: 30px; transition: all 0.3s; }
+
+  /* HEADER SUPERIOR */
+  .top-bar { 
+      display: flex; justify-content: space-between; align-items: center; 
+      margin-bottom: 30px;
+  }
+  .page-title h2 { margin: 0; font-weight: 800; color: #15161D; font-size: 24px; }
+  .page-title span { color: #888; font-size: 13px; }
+  
+  .user-profile { display: flex; align-items: center; gap: 15px; }
+  .user-info { text-align: right; }
+  .user-info span { display: block; font-weight: 700; color: #15161D; font-size: 14px; }
+  .user-info small { color: #888; font-size: 11px; text-transform: uppercase; }
+  .user-avatar { width: 45px; height: 45px; background: #D10024; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; box-shadow: 0 4px 10px rgba(209,0,36,0.3); }
+
+  /* KPI WIDGETS */
+  .kpi-card {
+      background: white; border-radius: 16px; padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
+      display: flex; justify-content: space-between; align-items: center;
+      position: relative; overflow: hidden; height: 120px; cursor: pointer;
+      transition: 0.3s;
+  }
+  .kpi-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+  .kpi-card.active-tab { border: 2px solid #4ea3f1; background: #fbfdff; box-shadow: 0 0 15px rgba(78, 163, 241, 0.2); }
+  .kpi-card.money-card { cursor: default; border-bottom: 4px solid #D10024; }
+  .kpi-card.money-card:hover { transform: none; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+  .kpi-content h6 { color: #8898aa; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 700; }
+  .kpi-content h3 { font-size: 30px; font-weight: 800; color: #32325d; margin: 0; }
+  .kpi-icon { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+  .icon-blue { background: #e3f2fd; color: #4ea3f1; }
+  .icon-red { background: #fbe9eb; color: #D10024; }
+  .icon-green { background: #e8f5e9; color: #28a745; }
+  .icon-orange { background: #fff3cd; color: #ffc107; }
+
+  /* PANELES DE GRÁFICAS */
+  .dashboard-section { display: none; animation: fadeIn 0.4s ease-out; }
+  .dashboard-section.active { display: block; }
+  .chart-card { background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); margin-bottom: 25px; height: 100%; position: relative; }
+  .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+  .chart-title { font-size: 16px; font-weight: 800; color: #15161D; display: flex; align-items: center; gap: 10px; }
+  .chart-select { border: 1px solid #dee2e6; padding: 6px 15px; border-radius: 30px; font-size: 12px; color: #525f7f; background: #fff; cursor: pointer; outline: none; transition: 0.2s; }
+  .chart-select:hover { border-color: #D10024; }
+  .chart-empty-state { display: flex; align-items: center; justify-content: center; height: 300px; color: #9aa5b4; font-size: 13px; font-weight: 500; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 768px) {
+      #sidebar { left: -240px; }
+      main { margin-left: 0; }
+  }
+</style>
+<script>
+// ==========================================
+// SEGURIDAD: COMPROBACIÓN DE SESIÓN (SIN AUDITORÍA)
+// ==========================================
+(function() {
+    const userData = localStorage.getItem('currentUser');
+    if (!userData) { window.location.replace('../login.html'); return; }
     
-    <link rel="stylesheet" href="../css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    const user = JSON.parse(userData);
+    const rol = (user.rol || '').toLowerCase();
+    
+    // Este panel es el de Ventas/General. Logística no debería estar aquí.
+    const rolesPermitidos = ['admin', 'vendedor', 'soporte'];
 
-    <style>
-        /* --- ESTILOS MODERNOS (CLEAN UI) --- */
-        body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
-        
-        /* SIDEBAR */
-        #sidebar {
-            position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
-            padding-top: 25px; background-color: #15161D;
-            width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
-            transition: all 0.3s;
-        }
-        
-        .sidebar-brand { text-align: center; margin-bottom: 35px; }
-        .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
-        .sidebar-brand h5 { color: #fff; letter-spacing: 1px; font-weight: 700; font-size: 16px; margin: 0; }
-        .sidebar-brand p { color: #6c757d; font-size: 11px; text-transform: uppercase; margin-top: 5px; letter-spacing: 0.5px; }
-
-        .nav-sidebar { list-style: none; padding: 0; margin: 0; }
-        .nav-sidebar li a {
-            display: flex; align-items: center; padding: 14px 25px;
-            color: #aeb4be; text-decoration: none; font-weight: 500; font-size: 13px;
-            transition: all 0.2s ease-in-out; border-left: 4px solid transparent;
-        }
-        .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
-        .nav-sidebar li a:hover, .nav-sidebar li.active a {
-            background-color: #1e2029; color: #fff; border-left-color: #D10024;
-        }
-        .nav-sidebar hr { border-color: #2c2e3e; margin: 20px 25px; opacity: 0.5; }
-
-        /* CONTENIDO PRINCIPAL */
-        main { margin-left: 240px; padding: 30px; transition: all 0.3s; }
-
-        /* HEADER SUPERIOR */
-        .top-bar { 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 30px;
-        }
-        .page-title h2 { margin: 0; font-weight: 800; color: #15161D; font-size: 24px; }
-        .page-title span { color: #888; font-size: 13px; }
-        
-        .user-profile { display: flex; align-items: center; gap: 15px; }
-        .user-info { text-align: right; }
-        .user-info span { display: block; font-weight: 700; color: #15161D; font-size: 14px; }
-        .user-info small { color: #888; font-size: 11px; text-transform: uppercase; }
-        .user-avatar { width: 45px; height: 45px; background: #D10024; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; box-shadow: 0 4px 10px rgba(209,0,36,0.3); }
-
-        /* KPI WIDGETS (Estilo Tarjeta Blanca Moderno) */
-        .kpi-card {
-            background: white; border-radius: 16px; padding: 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
-            display: flex; justify-content: space-between; align-items: center;
-            position: relative; overflow: hidden; height: 120px; cursor: pointer;
-            transition: 0.3s;
-        }
-        .kpi-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        
-        /* Estado Activo (Pestaña seleccionada) */
-        .kpi-card.active-tab { 
-            border: 2px solid #4ea3f1; background: #fbfdff; 
-            box-shadow: 0 0 15px rgba(78, 163, 241, 0.2);
-        }
-
-        /* Tarjeta de Dinero (Solo informativa) */
-        .kpi-card.money-card { 
-            cursor: default; border-bottom: 4px solid #D10024;
-        }
-        .kpi-card.money-card:hover { transform: none; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
-        
-        .kpi-content h6 { color: #8898aa; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 700; }
-        .kpi-content h3 { font-size: 30px; font-weight: 800; color: #32325d; margin: 0; }
-        
-        .kpi-icon {
-            width: 60px; height: 60px; border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 28px;
-        }
-
-        /* Colores KPI */
-        .icon-blue { background: #e3f2fd; color: #4ea3f1; }
-        .icon-red { background: #fbe9eb; color: #D10024; }
-        .icon-green { background: #e8f5e9; color: #28a745; }
-        .icon-orange { background: #fff3cd; color: #ffc107; }
-
-        /* PANELES DE GRÁFICAS (OCULTOS POR DEFECTO) */
-        .dashboard-section { display: none; animation: fadeIn 0.4s ease-out; }
-        .dashboard-section.active { display: block; }
-
-        .chart-card {
-            background: white; border-radius: 16px; padding: 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
-            margin-bottom: 25px; height: 100%; position: relative;
-        }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .chart-title { font-size: 16px; font-weight: 800; color: #15161D; display: flex; align-items: center; gap: 10px; }
-        
-        /* FILTROS */
-        .chart-select { 
-            border: 1px solid #dee2e6; padding: 6px 15px; border-radius: 30px; 
-            font-size: 12px; color: #525f7f; background: #fff; cursor: pointer; outline: none; transition: 0.2s;
-        }
-        .chart-select:hover { border-color: #D10024; }
-
-        .chart-empty-state {
-            display: flex; align-items: center; justify-content: center; 
-            height: 300px; color: #9aa5b4; font-size: 13px; font-weight: 500;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            #sidebar { left: -240px; }
-            main { margin-left: 0; }
-        }
-    </style>
+    if (!rolesPermitidos.includes(rol)) {
+        alert("ACCESO DENEGADO: Tu cuenta no tiene privilegios para acceder al panel principal.");
+        window.location.replace('../index.html');
+    }
+})();
+</script>
 </head>
 
 <body>
@@ -134,28 +124,12 @@
         <div class="sidebar-brand">
             <img src="../img/logo6.png" alt="Logo" onerror="this.src='https://via.placeholder.com/60'">
             <h5>Pet Palace</h5>
-            <p id="rolDisplay">Verificando...</p>
+            <p id="rolDisplay">Cargando...</p>
         </div>
-        <ul class="nav-sidebar">
-            <li class="active admin-only vendor-only" style="display:none;"><a href="#"><i class="fa fa-chart-pie"></i> Dashboard</a></li>
-            
-            <li class="support-visible" style="display:none;"><a href="clients.html"><i class="fa fa-users"></i> Clientes</a></li>
-            
-            <li class="admin-only vendor-only logistica-only" style="display:none;"><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
-            <li class="admin-only vendor-only" style="display:none;"><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
-            <li class="admin-only logistica-only" style="display:none;"><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
-            <li class="admin-only logistica-only" style="display:none;"><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
-            <li class="admin-only" style="display:none;"><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
-            <li class="admin-only logistica-only" style="display:none;"><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
-            <li class="admin-only" style="display:none;"><a href="erp-roles.html"><i class="fa fa-user-shield"></i> Roles ERP</a></li>
-
-            <hr>
-            <li class="support-visible" style="display:none;"><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
-            <li class="support-visible" style="display:none;"><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
-        </ul>
+        <ul class="nav-sidebar" id="sidebarMenu"></ul>
     </nav>
 
-    <main id="main-content">
+    <main>
         
         <div class="top-bar">
             <div class="page-title">
@@ -175,7 +149,6 @@
         </div>
 
         <div class="row mb-4">
-            
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="kpi-card" id="tab-usuarios" onclick="mostrarSeccion('usuarios')">
                     <div class="kpi-content">
@@ -318,82 +291,130 @@
     <script src="../js/bootstrap.min.js"></script>
 
     <script>
+        // EL MENÚ SE DEFINE AQUÍ PARA NO DEPENDER DE ARCHIVOS EXTERNOS
+        const MENUS = {
+            admin: [
+                { href: 'admin-panel.html',   icon: 'fa-chart-line',   label: 'Dashboard' },
+                { href: 'clients.html',       icon: 'fa-users',        label: 'Clientes' },
+                { href: 'products.html',      icon: 'fa-box-open',     label: 'Inventario' },
+                { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
+                { href: 'providers.html',     icon: 'fa-truck',        label: 'Proveedores' },
+                { href: 'movimientos.html',   icon: 'fa-history',      label: 'Movimientos' },
+                { href: 'erp-dashboard.html', icon: 'fa-building',     label: 'Dashboard ERP' },
+                { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
+                { href: 'erp-roles.html',     icon: 'fa-user-shield',  label: 'Roles ERP' },
+            ],
+            vendedor: [
+                { href: 'admin-panel.html',   icon: 'fa-chart-line',   label: 'Dashboard' },
+                { href: 'clients.html',       icon: 'fa-users',        label: 'Clientes' },
+                { href: 'products.html',      icon: 'fa-box-open',     label: 'Inventario' },
+                { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
+                { href: 'providers.html',     icon: 'fa-truck',        label: 'Proveedores' },
+                { href: 'movimientos.html',   icon: 'fa-history',      label: 'Movimientos' },
+                { href: 'erp-dashboard.html', icon: 'fa-building',     label: 'Dashboard ERP' },
+                { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
+                { href: 'erp-roles.html',     icon: 'fa-user-shield',  label: 'Roles ERP' },
+            ],
+            soporte: [
+                { href: 'admin-panel.html',   icon: 'fa-chart-line',   label: 'Dashboard' },
+                { href: 'clients.html',       icon: 'fa-users',        label: 'Clientes' },
+                { href: 'erp-roles.html',     icon: 'fa-user-shield',  label: 'Roles ERP' },
+            ]
+        };
+
         let globalData = { users: [], products: [], orders: [] };
         let charts = {};
         let userRole = '';
 
         $(document).ready(function() {
-            verificarUsuario();
+            verificarUsuarioYMenu();
+            cargarDatosDashboard();
+            mostrarSeccion('pedidos');
         });
 
-        // 1. VERIFICACIÓN DE ROL
-        function verificarUsuario() {
+        function verificarUsuarioYMenu() {
             try {
                 const user = JSON.parse(localStorage.getItem('currentUser'));
                 if (!user) { window.location.href = '../login.html'; return; }
                 
-                userRole = (user.rol || 'usuario').toLowerCase();
+                userRole = (user.rol || 'admin').toLowerCase();
                 
-                let roleName = 'Usuario';
-                if (userRole === 'admin') roleName = 'Administrador';
-                else if (userRole === 'vendedor') roleName = 'Vendedor Autorizado';
-                else if (userRole === 'soporte') roleName = 'Soporte Técnico';
-                else if (userRole === 'logistica') roleName = 'Logística';
+                const nombres = { admin: 'Administrador', vendedor: 'Vendedor Autorizado', soporte: 'Soporte Técnico' };
+                const roleName = nombres[userRole] ? nombres[userRole] : userRole.charAt(0).toUpperCase() + userRole.slice(1);
                 
-                // Header Profile
                 const primerNombre = user.nombre ? user.nombre.split(' ')[0] : 'Usuario';
                 $('#userNameDisplay').text(primerNombre);
                 $('#userRoleDisplay').text(roleName);
                 $('#userInitial').text(primerNombre.charAt(0).toUpperCase());
-                $('#rolDisplay').text(roleName);
+                $('#rolDisplay').text(roleName.toUpperCase());
                 $('#welcomeMsg').text(`Hola, ${primerNombre}`);
 
-                // LÓGICA DE OCULTAR ELEMENTOS DEL SIDEBAR
-                $('.support-visible').show(); // Todos ven Clientes, Ver Tienda, Cerrar Sesión
+                const sidebarUl = $('#sidebarMenu');
+                sidebarUl.empty();
+                
+                const menuItems = MENUS[userRole] || MENUS['admin'];
+                
+                let currentPage = window.location.pathname.split("/").pop();
+                if(!currentPage) currentPage = 'admin-panel.html';
 
-                if (userRole === 'admin') {
-                    // Admin ve todo
-                    $('.admin-only, .vendor-only, .logistica-only').show(); 
-                    cargarDatosDashboard();
-                    mostrarSeccion('pedidos');
-                } else if (userRole === 'vendedor') {
-                    // Vendedor ve Dashboard, Productos, Pedidos
-                    $('.vendor-only').show();
-                    cargarDatosDashboard();
-                    mostrarSeccion('pedidos');
-                } else if (userRole === 'logistica') {
-                    // Logistica ve Inventario, Proveedores, Movimientos, Ordenes ERP
-                    $('.logistica-only').show();
-                    // Si un logístico entra aquí por error, mandarlo a su panel principal
-                    window.location.href = 'erp-logistica.html';
-                } else if (userRole === 'soporte') {
-                    // Soporte solo ve Clientes y Tienda (ya mostrados arriba). 
-                    // No debe ver el Dashboard, así que lo redirigimos directo a clientes.html
-                    window.location.href = 'clients.html';
-                } else {
-                    // Si es un usuario colado, mandarlo a la tienda
-                    window.location.href = '../index.html';
-                }
+                menuItems.forEach(item => {
+                    let isActive = (item.href === currentPage) ? 'active' : '';
+                    sidebarUl.append(`
+                        <li class="${isActive}">
+                            <a href="${item.href}">
+                                <i class="fa ${item.icon}"></i> ${item.label}
+                            </a>
+                        </li>
+                    `);
+                });
+
+                sidebarUl.append(`<hr>`);
+                sidebarUl.append(`<li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>`);
+                sidebarUl.append(`<li><a href="#" onclick="cerrarSesionGlobal()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>`);
 
             } catch (e) {
-                console.error("Error al verificar usuario:", e);
                 window.location.href = '../login.html';
             }
         }
 
-        // 2. CARGA DE DATOS ASÍNCRONA
-        async function cargarDatosDashboard() {
-            if (userRole === 'soporte' || userRole === 'logistica') return; // Seguridad extra
+        function cerrarSesionGlobal() {
+            // Limpia cualquier rastro de simulación antes de cerrar
+            let user = JSON.parse(localStorage.getItem('currentUser'));
+            if (user && user.rol_real) {
+                user.rol = user.rol_real;
+                delete user.rol_real;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+            }
+            localStorage.removeItem('currentUser');
+            window.location.href = '../login.html';
+        }
 
+        function calcularTotalReal(o) {
+            let subtotal = parseFloat(o.subtotal || o.total_sin_iva || o.total || 0);
+            let pct = parseFloat(o.porcentaje_iva || o.porcentaje || 16);
+            let iva_val = parseFloat(o.iva || o.impuesto || o.impuestos || 0);
+            
+            if (iva_val === 0 && pct > 0) iva_val = subtotal * (pct / 100);
+            
+            let totalGeneral = parseFloat(o.total_final || o.gran_total || o.total_con_iva || o.total_real || 0);
+            if (totalGeneral === 0 || totalGeneral === subtotal) totalGeneral = subtotal + iva_val;
+            
+            return totalGeneral;
+        }
+
+        function esVentaValida(estado) {
+            const est = (estado || '').toLowerCase();
+            return (est === 'procesada' || est === 'completado' || est === 'entregado' || est === 'enviado');
+        }
+
+        async function cargarDatosDashboard() {
             try {
                 const [resUsers, resProds, resOrders] = await Promise.all([
                     fetch('../api/clients.php').catch(() => ({ json: () => [] })),
                     fetch('../api/products.php').catch(() => ({ json: () => [] })),
-                    // Usar erp/ordenes.php si usas la tabla ordenes, o api/orders.php si usas la tabla pedidos
                     fetch('../api/erp/ordenes.php').catch(() => fetch('../api/orders.php')).catch(() => ({ json: () => [] })) 
                 ]);
 
-                // Extraer JSON manejando posibles errores del servidor
                 const parseJSON = async (res) => {
                     if (!res.ok) return [];
                     try { return await res.json(); } catch(e) { return []; }
@@ -403,53 +424,45 @@
                 globalData.products = await parseJSON(resProds);
                 globalData.orders = await parseJSON(resOrders);
 
-                // Asegurar que sean arrays
                 if(!Array.isArray(globalData.users)) globalData.users = [];
                 if(!Array.isArray(globalData.products)) globalData.products = [];
                 if(!Array.isArray(globalData.orders)) globalData.orders = [];
 
                 actualizarKPIs();
                 
-                // Refrescar gráficas de la sección que esté activa en este momento
                 const seccionActiva = $('.dashboard-section.active').attr('id').replace('panel-', '');
                 renderizarGraficas(seccionActiva);
 
             } catch (error) {
-                console.error("Error al cargar datos del Dashboard:", error);
                 $('#kpi-users, #kpi-products, #kpi-orders').text('0');
                 $('#kpi-money').text('$0');
             }
         }
 
-        // 3. ACTUALIZAR WIDGETS SUPERIORES
         function actualizarKPIs() {
             $('#kpi-users').text(globalData.users.length);
             $('#kpi-products').text(globalData.products.length);
             $('#kpi-orders').text(globalData.orders.length);
 
-            let totalMoney = globalData.orders.reduce((sum, o) => {
-                const est = o.estado ? o.estado.toLowerCase() : '';
-                return (est !== 'cancelada' && est !== 'cancelado') ? sum + parseFloat(o.total || 0) : sum;
-            }, 0);
+            let totalMoney = 0;
+            globalData.orders.forEach(o => {
+                if (esVentaValida(o.estado)) {
+                    totalMoney += calcularTotalReal(o);
+                }
+            });
             
             $('#kpi-money').text('$' + totalMoney.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
         }
 
-        // 4. LÓGICA DE NAVEGACIÓN (TABS)
         function mostrarSeccion(seccion) {
-            // Ocultar todos los paneles y quitar estado activo
             $('.dashboard-section').removeClass('active');
             $('.kpi-card').removeClass('active-tab');
-
-            // Mostrar seleccionado
             $(`#panel-${seccion}`).addClass('active');
             $(`#tab-${seccion}`).addClass('active-tab');
-            
             renderizarGraficas(seccion);
         }
 
         function renderizarGraficas(seccion) {
-            // Un timeout asegura que el canvas tiene dimensiones antes de que Chart.js dibuje
             setTimeout(() => {
                 if (seccion === 'usuarios') renderUsersCharts();
                 else if (seccion === 'productos') renderProductsCharts();
@@ -457,19 +470,16 @@
             }, 50);
         }
 
-        // --- A. GRÁFICAS DE PEDIDOS (VENTAS) ---
         function renderOrdersCharts() {
-            // Flujo de Ventas (Línea)
             let sales = {};
             globalData.orders.forEach(o => {
-                const est = o.estado ? o.estado.toLowerCase() : '';
-                if (est !== 'cancelada' && est !== 'cancelado' && o.fecha) {
-                    let f = o.fecha.split(' ')[0]; // Extraer solo la fecha YYYY-MM-DD
-                    sales[f] = (sales[f] || 0) + parseFloat(o.total || 0);
+                if (esVentaValida(o.estado) && o.fecha) {
+                    let f = o.fecha.split(' ')[0]; 
+                    sales[f] = (sales[f] || 0) + calcularTotalReal(o);
                 }
             });
             
-            let dates = Object.keys(sales).sort().slice(-7); // Últimos 7 días
+            let dates = Object.keys(sales).sort().slice(-7); 
             
             if (dates.length > 0) {
                 crearChart('chartSales', 'line', dates, [{
@@ -484,13 +494,12 @@
                 mostrarEmptyState('chartSales');
             }
 
-            // Estatus (Dona)
             let st = { 'Pendiente': 0, 'Procesada': 0, 'Cancelada': 0 };
             globalData.orders.forEach(o => {
                 if(o.estado) {
                     let s = o.estado.charAt(0).toUpperCase() + o.estado.slice(1).toLowerCase();
                     if(st[s] !== undefined) st[s]++; 
-                    else st[s] = 1; // Si hay otro estado nuevo, lo añade
+                    else st[s] = 1; 
                 }
             });
             
@@ -506,7 +515,6 @@
             }
         }
 
-        // --- B. GRÁFICAS DE PRODUCTOS ---
         function renderProductsCharts() {
             let cats = {};
             globalData.products.forEach(p => {
@@ -537,7 +545,6 @@
             else if (filter === 'all') filtered = items;
             else filtered = items.filter(p => p.categoria === filter);
 
-            // Limitar a 20 barras para no saturar la gráfica visualmente
             if (filtered.length > 20) filtered = filtered.slice(0, 20);
 
             if (filtered.length > 0) {
@@ -554,9 +561,7 @@
             }
         }
 
-        // --- C. GRÁFICAS DE USUARIOS ---
         function renderUsersCharts() {
-            // Extraer nombres o IDs de clientes de las órdenes
             const compradores = new Set(globalData.orders.map(o => (o.cliente || '').trim().toLowerCase()));
             
             let activos = 0, inactivos = 0;
@@ -573,7 +578,7 @@
                     data: [activos, inactivos],
                     backgroundColor: ['#28a745', '#D10024'],
                     borderRadius: 6, barThickness: 50
-                }], { indexAxis: 'y' }); // Gráfica horizontal
+                }], { indexAxis: 'y' }); 
             } else {
                 mostrarEmptyState('chartClientsActivity');
             }
@@ -596,14 +601,12 @@
             }
         }
 
-        // --- HELPER CHART.JS ---
         function crearChart(id, type, labels, datasets, extraOptions = {}) {
             const canvas = document.getElementById(id);
             const emptyDiv = document.getElementById('empty-' + id);
             
             if(!canvas) return;
 
-            // Mostrar Canvas, ocultar Empty State
             canvas.style.display = 'block';
             if(emptyDiv) emptyDiv.style.display = 'none';
 
@@ -629,15 +632,10 @@
         function mostrarEmptyState(id) {
             const canvas = document.getElementById(id);
             const emptyDiv = document.getElementById('empty-' + id);
-            
             if(canvas) canvas.style.display = 'none';
             if(emptyDiv) emptyDiv.style.display = 'flex';
         }
-
-        function cerrarSesion() {
-            localStorage.removeItem('currentUser');
-            window.location.href = '../login.html';
-        }
     </script>
+    
 </body>
 </html>

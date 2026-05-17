@@ -1,0 +1,14 @@
+# 1. Deshabilitar el listado de directorios (nadie podrá ver tus archivos sueltos)
+Options -Indexes
+
+# 2. Proteger este mismo archivo para que nadie lo pueda leer en el navegador
+<Files .htaccess>
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# 3. (Opcional) Proteger archivos de configuración si los tienes (ej. db.php)
+<Files "db.php">
+    Order Allow,Deny
+    Deny from all
+</Files>

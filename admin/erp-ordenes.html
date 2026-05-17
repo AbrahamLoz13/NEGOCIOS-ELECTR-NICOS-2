@@ -1,136 +1,184 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Órdenes ERP | Pet Palace Admin</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Órdenes ERP | Pet Palace Admin</title>
 
-<link rel="stylesheet" href="../css/bootstrap.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
-<style>
-  /* ===== BASE ===== */
-  body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
+    <style>
+        /* ===== BASE ===== */
+        body { font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #f4f6f9; color: #495057; }
 
-  /* SIDEBAR */
-  #sidebar {
-    position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
-    padding-top: 25px; background-color: #15161D;
-    width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
-    transition: all 0.3s;
-  }
-  .sidebar-brand { text-align: center; margin-bottom: 35px; }
-  .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
-  .sidebar-brand h5 { color: #fff; letter-spacing: 1px; font-weight: 700; font-size: 16px; margin: 0; }
-  .sidebar-brand p { color: #6c757d; font-size: 11px; text-transform: uppercase; margin-top: 5px; letter-spacing: 0.5px; }
-  .nav-sidebar { list-style: none; padding: 0; margin: 0; }
-  .nav-sidebar li a {
-    display: flex; align-items: center; padding: 14px 25px;
-    color: #aeb4be; text-decoration: none; font-weight: 500; font-size: 13px;
-    transition: all 0.2s ease-in-out; border-left: 4px solid transparent;
-  }
-  .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
-  .nav-sidebar li a:hover, .nav-sidebar li.active a {
-    background-color: #1e2029; color: #fff; border-left-color: #D10024;
-  }
-  .nav-sidebar hr { border-color: #2c2e3e; margin: 20px 25px; opacity: 0.5; }
+        /* SIDEBAR */
+        #sidebar {
+            position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000;
+            padding-top: 25px; background-color: #15161D;
+            width: 240px; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            overflow-y: auto;
+        }
+        
+        #sidebar::-webkit-scrollbar { width: 5px; }
+        #sidebar::-webkit-scrollbar-track { background: #15161D; }
+        #sidebar::-webkit-scrollbar-thumb { background: #495057; border-radius: 5px; }
 
-  /* CONTENIDO PRINCIPAL */
-  main { margin-left: 240px; padding: 30px; transition: all 0.3s; }
+        .sidebar-brand { text-align: center; margin-bottom: 35px; }
+        .sidebar-brand img { width: 60px; margin-bottom: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); padding: 2px; }
+        .sidebar-brand h5 { color: #fff; letter-spacing: 1px; font-weight: 700; font-size: 16px; margin: 0; }
+        .sidebar-brand p { color: #6c757d; font-size: 11px; text-transform: uppercase; margin-top: 5px; letter-spacing: 0.5px; }
+        .nav-sidebar { list-style: none; padding: 0; margin: 0; }
+        .nav-sidebar li a {
+            display: flex; align-items: center; padding: 14px 25px;
+            color: #aeb4be; text-decoration: none; font-weight: 500; font-size: 13px;
+            transition: all 0.2s ease-in-out; border-left: 4px solid transparent;
+        }
+        .nav-sidebar li a i { width: 25px; font-size: 16px; margin-right: 10px; text-align: center; }
+        .nav-sidebar li a:hover, .nav-sidebar li.active a {
+            background-color: #1e2029; color: #fff; border-left-color: #D10024;
+        }
+        .nav-sidebar hr { border-color: #2c2e3e; margin: 20px 25px; opacity: 0.5; }
 
-  /* CARD BLANCA */
-  .card-custom {
-    background: white; border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
-    overflow: hidden; margin-bottom: 25px;
-  }
-  .card-body-custom { padding: 20px; }
+        /* CONTENIDO PRINCIPAL */
+        main { margin-left: 240px; padding: 30px; transition: all 0.3s; }
 
-  /* TABLA */
-  .table thead th {
-    background-color: #f8f9fa; color: #495057; border-bottom: 2px solid #e9ecef;
-    font-weight: 700; text-transform: uppercase; font-size: 11px; padding: 15px;
-  }
-  .table tbody td { vertical-align: middle; padding: 15px; border-top: 1px solid #f0f0f0; }
+        /* CARD BLANCA */
+        .card-custom {
+            background: white; border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
+            overflow: hidden; margin-bottom: 25px;
+        }
+        .card-body-custom { padding: 20px; }
 
-  /* BADGES */
-  .badge-status { font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-  .bg-pendiente  { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-  .bg-procesada  { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-  .bg-enviado  { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
-  .bg-cancelada  { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        /* TABLA */
+        .table thead th {
+            background-color: #f8f9fa; color: #495057; border-bottom: 2px solid #e9ecef;
+            font-weight: 700; text-transform: uppercase; font-size: 11px; padding: 15px;
+        }
+        .table tbody td { vertical-align: middle; padding: 15px; border-top: 1px solid #f0f0f0; }
 
-  /* BOTONES ACCIÓN */
-  .btn-action {
-    width: 32px; height: 32px; border-radius: 8px; border: none;
-    display: inline-flex; align-items: center; justify-content: center;
-    margin: 0 2px; transition: 0.2s; color: white; cursor: pointer;
-  }
-  .btn-action:hover { transform: translateY(-2px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-  .btn-edit    { background: #4ea3f1; }
-  .btn-delete  { background: #ff4b5c; }
-  .btn-process { background: #28a745; }
+        /* BADGES */
+        .badge-status { font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .bg-pendiente  { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .bg-procesada  { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .bg-enviado  { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .bg-cancelada  { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
-  .btn-add {
-    background: #6610f2; border: none; padding: 10px 20px;
-    border-radius: 8px; font-weight: 600; color: white;
-    display: flex; align-items: center; gap: 8px; cursor: pointer;
-  }
-  .btn-add:hover { background: #520dc2; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(102,16,242,0.3); color: white; text-decoration: none; }
+        /* BOTONES ACCIÓN */
+        .btn-action {
+            width: 32px; height: 32px; border-radius: 8px; border: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            margin: 0 2px; transition: 0.2s; color: white; cursor: pointer;
+        }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-edit    { background: #4ea3f1; }
+        .btn-delete  { background: #ff4b5c; }
+        .btn-process { background: #28a745; }
 
-  /* KPI CARDS */
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-  .kpi-card {
-    background: white; border-radius: 12px; padding: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
-    display: flex; align-items: center; gap: 16px;
-  }
-  .kpi-icon { width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; flex-shrink: 0; }
-  .kpi-icon.purple { background: #6610f2; }
-  .kpi-icon.green  { background: #28a745; }
-  .kpi-icon.blue   { background: #4ea3f1; }
-  .kpi-icon.red    { background: #D10024; }
-  .kpi-label { font-size: 11px; color: #9aa5b4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-  .kpi-value { font-size: 22px; font-weight: 700; color: #15161D; margin-top: 2px; }
+        .btn-add {
+            background: #6610f2; border: none; padding: 10px 20px;
+            border-radius: 8px; font-weight: 600; color: white;
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
+        }
+        .btn-add:hover { background: #520dc2; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(102,16,242,0.3); color: white; text-decoration: none; }
 
-  /* PRODUCTO ROWS EN MODAL */
-  .producto-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .producto-row select { flex: 2; }
-  .producto-row input  { flex: 1; }
-  .btn-remove-prod { background: #ff4b5c; border: none; color: white; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .btn-add-prod { background: none; border: 1px dashed #6610f2; color: #6610f2; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 4px; }
-  .btn-add-prod:hover { background: #f3e8ff; }
-  .total-display { background: #f8f9fa; border-radius: 8px; padding: 10px 16px; font-weight: 700; font-size: 16px; color: #15161D; text-align: right; margin-top: 10px; }
-  .total-display span { color: #6610f2; }
+        /* KPI CARDS */
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        .kpi-card {
+            background: white; border-radius: 12px; padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
+            display: flex; align-items: center; gap: 16px;
+        }
+        .kpi-icon { width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; flex-shrink: 0; }
+        .kpi-icon.purple { background: #6610f2; }
+        .kpi-icon.green  { background: #28a745; }
+        .kpi-icon.blue   { background: #4ea3f1; }
+        .kpi-icon.red    { background: #D10024; }
+        .kpi-label { font-size: 11px; color: #9aa5b4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .kpi-value { font-size: 22px; font-weight: 700; color: #15161D; margin-top: 2px; }
 
-  /* MODAL DETALLE Y SEGUIMIENTO */
-  .detalle-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
-  .detalle-item:last-child { border-bottom: none; }
+        /* PRODUCTO ROWS EN MODAL */
+        .producto-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .producto-row select { flex: 2; }
+        .producto-row input  { flex: 1; }
+        .btn-remove-prod { background: #ff4b5c; border: none; color: white; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .btn-add-prod { background: none; border: 1px dashed #6610f2; color: #6610f2; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 4px; }
+        .btn-add-prod:hover { background: #f3e8ff; }
+        .total-display { background: #f8f9fa; border-radius: 8px; padding: 10px 16px; font-weight: 700; font-size: 16px; color: #15161D; text-align: right; margin-top: 10px; }
+        .total-display span { color: #6610f2; }
 
-  .track-container { margin: 20px 0 40px; padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #f0f2f5; }
-  .track { position: relative; background-color: #e9ecef; height: 6px; display: flex; margin-bottom: 30px; margin-top: 30px; border-radius: 5px; }
-  .track .step { flex-grow: 1; width: 25%; margin-top: -18px; text-align: center; position: relative; }
-  .track .step::before { height: 6px; position: absolute; content: ""; width: 100%; left: 0; top: 18px; transition: background-color 0.4s ease; }
-  .track .step.active::before { background-color: #28a745; }
-  
-  .track .icon { display: inline-block; width: 40px; height: 40px; line-height: 36px; position: relative; border-radius: 100%; background: #fff; color: #aeb4be; z-index: 5; font-size: 16px; border: 3px solid #e9ecef; transition: all 0.4s ease; }
-  .track .step.active .icon { background: #28a745; color: #fff; border-color: #28a745; }
-  
-  .track .text { display: block; margin-top: 10px; font-size: 12px; font-weight: 700; color: #8D99AE; text-transform: uppercase; }
-  .track .step.active .text { color: #15161D; }
+        /* MODAL DETALLE Y SEGUIMIENTO */
+        .detalle-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+        .detalle-item:last-child { border-bottom: none; }
 
-  .track.canceled .step::before { background-color: #D10024 !important; }
-  .track.canceled .step .icon { background: #D10024 !important; color: #fff !important; border-color: #D10024 !important; }
-  .track.canceled .step .text { color: #D10024 !important; }
+        .track-container { margin: 20px 0 40px; padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #f0f2f5; }
+        .track { position: relative; background-color: #e9ecef; height: 6px; display: flex; margin-bottom: 30px; margin-top: 30px; border-radius: 5px; }
+        .track .step { flex-grow: 1; width: 25%; margin-top: -18px; text-align: center; position: relative; }
+        .track .step::before { height: 6px; position: absolute; content: ""; width: 100%; left: 0; top: 18px; transition: background-color 0.4s ease; }
+        .track .step.active::before { background-color: #28a745; }
+        
+        .track .icon { display: inline-block; width: 40px; height: 40px; line-height: 36px; position: relative; border-radius: 100%; background: #fff; color: #aeb4be; z-index: 5; font-size: 16px; border: 3px solid #e9ecef; transition: all 0.4s ease; }
+        .track .step.active .icon { background: #28a745; color: #fff; border-color: #28a745; }
+        
+        .track .text { display: block; margin-top: 10px; font-size: 12px; font-weight: 700; color: #8D99AE; text-transform: uppercase; }
+        .track .step.active .text { color: #15161D; }
 
-  /* ANIMACIONES */
-  .fade-in { animation: fadeIn 0.5s ease-out; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .track.canceled .step::before { background-color: #D10024 !important; }
+        .track.canceled .step .icon { background: #D10024 !important; color: #fff !important; border-color: #D10024 !important; }
+        .track.canceled .step .text { color: #D10024 !important; }
 
-  /* ALERT TOAST */
-  #toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; min-width: 260px; display: none; }
-</style>
+        /* ANIMACIONES */
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ALERT TOAST */
+        #toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; min-width: 260px; display: none; }
+        
+        #auditoria-banner {
+            background: #D10024; color: white; text-align: center; padding: 10px; font-weight: 700; font-size: 13px; display: none;
+            position: fixed; top: 0; left: 240px; right: 0; z-index: 1050; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        #auditoria-banner button { background: white; color: #D10024; border: none; padding: 4px 12px; border-radius: 15px; font-weight: 800; font-size: 11px; margin-left: 15px; cursor: pointer; transition: 0.2s;}
+        #auditoria-banner button:hover { background: #fdf3f4; }
+    </style>
+    <script>
+        (function() {
+            const userData = localStorage.getItem('currentUser');
+            if (!userData) { window.location.replace('../login.html'); return; }
+            const user = JSON.parse(userData);
+            const esAuditoria = (user.rol_real && user.rol_real === 'admin');
+            const rol = (user.rol || '').toLowerCase();
+            const rolesPermitidos = ['admin', 'vendedor', 'soporte', 'logistica'];
+
+            if (esAuditoria) {
+                document.addEventListener("DOMContentLoaded", function() {
+                    const banner = document.createElement('div');
+                    banner.id = 'auditoria-banner';
+                    banner.innerHTML = `<i class="fa fa-exclamation-triangle"></i> MODO AUDITORÍA: Navegando como <strong>${rol.toUpperCase()}</strong>. <button onclick="terminarAuditoria()">TERMINAR AUDITORÍA</button>`;
+                    banner.style.display = 'block';
+                    document.body.appendChild(banner);
+                    document.querySelector('main').style.marginTop = '40px'; 
+                });
+            } else {
+                if (!rolesPermitidos.includes(rol)) {
+                    alert("🔒 ACCESO DENEGADO: Tu cuenta no tiene privilegios de administrador.");
+                    window.location.replace('../index.html');
+                }
+            }
+        })();
+
+        function terminarAuditoria() {
+            let user = JSON.parse(localStorage.getItem('currentUser'));
+            user.rol = user.rol_real;
+            delete user.rol_real;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            window.location.href = 'erp-roles.html';
+        }
+    </script>
 </head>
 
 <body>
@@ -139,22 +187,9 @@
   <div class="sidebar-brand">
     <img src="../img/logo6.png" onerror="this.src='https://via.placeholder.com/60/15161D/ffffff?text=PP'">
     <h5>Pet Palace</h5>
-    <p id="rolDisplay">Administrador</p>
+    <p id="rolDisplay">Cargando...</p>
   </div>
-  <ul class="nav-sidebar">
-    <li><a href="admin-panel.html"><i class="fa fa-chart-line"></i> Dashboard</a></li>
-    <li><a href="clients.html"><i class="fa fa-users"></i> Clientes</a></li>
-    <li><a href="products.html"><i class="fa fa-box-open"></i> Inventario</a></li>
-    <li><a href="orders.html"><i class="fa fa-shopping-bag"></i> Pedidos</a></li>
-    <li><a href="providers.html"><i class="fa fa-truck"></i> Proveedores</a></li>
-    <li><a href="movimientos.html"><i class="fa fa-history"></i> Movimientos</a></li>
-    <li><a href="erp-dashboard.html"><i class="fa fa-building"></i> Dashboard ERP</a></li>
-    <li class="active"><a href="erp-ordenes.html"><i class="fa fa-file-invoice"></i> Órdenes ERP</a></li>
-    <li><a href="erp-roles.html"><i class="fa fa-building"></i> Roles ERP</a></li>
-    <hr>
-    <li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>
-    <li><a href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>
-  </ul>
+  <ul class="nav-sidebar" id="sidebarMenu"></ul>
 </nav>
 
 <main>
@@ -283,11 +318,9 @@
                 <div id="detalleInfo" class="mb-3"></div>
                 <h6 class="font-weight-bold mb-2">Productos:</h6>
                 
-                <div id="detalleProductos">
-                    </div>
+                <div id="detalleProductos"></div>
 
-                <div class="total-display mt-3" style="background:transparent; border-top: 1px dashed #ccc; border-radius:0; text-align: right;" id="detalleTotalContainer">
-                    </div>
+                <div class="total-display mt-3" style="background:transparent; border-top: 1px dashed #ccc; border-radius:0; text-align: right;" id="detalleTotalContainer"></div>
             </div>
         </div>
 
@@ -317,6 +350,46 @@
 <script src="../js/bootstrap.min.js"></script>
 
 <script>
+// ==========================================
+// CEREBRO DEL MENÚ AUTÓNOMO GLOBAL
+// ==========================================
+const MENUS = {
+  admin: [
+    { href: 'admin-panel.html',   icon: 'fa-chart-line',  label: 'Dashboard' },
+    { href: 'clients.html',       icon: 'fa-users',       label: 'Clientes' },
+    { href: 'products.html',      icon: 'fa-box-open',    label: 'Inventario' },
+    { href: 'orders.html',        icon: 'fa-shopping-bag',label: 'Pedidos' },
+    { href: 'providers.html',     icon: 'fa-truck',       label: 'Proveedores' },
+    { href: 'movimientos.html',   icon: 'fa-history',     label: 'Movimientos' },
+    { href: 'erp-dashboard.html', icon: 'fa-building',    label: 'Dashboard ERP' },
+    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice',label: 'Órdenes ERP' },
+    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
+  ],
+  vendedor: [
+    { href: 'admin-panel.html',   icon: 'fa-chart-line',  label: 'Dashboard' },
+    { href: 'clients.html',       icon: 'fa-users',       label: 'Clientes' },
+    { href: 'products.html',      icon: 'fa-box-open',     label: 'Inventario' },
+    { href: 'orders.html',        icon: 'fa-shopping-bag', label: 'Pedidos' },
+    { href: 'providers.html',     icon: 'fa-truck',        label: 'Proveedores' },
+    { href: 'movimientos.html',   icon: 'fa-history',      label: 'Movimientos' },
+    { href: 'erp-dashboard.html', icon: 'fa-building',     label: 'Dashboard ERP' },
+    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice', label: 'Órdenes ERP' },
+    { href: 'erp-roles.html',     icon: 'fa-user-shield',  label: 'Roles ERP' },
+  ],
+  logistica: [
+    { href: 'erp-dashboard.html', icon: 'fa-building',    label: 'Dashboard ERP' },
+    { href: 'erp-logistica.html', icon: 'fa-truck-loading',label: 'Panel Logístico' },
+    { href: 'erp-ordenes.html',   icon: 'fa-file-invoice',label: 'Órdenes ERP', locked: true },
+    { href: 'erp-procesos.html',  icon: 'fa-cogs',        label: 'Procesos' },
+    { href: 'erp-recursos.html',  icon: 'fa-users-cog',   label: 'Recursos' },
+    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
+  ],
+  soporte: [
+    { href: 'clients.html',       icon: 'fa-users',       label: 'Clientes' },
+    { href: 'erp-roles.html',     icon: 'fa-user-shield', label: 'Roles ERP' },
+  ]
+};
+
 const API = '../api/erp/';
 let clientes = [];
 let productos = [];
@@ -324,43 +397,64 @@ let ordenes = [];
 let ordenActualId = null;
 
 $(document).ready(function() {
-  cargarRol();
+  // Inicialización del Menú
+  const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+  const rolActual = (user.rol || 'admin').toLowerCase();
+  
+  const nombres = { admin: 'Administrador', vendedor: 'Vendedor Autorizado', soporte: 'Soporte Técnico', logistica: 'Logística', usuario: 'Usuario' };
+  $('#rolDisplay').text(nombres[rolActual] ? nombres[rolActual].toUpperCase() : rolActual.toUpperCase());
+
+  const sidebarUl = $('#sidebarMenu');
+  sidebarUl.empty();
+  
+  const menuItems = MENUS[rolActual] || MENUS['admin'];
+  let currentPage = window.location.pathname.split("/").pop();
+  if(!currentPage) currentPage = 'erp-ordenes.html';
+
+  menuItems.forEach(item => {
+      let isActive = (item.href === currentPage) ? 'active' : '';
+      const onClickAction = item.locked ? `onclick="alert('ACCESO DENEGADO: Módulo bloqueado para este rol.')"` : `href="${item.href}"`;
+      sidebarUl.append(`<li class="${isActive}"><a ${onClickAction}><i class="fa ${item.icon}"></i> ${item.label}</a></li>`);
+  });
+
+  sidebarUl.append(`<hr>`);
+  sidebarUl.append(`<li><a href="../index.html"><i class="fa fa-store"></i> Ver Tienda</a></li>`);
+  sidebarUl.append(`<li><a href="#" onclick="cerrarSesionGlobal()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li>`);
+
+  // Carga de datos de la página
   cargarClientes();
   cargarProductos();
   cargarOrdenes();
 });
 
-// FUNCIÓN MAESTRA PARA CALCULAR TOTALES RESPETANDO LA BD
-function getOrderTotals(o) {
-    let subtotal = parseFloat(o.subtotal || o.total_sin_iva || o.total || 0);
-    let iva_val = parseFloat(o.iva || o.impuesto || o.impuestos || 0);
-    let pct = parseFloat(o.porcentaje_iva || o.porcentaje || 16); 
-    
-    // Si la DB no manda el IVA precalculado pero manda el porcentaje, lo calculamos
-    if (iva_val === 0 && pct > 0) {
-        iva_val = subtotal * (pct / 100);
+function cerrarSesionGlobal() {
+    let user = JSON.parse(localStorage.getItem('currentUser'));
+    if (user && user.rol_real) {
+        user.rol = user.rol_real;
+        delete user.rol_real;
+        localStorage.setItem('currentUser', JSON.stringify(user));
     }
-    
-    // Prioridad absoluta: Si la DB ya manda un Total Final/Gran Total/Total Real
-    let totalGeneral = parseFloat(o.total_final || o.gran_total || o.total_con_iva || o.total_real || 0);
-    
-    // Si la DB es floja y solo manda el subtotal en 'total' (ej. 240)
-    // El sistema se da cuenta que falta el IVA y se lo suma (240 + 38.40 = 278.40)
-    if (totalGeneral === 0 || totalGeneral === subtotal) {
-        totalGeneral = subtotal + iva_val;
-    }
-
-    return {
-        subtotal: subtotal,
-        iva: totalGeneral - subtotal, // La diferencia exacta, sin importar el porcentaje
-        total: totalGeneral,
-        pct: pct
-    };
+    localStorage.removeItem('currentUser');
+    window.location.href = '../login.html';
 }
 
-function cargarRol() {
-  const rol = localStorage.getItem('rol') || 'admin';
-  $('#rolDisplay').text(rol.charAt(0).toUpperCase() + rol.slice(1));
+// #ejemplo de función de procesamiento de cálculos
+function calcularTotalReal(o) {
+    let subtotal = parseFloat(o.subtotal || o.total_sin_iva || o.total || 0);
+    let pct = parseFloat(o.porcentaje_iva || o.porcentaje || 16);
+    let iva_val = parseFloat(o.iva || o.impuesto || o.impuestos || 0);
+    
+    if (iva_val === 0 && pct > 0) iva_val = subtotal * (pct / 100);
+    
+    let totalGeneral = parseFloat(o.total_final || o.gran_total || o.total_con_iva || o.total_real || 0);
+    if (totalGeneral === 0 || totalGeneral === subtotal) totalGeneral = subtotal + iva_val;
+    
+    return totalGeneral;
+}
+
+function esVentaValida(estado) {
+    const est = (estado || '').toLowerCase();
+    return (est === 'procesada' || est === 'completado' || est === 'entregado' || est === 'enviado');
 }
 
 function cargarClientes() {
@@ -390,7 +484,6 @@ function cargarOrdenes() {
     calcularKPIs();
   }).fail(function(xhr) {
     $('#ordenesTableBody').html('<tr><td colspan="6" class="text-center py-4 text-danger">Error al conectar con la base de datos</td></tr>');
-    console.error(xhr.responseText);
   });
 }
 
@@ -409,13 +502,12 @@ function renderTabla() {
     
     if (estado === 'procesada' || estado === 'completado') badgeClass = 'bg-procesada';
     else if (estado === 'enviado') badgeClass = 'bg-enviado';
-    else if (estado === 'entregado') badgeClass = 'bg-procesada'; // verde
+    else if (estado === 'entregado') badgeClass = 'bg-procesada'; 
     else if (estado === 'cancelada' || estado === 'cancelado') badgeClass = 'bg-cancelada';
 
-    const fecha = o.fecha ? new Date(o.fecha).toLocaleDateString('es-MX') : '—';
+    const fecha = o.fecha ? new Date(o.fecha.replace(' ', 'T')).toLocaleDateString('es-MX') : '—';
     
-    // Usar nuestra función maestra para extraer el Total Real
-    let totals = getOrderTotals(o);
+    let totalReal = calcularTotalReal(o);
     
     const btnProcesar = (estado === 'pendiente')
       ? `<button class="btn-action btn-process" title="Avanzar Tracker" onclick="verDetalle(${o.id})"><i class="fa fa-arrow-right"></i></button>`
@@ -430,7 +522,7 @@ function renderTabla() {
         <td><strong>#${o.id}</strong></td>
         <td>${o.cliente || 'Desconocido'}</td>
         <td>${fecha}</td>
-        <td><strong style="color: #15161D;">$${totals.total.toFixed(2)}</strong></td>
+        <td><strong style="color: #15161D;">$${totalReal.toFixed(2)}</strong></td>
         <td><span class="badge-status ${badgeClass}">${estado}</span></td>
         <td>
           <button class="btn-action btn-edit" title="Ver detalle/Seguimiento" onclick="verDetalle(${o.id})"><i class="fa fa-map-marker"></i></button>
@@ -450,11 +542,10 @@ function calcularKPIs() {
 
   ordenes.forEach(o => {
     const estado = o.estado ? o.estado.toLowerCase() : 'pendiente';
-    let totals = getOrderTotals(o);
-
-    if (estado === 'procesada' || estado === 'completado' || estado === 'entregado' || estado === 'enviado') {
+    
+    if (esVentaValida(o.estado)) {
       procesadas++;
-      ventas += totals.total;
+      ventas += calcularTotalReal(o);
     } else if (estado === 'pendiente') {
       pendientes++;
     }
@@ -470,7 +561,7 @@ function openAddModal() {
   $('#ordenId').val('');
   $('#modalTitle').text('Nueva Orden Empresarial');
   $('#selectCliente').val('');
-  $('#taxPercentage').val('16'); // Porcentaje editable
+  $('#taxPercentage').val('16'); 
   $('#productosContainer').empty();
   actualizarTotal();
   agregarProductoRow();
@@ -542,7 +633,6 @@ function guardarOrden() {
   const userData = JSON.parse(localStorage.getItem('currentUser'));
   const usuario_id = userData ? parseInt(userData.id) : 1; 
 
-  // Enviamos TODOS los datos al backend (si el backend los acepta, genial. Si no, la función getOrderTotals los salva igual)
   $.ajax({
     url: API + 'ordenes.php',
     type: 'POST',
@@ -578,7 +668,7 @@ function verDetalle(id) {
   ordenActualId = id;
 
   $('#detalleOrdenId').text(id);
-  const fecha = orden.fecha ? new Date(orden.fecha).toLocaleDateString('es-MX') : '—';
+  const fecha = orden.fecha ? new Date(orden.fecha.replace(' ', 'T')).toLocaleDateString('es-MX') : '—';
   
   $.getJSON(API + 'ordenes.php?id=' + id, function(data) {
       const estadoLimpio = (data.estado || orden.estado || 'pendiente').toLowerCase();
@@ -596,7 +686,6 @@ function verDetalle(id) {
               let itemTotal = pUnit * qty;
               sumaItems += itemTotal;
 
-              // CRUCE DE NOMBRES CON EL CATÁLOGO
               let nombreReal = item.nombre;
               if(!nombreReal && item.producto_id) {
                   const prodEncontrado = productos.find(px => px.id == item.producto_id);
@@ -621,16 +710,14 @@ function verDetalle(id) {
           `;
       }
 
-      // Usar nuestra función maestra para extraer el Total Real
-      let totals = getOrderTotals(orden);
+      let totalReal = calcularTotalReal(orden);
       
-      // Extra seguridad: Si la DB no guardó el total y la función nos devolvió lo mismo
-      if (totals.total === 0 || totals.total === sumaItems) {
+      if (totalReal === 0 || totalReal === sumaItems) {
           let extraPct = parseFloat(orden.porcentaje_iva || 16);
-          totals.total = sumaItems + (sumaItems * (extraPct/100));
+          totalReal = sumaItems + (sumaItems * (extraPct/100));
       }
       
-      let impuestosYExtras = totals.total - sumaItems;
+      let impuestosYExtras = totalReal - sumaItems;
       if (impuestosYExtras < 0) impuestosYExtras = 0; 
 
       $('#detalleInfo').html(`
@@ -644,7 +731,7 @@ function verDetalle(id) {
       $('#detalleTotalContainer').html(`
           <div style="font-size:13px; font-weight:normal; color:#888;">Subtotal Productos: $${sumaItems.toFixed(2)}</div>
           <div style="font-size:13px; font-weight:normal; color:#888; border-bottom:1px dashed #ccc; padding-bottom:8px; margin-bottom:8px;">Impuestos / Extras: $${impuestosYExtras.toFixed(2)}</div>
-          <div style="font-size:18px;">Total General: <span style="color:#6610f2;">$${totals.total.toFixed(2)}</span></div>
+          <div style="font-size:18px;">Total General: <span style="color:#6610f2;">$${totalReal.toFixed(2)}</span></div>
       `);
       
       $('#btnProcesar, #btnEnviado, #btnEntregado').hide();
@@ -659,11 +746,11 @@ function verDetalle(id) {
 
       $('#detalleModal').modal('show');
   }).fail(function() {
-      // SI FALLA EL GET, DIBUJAMOS CON LA INFO MAESTRA
       const estadoLimpio = (orden.estado || 'pendiente').toLowerCase();
       renderTrackerModal(estadoLimpio);
       
-      let totals = getOrderTotals(orden);
+      let totalReal = calcularTotalReal(orden);
+      let subtotal = parseFloat(orden.total || orden.subtotal || 0);
 
       $('#detalleInfo').html(`
         <div class="detalle-item"><span><strong>Cliente:</strong></span><span>${orden.cliente || '—'}</span></div>
@@ -673,14 +760,13 @@ function verDetalle(id) {
       $('#detalleProductos').html(`
           <div class="detalle-item">
               <span><strong style="color:#6610f2; margin-right: 5px;">1x</strong> Compra General</span>
-              <span style="font-weight: 700;">$${totals.subtotal.toFixed(2)}</span>
+              <span style="font-weight: 700;">$${subtotal.toFixed(2)}</span>
           </div>
       `);
 
       $('#detalleTotalContainer').html(`
-          <div style="font-size:13px; font-weight:normal; color:#888;">Subtotal Productos: $${totals.subtotal.toFixed(2)}</div>
-          <div style="font-size:13px; font-weight:normal; color:#888; border-bottom:1px dashed #ccc; padding-bottom:8px; margin-bottom:8px;">Impuestos y Extras: $${totals.iva.toFixed(2)}</div>
-          <div style="font-size:18px;">Total General: <span style="color:#6610f2;">$${totals.total.toFixed(2)}</span></div>
+          <div style="font-size:13px; font-weight:normal; color:#888;">Subtotal Productos: $${subtotal.toFixed(2)}</div>
+          <div style="font-size:13px; font-weight:normal; color:#888; border-bottom:1px dashed #ccc; padding-bottom:8px; margin-bottom:8px;">Total General: <span style="color:#6610f2;">$${totalReal.toFixed(2)}</span></div>
       `);
       
       $('#btnProcesar, #btnEnviado, #btnEntregado').hide();
@@ -802,11 +888,6 @@ function cancelarOrden(id) {
   });
 }
 
-function cerrarSesion() {
-  localStorage.clear();
-  window.location.href = '../login.html';
-}
-
 function showToast(msg, type) {
   const t = $('#toast');
   t.removeClass('alert-success alert-danger alert-warning alert-info')
@@ -816,6 +897,5 @@ function showToast(msg, type) {
   setTimeout(() => t.fadeOut(400), 3000);
 }
 </script>
-
 </body>
 </html>

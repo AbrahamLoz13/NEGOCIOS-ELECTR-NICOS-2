@@ -1,4 +1,8 @@
 <?php
+if (!isset($_SERVER['HTTP_REFERER'])) {
+    http_response_code(403);
+    die(json_encode(["status" => "error", "message" => "Acceso directo denegado. Solo el sistema puede hacer peticiones aquí."]));
+}
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 header("Access-Control-Allow-Methods: GET, PUT");
@@ -6,9 +10,11 @@ header("Access-Control-Allow-Methods: GET, PUT");
 require_once 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Trae todas las compras de la tienda con el nombre del cliente y producto
+    $user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
+    
     $sql = "SELECT 
                 p.id AS pedido_id, 
+                p.usuario_id,
                 p.total, 
                 p.fecha, 
                 p.estado, 
@@ -19,8 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             FROM pedidos p
             JOIN detalle_pedido dp ON p.id = dp.pedido_id
             JOIN productos pr ON dp.producto_id = pr.id
-            JOIN usuarios u ON p.usuario_id = u.id
-            ORDER BY p.fecha DESC";
+            JOIN usuarios u ON p.usuario_id = u.id";
+            
+    if ($user_id > 0) {
+        $sql .= " WHERE p.usuario_id = $user_id";
+    }
+    
+    $sql .= " ORDER BY p.fecha DESC";
     
     $res = $conn->query($sql);
     $pedidos = [];
@@ -30,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     echo json_encode($pedidos);
 } 
 elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-    // Actualiza el estado para que el cliente lo vea en su perfil
     $id = intval($_GET['id']);
     $data = json_decode(file_get_contents("php://input"), true);
     $estado = $conn->real_escape_string($data['estado']);
